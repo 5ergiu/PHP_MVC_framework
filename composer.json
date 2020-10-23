@@ -1,0 +1,21 @@
+{
+    "type": "library",
+    "name": "bucegos/php_mvc_framework",
+    "description": "PHP MVC Framework",
+    "authors": [
+        {
+            "name": "Sergiu Bugeac",
+            "email": "sergiu.a.bugeac@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.4",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    }
+}

@@ -1,0 +1,8 @@
+# framework
+/vendor/
+
+# phpstorm
+/.idea
+
+# JS
+/node_modules/
