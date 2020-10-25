@@ -9,7 +9,7 @@ use PDOException;
 class Database
 {
     /**
-     * Method used to connect to the database.
+     * Connect to the database.
      * @return PDO
      * @throws Exception
      */

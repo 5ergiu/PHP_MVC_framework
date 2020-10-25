@@ -13,6 +13,6 @@ class Logger
     public function error(string $message, string $file): void
     {
         $timestamp = date("Y-m-d H:i:s");
-        error_log("$timestamp: $message \n", 3, LOGS . DIRECTORY_SEPARATOR . "{$file}.log");
+        error_log("$timestamp: $message \n", 3, LOGS . "{$file}.log");
     }
 }

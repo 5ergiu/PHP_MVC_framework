@@ -3,8 +3,10 @@ namespace App\Core;
 
 use App\Core\Controller\AbstractController as Controller;
 use App\Core\Error\ErrorHandler;
+use App\Core\Exception\NotFoundException;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
+use Throwable;
 
 class Router
 {
@@ -26,18 +28,19 @@ class Router
         $this->request = $request;
         $this->response = $response;
         $this->errorHandler = new ErrorHandler;
-        $this->__resolve();
+        $this->__run();
     }
 
     /**
      * @return void
      */
-    private function __resolve(): void
+    private function __run(): void
     {
-        if ($this->__checkRequest()) {
-            call_user_func_array([$this->controller, $this->method], $this->params);
-        } else {
-            $this->errorHandler->notFound();
+        try {
+            $this->__resolve();
+        } catch (Throwable $e) {
+            $this->response->setStatusCode($e->getCode());
+            $this->errorHandler->handleError($e);
         }
     }
 
@@ -53,9 +56,10 @@ class Router
     }
 
     /**
-     * @return bool
+     * @return void
+     * @throws NotFoundException
      */
-    private function __checkRequest(): bool
+    private function __resolve(): void
     {
         if ($this->request->url !== Request::ROOT) {
             $url = explode(Request::ROOT, filter_var(rtrim($this->request->url, Request::ROOT), FILTER_SANITIZE_URL));
@@ -66,26 +70,23 @@ class Router
                     if ($this->__setMethod($url[1])) {
                         unset($url[1]);
                         $this->__setParams($url);
-                        return true;
-                    } else {
-                        return false;
                     }
                 } else {
-                    return $this->__setMethod('index');
+                    $this->__setMethod('index');
                 }
             }
-            return false;
         } else {
             $this->__setController('\App\Controller\\HomeController');
             $this->__setMethod('index');
-            return true;
         }
+        call_user_func_array([$this->controller, $this->method], $this->params);
     }
 
     /**
      * Set the controller.
      * @param string $controller
      * @return bool
+     * @throws NotFoundException
      */
     private function __setController(string $controller): bool
     {
@@ -93,13 +94,14 @@ class Router
             $this->controller = new $controller;
             return true;
         }
-        return false;
+        throw new NotFoundException;
     }
 
     /**
      * Set the controller method.
      * @param string $method
      * @return bool
+     * @throws NotFoundException
      */
     private function __setMethod(string $method): bool
     {
@@ -107,7 +109,7 @@ class Router
             $this->method = $method;
             return true;
         }
-        return false;
+        throw new NotFoundException;
     }
 
     /**

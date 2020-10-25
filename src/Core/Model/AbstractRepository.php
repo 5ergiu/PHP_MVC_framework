@@ -9,12 +9,10 @@ use PDOException;
 class AbstractRepository
 {
     protected PDO $pdo;
-    protected Validator $validator;
 
     public function __construct()
     {
         $this->pdo = Database::connect();
-        $this->validator = new Validator;
     }
 
     /**

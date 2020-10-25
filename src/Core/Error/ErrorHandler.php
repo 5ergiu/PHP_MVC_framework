@@ -2,10 +2,12 @@
 
 namespace App\Core\Error;
 
+use Throwable;
+
 class ErrorHandler
 {
-    public function notFound()
+    public function handleError(Throwable $error)
     {
-        echo 'Not found';
+        var_dump($error);
     }
 }
