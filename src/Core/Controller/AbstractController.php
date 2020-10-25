@@ -1,21 +1,30 @@
 <?php
+namespace App\Core\Controller;
 
-namespace App\Core;
-
+use App\Core\Helper\Logger;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
+use App\Core\View;
 
-class Controller
+/**
+ * @property View $View;
+ * @property Request $request;
+ * @property Response $response;
+ * @property Logger $log;
+ */
+abstract class AbstractController
 {
-    private View $view;
+    private View $View;
     protected Request $request;
     protected Response $response;
+    protected Logger $log;
 
     public function __construct()
     {
-        $this->view = new View;
+        $this->View = new View;
         $this->request = new Request;
-        $this->response = new Response();
+        $this->response = new Response;
+        $this->log = new Logger;
     }
 
     /**
@@ -27,7 +36,7 @@ class Controller
      */
     protected function render(string $folder, string $view, array $viewVariables = [], ?string $layout = null): void
     {
-        echo $this->view->render($folder ,$view, $viewVariables, $layout);
+        echo $this->View->render($folder ,$view, $viewVariables, $layout);
     }
 
     /**

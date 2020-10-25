@@ -2,11 +2,11 @@
 
 namespace App\Core\Model;
 
+use App\Core\Model\AbstractEntity as Entity;
 class Validator
 {
     private Entity $entity;
     private array $rules;
-    private array $errors = [];
 
     public function __construct(Entity $entity)
     {
@@ -31,7 +31,7 @@ class Validator
     }
 
     /**
-     * @return array|bool
+     * @return void
      */
     public function validate()
     {
@@ -53,7 +53,6 @@ class Validator
                 }
             }
         }
-        return !empty($this->getErrors()) ? $this->getErrors() : false;
     }
 
     /**
@@ -66,7 +65,7 @@ class Validator
     {
         if (empty($input)) {
             $message = "$field cannot be empty.";
-            $this->setErrors($field, $rule, $message);
+            $this->entity->setErrors($field, $rule, $message);
         }
     }
 
@@ -82,7 +81,7 @@ class Validator
     {
         $input = (int)strlen($input);
         if ($input > (int)$validation) {
-            $this->setErrors($field, $rule, $message);
+            $this->entity->setErrors($field, $rule, $message);
         }
     }
 
@@ -98,7 +97,7 @@ class Validator
     {
         $input = (int)strlen($input);
         if ($input < (int)$validation) {
-            $this->setErrors($field, $rule, $message);
+            $this->entity->setErrors($field, $rule, $message);
         }
     }
 
@@ -112,25 +111,7 @@ class Validator
     {
         if (!filter_var($input, FILTER_VALIDATE_EMAIL)) {
             $message = "$field has to be a valid email address.";
-            $this->setErrors($field, $rule, $message);
+            $this->entity->setErrors($field, $rule, $message);
         }
-    }
-
-    /**
-     * @return array
-     */
-    public function getErrors(): array
-    {
-        return $this->errors;
-    }
-
-    /**
-     * @param string $field
-     * @param string $rule
-     * @param string $message
-     */
-    public function setErrors(string $field, string $rule, string $message): void
-    {
-        $this->errors[$field][$rule] = $message;
     }
 }

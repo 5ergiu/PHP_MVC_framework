@@ -15,9 +15,9 @@ class Database
      */
     public static function connect(): PDO
     {
-        $dsn = "mysql:host=localhost;dbname=blog";
+        $dsn = $_ENV['DSN'];
         try {
-            $pdo = new PDO($dsn, 'root', 'K!illerH!ills007');
+            $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
             // set the PDO error mode to exception
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             // set default fetch mode to fetch associative

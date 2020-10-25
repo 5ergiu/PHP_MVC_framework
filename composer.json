@@ -16,6 +16,7 @@
     "require": {
         "php": "^7.4",
         "ext-pdo": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "vlucas/phpdotenv": "^5.2"
     }
 }

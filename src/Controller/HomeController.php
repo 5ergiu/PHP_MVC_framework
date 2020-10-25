@@ -2,15 +2,12 @@
 
 namespace App\Controller;
 
-use App\Core\Controller;
+use App\Core\Controller\AbstractController;
 
-class HomeController extends Controller
+class HomeController extends AbstractController
 {
     public function index()
     {
-//        if ($this->request->is('post')) {
-//            var_dump($this->request->data); die;
-//        }
         $this->render('home', 'index', [
             'tacac' => 'ceva',
         ]);

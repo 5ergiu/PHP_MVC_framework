@@ -2,29 +2,35 @@
 
 namespace App\Model\Entity;
 
-use App\Core\Model\Entity;
+use App\Core\Model\AbstractEntity;
 use App\Core\Model\Validator;
 
-class User extends Entity
+class User extends AbstractEntity
 {
     private Validator $validator;
-    private string $name;
-    private int $age;
-    private string $email;
-    private string $password;
+    private string $name = '';
+    private ?int $age = null;
+    private string $email = '';
+    private string $password = '';
 
     public function __construct()
     {
         $this->validator = new Validator($this);
-        $this->__addValidations();
+        $this->addValidations();
     }
 
-    private function __addValidations()
+    /**
+     * @return void
+     */
+    protected function addValidations(): void
     {
         $this->validator
             ->add('email', [
                 'required',
                 'isEmail',
+            ])
+            ->add('name', [
+                'required',
             ])
             ->add('password', [
                 'maxLength' => [
@@ -44,9 +50,16 @@ class User extends Entity
             ]);
     }
 
-    public function validate()
+    /**
+     * @return bool
+     */
+    public function save(): bool
     {
-        return $this->validator->validate();
+        $this->validator->validate();
+        if (!empty($this->getErrors())) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -59,7 +72,7 @@ class User extends Entity
     public function checkMoreThanWhateverFunction($input, string $field, string $rule, string $message): void
     {
         if ($input > 10) {
-            $this->validator->setErrors($field, $rule, $message);
+            $this->setErrors($field, $rule, $message);
         }
     }
 

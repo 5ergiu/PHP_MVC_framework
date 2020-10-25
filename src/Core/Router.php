@@ -1,6 +1,7 @@
 <?php
 namespace App\Core;
 
+use App\Core\Controller\AbstractController as Controller;
 use App\Core\Error\ErrorHandler;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
@@ -47,6 +48,7 @@ class Router
      */
     public static function url(array $url, bool $full = false): array
     {
+
         return $url;
     }
 

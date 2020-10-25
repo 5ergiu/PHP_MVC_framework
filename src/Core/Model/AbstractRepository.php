@@ -6,7 +6,7 @@ use App\Core\Helper\Logger;
 use PDO;
 use PDOException;
 
-class Repository
+class AbstractRepository
 {
     protected PDO $pdo;
     protected Validator $validator;
@@ -32,7 +32,7 @@ class Repository
             $query->execute([':column' => $value]);
             return $query->fetch();
         } catch (PDOException $e) {
-            Logger::logError($e->getMessage(), "{$model}_{$column}_findBy_{$value}");
+//            Logger::logError($e->getMessage(), "{$model}_{$column}_findBy_{$value}");
             return false;
         }
     }
@@ -53,7 +53,7 @@ class Repository
             $query = $this->pdo->query($sql);
             return $query->fetchAll();
         } catch (PDOException $e) {
-            Logger::logError($e->getMessage(), "{$table}_findAll");
+//            Logger::logError($e->getMessage(), "{$table}_findAll");
             return false;
         }
     }

@@ -82,14 +82,10 @@ class Request
         $data = json_decode(file_get_contents('php://input'), true);
         if ($data === null) {
             if ($this->is('GET')) {
-                foreach ($_GET as $key => $value) {
-                    $data[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                }
+                $data = $_GET;
             }
             if ($this->is('POST')) {
-                foreach ($_POST as $key => $value) {
-                    $data[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-                }
+                $data = $_POST;
             }
         }
         $this->data = $data;
