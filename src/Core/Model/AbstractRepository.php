@@ -6,7 +6,7 @@ use App\Core\Helper\Logger;
 use PDO;
 use PDOException;
 
-class AbstractRepository
+abstract class AbstractRepository
 {
     protected PDO $pdo;
 
