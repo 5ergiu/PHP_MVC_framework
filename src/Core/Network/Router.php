@@ -1,15 +1,23 @@
 <?php
-namespace App\Core;
+namespace App\Core\Network;
 
 use App\Core\Controller\AbstractController as Controller;
 use App\Core\Error\ErrorHandler;
 use App\Core\Exception\NotFoundException;
-use App\Core\Network\Request;
-use App\Core\Network\Response;
 use Throwable;
-
+/**
+ * Handles the HTTP requests.
+ * @property array $routes          The array of predefined routes.
+ * @property Controller $controller The controller that will handle the request.
+ * @property string|null $method    The method that will be called.
+ * @property array $params          The array of params that will be sent to the called method.
+ * @property Request $request
+ * @property Response $response
+ * @property ErrorHandler $errorHandler
+ */
 class Router
 {
+    private array $routes;
     private Controller $controller;
     private ?string $method = null;
     private array $params = [];
@@ -18,13 +26,13 @@ class Router
     public ErrorHandler $errorHandler;
 
     /**
-     * Router constructor.
-     *
-     * @param Request $request
-     * @param Response $response
+     * @param array $routes      The array of predefined routes.
+     * @param Request $request   The Request instance.
+     * @param Response $response The Response instance.
      */
-    public function __construct(Request $request, Response $response)
+    public function __construct(array $routes, Request $request, Response $response)
     {
+        $this->routes = $routes;
         $this->request = $request;
         $this->response = $response;
         $this->errorHandler = new ErrorHandler;
@@ -38,7 +46,7 @@ class Router
     {
         try {
             $this->__resolve();
-        } catch (Throwable $e) {
+        } catch (\Exception $e) {
             $this->response->setStatusCode($e->getCode());
             $this->errorHandler->handleError($e);
         }
@@ -62,7 +70,7 @@ class Router
     private function __resolve(): void
     {
         if ($this->request->url !== Request::ROOT) {
-            $url = explode(Request::ROOT, filter_var(rtrim($this->request->url, Request::ROOT), FILTER_SANITIZE_URL));
+            $url = explode(Request::ROOT, $this->request->url);
             $url[0] = '\App\Controller\\' . ucwords($url[0]) . 'Controller';
             if ($this->__setController($url[0])) {
                 unset($url[0]);

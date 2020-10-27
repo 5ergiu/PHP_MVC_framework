@@ -1,27 +1,28 @@
 <?php
 namespace App\Core\Controller;
 
+use App\Core\Exception\ViewNotFountException;
 use App\Core\Helper\Logger;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
-use App\Core\View;
+use App\Core\View\Render;
 
 /**
- * @property View $View;
+ * @property Render $View;
  * @property Request $request;
  * @property Response $response;
  * @property Logger $log;
  */
 abstract class AbstractController
 {
-    private View $View;
+    private Render $Render;
     protected Request $request;
     protected Response $response;
     protected Logger $log;
 
     public function __construct()
     {
-        $this->View = new View;
+        $this->Render = new Render;
         $this->request = new Request;
         $this->response = new Response;
         $this->log = new Logger;
@@ -36,7 +37,7 @@ abstract class AbstractController
      */
     protected function render(string $folder, string $view, array $viewVariables = [], ?string $layout = null): void
     {
-        echo $this->View->render($folder ,$view, $viewVariables, $layout);
+        $this->Render->render($folder ,$view, $viewVariables, $layout);
     }
 
     /**

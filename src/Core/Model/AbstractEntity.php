@@ -4,6 +4,7 @@ namespace App\Core\Model;
 
 abstract class AbstractEntity
 {
+    public array $context = [];
     public array $errors = [];
 
     /**
@@ -12,6 +13,7 @@ abstract class AbstractEntity
      */
     public function bindValues(array $data): void
     {
+        $this->setContext($data);
         $entityName = $this->getEntityName();
         $entityData = $data['data'][$entityName];
         foreach ($entityData as $field => $input) {
@@ -25,6 +27,16 @@ abstract class AbstractEntity
     }
 
     /**
+     * @return bool
+     */
+    abstract public function save() : bool;
+
+    /**
+     * @return void;
+     */
+    abstract protected function addValidations(): void;
+
+    /**
      * @return string
      */
     public function getEntityName(): string
@@ -34,14 +46,20 @@ abstract class AbstractEntity
     }
 
     /**
-     * @return bool
+     * @return array
      */
-    abstract public function save() : bool;
+    public function getContext(): array
+    {
+        return $this->context;
+    }
 
     /**
-     * @return void;
+     * @param array $context
      */
-    abstract protected function addValidations(): void;
+    public function setContext(array $context): void
+    {
+        $this->context = $context;
+    }
 
     /**
      * @return array

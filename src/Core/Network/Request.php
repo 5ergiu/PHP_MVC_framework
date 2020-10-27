@@ -1,10 +1,14 @@
 <?php
-
 namespace App\Core\Network;
 
+/**
+ * Formats the Request URL to be passed to the Router.
+ * Sets the request data and checks the request type.
+ * @property string $url       Formatted Request URL.
+ * @property array|null $data Request data.
+ */
 class Request
 {
-
     public const POST = 'POST';
     public const GET = 'GET';
     public const PUT = 'PUT';
@@ -15,46 +19,39 @@ class Request
     public string $url;
     public ?array $data;
 
-    /**
-     * Request constructor.
-     */
     public function __construct()
     {
         $this->__parseUrl();
         $this->__setData();
     }
+
     /**
      * Check the request type.
      * @param string $type The given request type.
-     * @return bool Returns true if a matching request type is found, false otherwise.
+     * @return bool
      */
     public function is(string $type): bool
     {
         $type = strtoupper($type);
         switch ($type) {
-            case self::POST: {
+            case self::POST :
                 return $_SERVER['REQUEST_METHOD'] === self::POST;
-            }
-            case self::GET: {
+            case self::GET :
                 return $_SERVER['REQUEST_METHOD'] === self::GET;
-            }
-            case self::PUT: {
+            case self::PUT :
                 return $_SERVER['REQUEST_METHOD'] === self::PUT;
-            }
-            case self::PATCH: {
+            case self::PATCH :
                 return $_SERVER['REQUEST_METHOD'] === self::PATCH;
-            }
-            case self::DELETE: {
+            case self::DELETE :
                 return $_SERVER['REQUEST_METHOD'] === self::DELETE;
-            }
-            default : {
+            default :
                 return false;
-            }
         }
     }
 
     /**
      * Method used to parse the url.
+     * Removes any query parameters in order to leave just the controller, action and params.
      * @return void
      */
     private function __parseUrl(): void
@@ -66,15 +63,15 @@ class Request
             if ($position !== false) {
                 $url = substr($url, 0, $position);
             }
+            $url = filter_var(rtrim($url, Request::ROOT), FILTER_SANITIZE_URL);
         }
         $this->url = $url;
     }
 
     /**
-     * Parsing all the data that is being sent as JSON. `json_decode` turns our JSON-object
-     * into a PHP Associative array.
-     * IF $data === null, then there's no need for JSON data and the
-     * server needs to handle the request so $data falls back whatever is in $_GET or $_POST.
+     * Sets the request data.
+     * Parsing the data if it is sent in a json format, otherwise,
+     * setting the data to the respective request type.
      * @return void
      */
     public function __setData(): void

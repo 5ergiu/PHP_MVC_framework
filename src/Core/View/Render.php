@@ -1,15 +1,12 @@
 <?php
-
 namespace App\Core\View;
 
 use App\Core\Helper\Form;
-
 /**
  * @property Form $Form;
  */
 class Render
 {
-
     private Form $Form;
 
     public function __construct()
@@ -22,11 +19,11 @@ class Render
      * @param string $view
      * @param array $viewVariables
      * @param string|null $layout
-     * @return false|string|string[]
+     * @return void
      */
-    public function render(?string $folder, string $view, array $viewVariables = [], ?string $layout = null)
+    public function render(?string $folder, string $view, array $viewVariables = [], ?string $layout = null): void
     {
-        return str_replace(
+        echo str_replace(
             '{{ content }}',
             $this->__setView($folder, $view, $viewVariables),
             $this->__setLayout($layout)
@@ -39,12 +36,10 @@ class Render
      */
     private function __setLayout(?string $layout = null)
     {
+        $fullPath = LAYOUTS;
+        $fullPath .= $layout !== null ? "$layout.php" : 'base.php';
         ob_start();
-        if ($layout !== null) {
-            require_once LAYOUTS . "$layout.php";
-        } else {
-            require_once LAYOUTS . 'base.php';
-        }
+        require_once $fullPath;
         return ob_get_clean();
     }
 
@@ -56,17 +51,17 @@ class Render
      */
     private function  __setView(?string $folder, string $view, array $viewVariables = [])
     {
+        $fullPath = TEMPLATES;
         if (!empty($viewVariables)) {
             foreach ($viewVariables as $key => $value) {
                 $$key = $value;
             }
         }
+        $fullPath .= $folder !== null ? "$folder" : null;
+        $fullPath .= "/$view.php";
+        $fullPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $fullPath);
         ob_start();
-        if ($folder !== null) {
-            require_once TEMPLATES . "$folder" . DIRECTORY_SEPARATOR . "$view.php";
-        } else {
-            require_once TEMPLATES . "$view.php";
-        }
+        require_once $fullPath;
         return ob_get_clean();
     }
 }

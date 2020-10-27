@@ -6,6 +6,8 @@
     <title><?= $title ?? 'Title'; ?></title>
 </head>
 <body>
+<nav>test nav</nav>
 {{ content }}
+<footer>test footer</footer>
 </body>
 </html>
