@@ -1,8 +1,10 @@
 <?php
+use App\Core\App;
 
-require_once '../config/constants.php';
-require APP_ROOT . '/config/bootstrap.php';
+// App directory path
+define('APP_ROOT', dirname(__DIR__));
+// Bootstrap file path
+$boostrap = APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'/config/bootstrap.php');
+require_once $boostrap;
 
-use App\Core\Application;
-
-$app = new Application;
+$app = new App;

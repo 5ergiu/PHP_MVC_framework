@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Core;
+namespace App\Core\View;
 
 use App\Core\Helper\Form;
 
 /**
  * @property Form $Form;
  */
-class View
+class Render
 {
 
     private Form $Form;
