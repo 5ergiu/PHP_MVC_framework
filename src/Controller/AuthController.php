@@ -25,4 +25,6 @@ class AuthController extends AbstractController
             'User' => $User,
         ]);
     }
+
+    public function index(){}
 }

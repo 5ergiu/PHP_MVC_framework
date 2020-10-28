@@ -1,3 +1,14 @@
 index:
     path: /
-    controller: App\Controller\DefaultController::index
+    controller:  App\Core\Controller\DefaultController
+    method: index
+
+login:
+    path: auth
+    controller: App\Controller\AuthController
+    method: login
+
+login_index:
+    path: auth
+    controller: App\Controller\AuthController
+    method: index

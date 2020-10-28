@@ -1,14 +1,12 @@
 <?php
 namespace App\Core\Controller;
 
-use App\Core\Exception\ViewNotFountException;
 use App\Core\Helper\Logger;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
 use App\Core\View\Render;
-
 /**
- * @property Render $View;
+ * @property Render $Render;
  * @property Request $request;
  * @property Response $response;
  * @property Logger $log;
@@ -29,13 +27,13 @@ abstract class AbstractController
     }
 
     /**
-     * @param string $folder
+     * @param string|null $folder
      * @param string $view
      * @param array $viewVariables
      * @param string|null $layout
      * @return void
      */
-    protected function render(string $folder, string $view, array $viewVariables = [], ?string $layout = null): void
+    protected function render(?string $folder, string $view, array $viewVariables = [], ?string $layout = null): void
     {
         $this->Render->render($folder ,$view, $viewVariables, $layout);
     }

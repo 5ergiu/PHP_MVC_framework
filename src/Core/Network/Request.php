@@ -21,7 +21,7 @@ class Request
 
     public function __construct()
     {
-        $this->__parseUrl();
+        $this->__setUrl();
         $this->__setData();
     }
 
@@ -50,11 +50,11 @@ class Request
     }
 
     /**
-     * Method used to parse the url.
+     * Method used to set the Request URL.
      * Removes any query parameters in order to leave just the controller, action and params.
      * @return void
      */
-    private function __parseUrl(): void
+    private function __setUrl(): void
     {
         $url = $_SERVER['REQUEST_URI'] ?? self::ROOT;
         if ($url !== self::ROOT) {

@@ -19,15 +19,15 @@ class Router
 {
     private array $routes;
     private Controller $controller;
-    private ?string $method = null;
+    private string $method;
     private array $params = [];
     public Request $request;
     public Response $response;
     public ErrorHandler $errorHandler;
 
     /**
-     * @param array $routes      The array of predefined routes.
-     * @param Request $request   The Request instance.
+     * @param array $routes The array of predefined routes.
+     * @param Request $request The Request instance.
      * @param Response $response The Response instance.
      */
     public function __construct(array $routes, Request $request, Response $response)
@@ -40,6 +40,7 @@ class Router
     }
 
     /**
+     * Actually 'runs' the app after all the logic is applied.
      * @return void
      */
     private function __run(): void
@@ -64,37 +65,58 @@ class Router
     }
 
     /**
+     * Resolves the http request, sets and instantiates the controller and calling respective method.
      * @return void
      * @throws NotFoundException
      */
     private function __resolve(): void
     {
-        if ($this->request->url !== Request::ROOT) {
-            $url = explode(Request::ROOT, $this->request->url);
-            $url[0] = '\App\Controller\\' . ucwords($url[0]) . 'Controller';
-            if ($this->__setController($url[0])) {
-                unset($url[0]);
-                if (isset($url[1])) {
-                    if ($this->__setMethod($url[1])) {
-                        unset($url[1]);
-                        $this->__setParams($url);
+        $this->__parseUrl();
+        foreach ($this->routes as $name => $route) {
+            if ($this->request->url === $route['path']) {
+                if ($this->__setController($route['controller'])) {
+                    if ($this->__setMethod($route['method'])) {
+                        call_user_func_array([$this->controller, $this->method], $this->params);
+                        break;
+                    } else {
+                        continue;
                     }
                 } else {
-                    $this->__setMethod('index');
+                    continue;
                 }
+            } else {
+                continue;
             }
-        } else {
-            $this->__setController('\App\Controller\\HomeController');
-            $this->__setMethod('index');
         }
-        call_user_func_array([$this->controller, $this->method], $this->params);
+        if (!isset($this->controller) || !isset($this->method)) {
+            throw new NotFoundException;
+        }
     }
 
     /**
-     * Set the controller.
+     * Clears the Request URL by assigning any params sent and removing them,
+     * leaving only the controller and method.
+     * @return void
+     */
+    private function __parseUrl(): void
+    {
+        if ($this->request->url !== Request::ROOT) {
+            $url = explode(Request::ROOT, $this->request->url);
+            $request['controller'] = $url[0];
+            unset($url[0]);
+            if (isset($url[1])) {
+                $request['method'] = $url[1];
+                unset($url[1]);
+            }
+            $this->request->url = implode('/', $request);
+            $this->__setParams($url);
+        }
+    }
+
+    /**
+     * Sets the controller.
      * @param string $controller
      * @return bool
-     * @throws NotFoundException
      */
     private function __setController(string $controller): bool
     {
@@ -102,14 +124,13 @@ class Router
             $this->controller = new $controller;
             return true;
         }
-        throw new NotFoundException;
+        return false;
     }
 
     /**
-     * Set the controller method.
+     * Sets the controller method.
      * @param string $method
      * @return bool
-     * @throws NotFoundException
      */
     private function __setMethod(string $method): bool
     {
@@ -117,11 +138,11 @@ class Router
             $this->method = $method;
             return true;
         }
-        throw new NotFoundException;
+        return false;
     }
 
     /**
-     * Set the controller's params.
+     * Sets the controller's params.
      * @param array $params
      * @return void
      */
