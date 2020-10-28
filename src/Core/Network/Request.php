@@ -4,7 +4,7 @@ namespace App\Core\Network;
 /**
  * Formats the Request URL to be passed to the Router.
  * Sets the request data and checks the request type.
- * @property string $url       Formatted Request URL.
+ * @property string $url      Formatted Request URL.
  * @property array|null $data Request data.
  */
 class Request

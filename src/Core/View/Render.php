@@ -1,24 +1,26 @@
 <?php
 namespace App\Core\View;
 
-use App\Core\Helper\Form;
+use App\Core\Helper\FormHelper;
 /**
- * @property Form $Form;
+ * @property FormHelper $form
+ * Renders a complete view with data from the controllers and all required helpers for the view.
  */
 class Render
 {
-    private Form $Form;
+    private FormHelper $form;
 
     public function __construct()
     {
-        $this->Form = new Form;
+        $this->form = new FormHelper;
     }
 
     /**
-     * @param string|null $folder
-     * @param string $view
-     * @param array $viewVariables
-     * @param string|null $layout
+     * Renders a view.
+     * @param string|null $folder  The folder where the view is located.
+     * @param string $view         The name of the view.
+     * @param array $viewVariables The variables that can be used in the view.
+     * @param string|null $layout  The name of the layout.
      * @return void
      */
     public function render(?string $folder, string $view, array $viewVariables = [], ?string $layout = null): void
@@ -31,19 +33,21 @@ class Render
     }
 
     /**
-     * @param string|null $layout
+     * Sets the layout.
+     * @param string|null $layout  The name of the layout.
      * @return false|string
      */
     private function __setLayout(?string $layout = null)
     {
         $fullPath = LAYOUTS;
-        $fullPath .= $layout !== null ? "$layout.php" : 'base.php';
+        $fullPath .= $layout !== null ? "$layout.php" : DEFAULT_LAYOUT;
         ob_start();
         require_once $fullPath;
         return ob_get_clean();
     }
 
     /**
+     * Sets the view and view variables.
      * @param string|null $folder
      * @param string $view
      * @param array $viewVariables

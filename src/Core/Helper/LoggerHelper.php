@@ -2,7 +2,10 @@
 
 namespace App\Core\Helper;
 
-class Logger
+/**
+ * Logs messages or errors.
+ */
+class LoggerHelper
 {
     /**
      * Used to log custom error messages in specific files.

@@ -4,7 +4,7 @@ index:
     method: index
 
 login:
-    path: auth
+    path: auth/login
     controller: App\Controller\AuthController
     method: login
 

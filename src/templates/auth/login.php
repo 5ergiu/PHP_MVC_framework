@@ -1,8 +1,8 @@
 <?php
 
-echo $this->Form->create('user');
+echo $this->form->create('user');
 
-echo $this->Form->input($User, 'email', [
+echo $this->form->input($User, 'email', [
     'type' => 'email',
     'class' => 'test',
     'label' => [
@@ -11,7 +11,7 @@ echo $this->Form->input($User, 'email', [
     ],
 ]);
 
-echo $this->Form->input($User, 'name', [
+echo $this->form->input($User, 'name', [
     'type' => 'text',
     'class' => 'test',
     'label' => [
@@ -20,7 +20,7 @@ echo $this->Form->input($User, 'name', [
     ],
 ]);
 
-echo $this->Form->input($User, 'age', [
+echo $this->form->input($User, 'age', [
     'type' => 'number',
     'class' => 'test',
     'label' => [
@@ -29,7 +29,7 @@ echo $this->Form->input($User, 'age', [
     ],
 ]);
 
-echo $this->Form->input($User, 'password', [
+echo $this->form->input($User, 'password', [
     'type' => 'password',
     'class' => 'test',
     'label' => [
@@ -38,5 +38,5 @@ echo $this->Form->input($User, 'password', [
     ],
 ]);
 
-echo $this->Form->submit();
-echo $this->Form->end();
+echo $this->form->submit();
+echo $this->form->end();

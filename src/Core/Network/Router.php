@@ -54,14 +54,34 @@ class Router
     }
 
     /**
-     * @param array $url
-     * @param bool $full
-     * @return array
+     * Creates a string from the url options to be used in redirects or as a link.
+     * $url positions format:
+     * 'path' => controller and method(must correspond to the path in routes)
+     * 'params' => parameters sent to the controller's method
+     * '?' => query parameters
+     * @param array $url Url options.
+     * @param bool $full (optional) True if the link should be full(including hostname), false otherwise.
+     * @return string
      */
-    public static function url(array $url, bool $full = false): array
+    public static function url(array $url, bool $full = false): string
     {
-
-        return $url;
+        $link = [];
+        $link[] = $full !== false ? HOST : null;
+        $link[] = $url['path'];
+        if (!empty($url['params'])) {
+            foreach ($url['params'] as $param) {
+                $link[] = $param;
+            }
+        }
+        $link = implode('/', $link);
+        if (!empty($url['?'])) {
+            $link .= '?';
+            foreach ($url['?'] as $key => $value) {
+                $link .= "$key=$value&";
+            }
+            $link = substr($link, 0, -1);
+        }
+        return $link;
     }
 
     /**

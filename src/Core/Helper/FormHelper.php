@@ -1,17 +1,19 @@
 <?php
-
 namespace App\Core\Helper;
 
 use App\Core\Model\AbstractEntity as Entity;
 use App\Core\Network\Request;
-
-class Form
+/**
+ * Generates HTML forms from given data.
+ */
+class FormHelper
 {
 
     /**
-     * @param string|null $id
-     * @param string|null $action
-     * @param string $method
+     * Creates the <form> tag.
+     * @param string|null $id     The form's id.
+     * @param string|null $action The form's action.
+     * @param string $method      The form's method(post by default).
      * @return string
      */
     public function create(?string $id = null, ?string $action = null, string $method = Request::POST): string
@@ -23,9 +25,10 @@ class Form
     }
 
     /**
-     * @param Entity|null $entity
-     * @param string|null $fieldName
-     * @param array $options
+     * Creates <input> tags.
+     * @param Entity|null $entity    The Entity that will deal with the input.
+     * @param string|null $fieldName The input's 'name' attribute.
+     * @param array $options         Various options: type attribute, class attribute, label info.
      * @return string
      */
     public function input(?Entity $entity = null, ?string $fieldName = null, array $options = []): string
@@ -66,22 +69,35 @@ class Form
         );
     }
 
-    public function hidden()
+    /**
+     * Creates <input> type hidden.
+     * @return string
+     */
+    public function hidden(): string
     {
-
-    }
-
-    public function button()
-    {
-
-    }
-
-    public function text()
-    {
-
+        return 'test';
     }
 
     /**
+     * Creates <button> tags.
+     * @return string
+     */
+    public function button(): string
+    {
+        return 'test';
+    }
+
+    /**
+     * Creates <textarea> tags.
+     * @return string
+     */
+    public function text(): string
+    {
+        return 'test';
+    }
+
+    /**
+     * Creates <button> type 'submit'.
      * @return string
      */
     public function submit(): string
@@ -90,6 +106,7 @@ class Form
     }
 
     /**
+     * Creates the end tag(</form>) for the form.
      * @return string
      */
     public function end(): string

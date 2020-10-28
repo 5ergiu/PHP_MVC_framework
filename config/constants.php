@@ -6,6 +6,8 @@ define('HOST', 'http://localhost');
 define('VENDOR', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/vendor/'));
 // Layouts directory path
 define('LAYOUTS', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'/src/templates/layouts/'));
+// Default layout
+define('DEFAULT_LAYOUT', 'base.php');
 // Templates directory path
 define('TEMPLATES', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'/src/templates/'));
 // Logs directory path

@@ -1,15 +1,16 @@
 <?php
-
 namespace App\Core\Model;
 
 use Exception;
 use PDO;
 use PDOException;
-
+/**
+ * Connects to the database.
+ */
 class Database
 {
     /**
-     * Connect to the database.
+     * Connects to the database and returns the PDO object.
      * @return PDO
      * @throws Exception
      */
