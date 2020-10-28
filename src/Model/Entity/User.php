@@ -1,28 +1,19 @@
 <?php
-
 namespace App\Model\Entity;
 
 use App\Core\Model\AbstractEntity;
-use App\Core\Model\Validator;
-
 class User extends AbstractEntity
 {
-    private Validator $validator;
     private string $name = '';
     private ?int $age = null;
     private string $email = '';
     private string $password = '';
 
-    public function __construct()
-    {
-        $this->validator = new Validator($this);
-        $this->addValidations();
-    }
-
     /**
+     * @inheritDoc
      * @return void
      */
-    protected function addValidations(): void
+    protected function validations(): void
     {
         $this->validator
             ->add('email', [
@@ -50,17 +41,18 @@ class User extends AbstractEntity
             ]);
     }
 
-    /**
-     * @return bool
-     */
-    public function save(): bool
-    {
-        $this->validator->validate();
-        if (!empty($this->getErrors())) {
-            return false;
-        }
-        return true;
-    }
+//    /**
+//     * @inheritDoc
+//     * @return bool
+//     */
+//    public function save(): bool
+//    {
+//        $this->validator->validate();
+//        if (!empty($this->getErrors())) {
+//            return false;
+//        }
+//        return true;
+//    }
 
     /**
      * @param $input

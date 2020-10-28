@@ -6,11 +6,19 @@ namespace App\Core\Model;
  * Used for binding values to entities, saving or editing entities.
  * @property array $context The request data at the point of binding the values, available in each entity.
  * @property array $errors  The errors array, available in each entity.
+ * @property Validator $validator
  */
 abstract class AbstractEntity
 {
+    protected Validator $validator;
     public array $context = [];
     public array $errors = [];
+
+    public function __construct()
+    {
+        $this->validator = new Validator($this);
+        $this->validations();
+    }
 
     /**
      * Binds the values to an entity.
@@ -35,16 +43,10 @@ abstract class AbstractEntity
     }
 
     /**
-     * Saves the entity in the database.
-     * @return bool
-     */
-    abstract public function save() : bool;
-
-    /**
      * Adds validations in the Validator object.
      * @return void;
      */
-    abstract protected function addValidations(): void;
+    abstract protected function validations(): void;
 
     /**
      * Returns the entity's name.
