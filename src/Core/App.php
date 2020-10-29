@@ -1,6 +1,7 @@
 <?php
 namespace App\Core;
 
+use App\Core\Helper\LoggerHelper as Logger;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
 use App\Core\Network\Router;
@@ -25,6 +26,7 @@ class App
         $this->request = new Request;
         $this->response = new Response;
         $this->router = new Router($this->routes, $this->request, $this->response);
+        Logger::httpRequests();
     }
 
     /**
