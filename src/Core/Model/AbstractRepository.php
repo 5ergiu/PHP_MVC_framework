@@ -167,15 +167,14 @@ abstract class AbstractRepository
     }
 
     /**
-     * @param string $sql
-     * @param array|null $attributes
-     * @param array|null $values
      * @return array
      * @throws Exception
      */
-    public function getResults(string $sql, ?array $attributes, ?array $values): array
+    public function getResults(): array
     {
-        $query = $this->pdo->prepare($sql);
+        $query = $this->pdo->prepare($this->QueryBuilder->query);
+        $attributes = $this->QueryBuilder->getParams();
+        $values = $this->QueryBuilder->getConditions();
         if (!empty($attributes) && !empty($values)) {
             foreach ($attributes as $key => $attribute) {
                 $attribute = explode('=', str_replace(' ', '', $attribute));

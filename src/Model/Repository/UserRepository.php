@@ -24,11 +24,20 @@ class UserRepository extends AbstractRepository
     public function findByExample(string $name): array
     {
         return $this->createQueryBuilder('u')
+            ->select([
+                'u.email',
+            ])
+            ->setParams([
+                'u.name = :name'
+            ])
+            ->addConditions([
+                'u.name' => $name,
+            ])
             ->orderBy([
                 'ASC' => 'u.id',
                 'u.name',
             ])
-            ->setMaxResults(3)
+            ->setMaxResults(2)
             ->getQuery()
             ->getResults();
     }

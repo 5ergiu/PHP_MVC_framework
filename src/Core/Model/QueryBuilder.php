@@ -2,8 +2,6 @@
 namespace App\Core\Model;
 
 use App\Core\Model\AbstractRepository as Repository;
-use Exception;
-
 /**
  * Builds queries.
  * @property Repository $repository
@@ -28,7 +26,7 @@ class QueryBuilder
     private array $orderBy;
     private array $groupBy;
     private int $limit;
-    private string $query;
+    public string $query;
 
     public function __construct(Repository $repository, string $table)
     {
@@ -167,19 +165,21 @@ class QueryBuilder
     }
 
     /**
-     * @return QueryBuilder
+     * Returns the repository instance after the query is built,
+     * to get the results.
+     * @return Repository
      */
-    public function getQuery(): QueryBuilder
+    public function getQuery(): Repository
     {
         $this->setQuery();
-        return $this;
+        return $this->repository;
     }
 
     /**
      * Builds the final query string to ensure the correct order is made.
-     * @return QueryBuilder
+     * @return void
      */
-    public function setQuery(): QueryBuilder
+    public function setQuery(): void
     {
         $this->query = "SELECT ";
         $selections = null;
@@ -231,15 +231,5 @@ class QueryBuilder
             $this->query .= "LIMIT $this->limit";
         }
         $this->query .= ';';
-        return $this;
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    public function getResults()
-    {
-        return $this->repository->getResults($this->query, $this->params, $this->conditions);
     }
 }
