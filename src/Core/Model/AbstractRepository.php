@@ -12,12 +12,14 @@ use PDOStatement;
  * @property PDO $pdo
  * @property string $table     The name of the table.
  * @property array $attributes The attributes/columns of a table.
+ * @property QueryBuilder $QueryBuilder
  */
 abstract class AbstractRepository
 {
     protected PDO $pdo;
     private string $table;
     private array $attributes;
+    protected QueryBuilder $QueryBuilder;
 
     /**
      * @throws Exception
@@ -27,6 +29,7 @@ abstract class AbstractRepository
         $this->pdo = Database::connect();
         $this->table = $this->getTable();
         $this->__setAttributesFromDatabaseSchema();
+        $this->QueryBuilder = new QueryBuilder($this, $this->table);
     }
 
     /**
@@ -38,7 +41,7 @@ abstract class AbstractRepository
     public function save(Entity $entity): string
     {
         $values = $this->__getValuesFromEntity($entity, $this->attributes);
-        $query = $this->__prepareStatement($this->table, $values);
+        $query = $this->__prepareSaveStatement($this->table, $values);
         if ($query !== false) {
             try {
                 $query->execute();
@@ -100,7 +103,7 @@ abstract class AbstractRepository
      * @param array $values
      * @return bool|PDOStatement
      */
-    private function __prepareStatement(string $table, array $values)
+    private function __prepareSaveStatement(string $table, array $values)
     {
         $attributes = implode(', ', $this->attributes);
         $prepareAttributes = implode(', ', array_map(fn($attr) => ":$attr", $this->attributes));
@@ -113,43 +116,81 @@ abstract class AbstractRepository
     }
 
     /**
-     * Finds a result by a specific column.
-     * @param string $model
-     * @param string $column
+     * Returns a row from the table.
+     * @param string $criteria
      * @param int|string $value
      * @return array|false
+     * @throws Exception
      */
-    public function findBy(string $model, string $column, $value)
+    protected function findBy(string $criteria, $value)
     {
-        $sql = "SELECT * FROM {$model} WHERE {$column}=:column";
+        $sql = "SELECT * FROM `$this->table` WHERE $criteria=:$criteria";
+        $query = $this->pdo->prepare($sql);
+        $query->bindValue(":$criteria", $value);
         try {
-            $query = $this->pdo->prepare($sql);
-            $query->execute([':column' => $value]);
+            $query->execute();
             return $query->fetch();
         } catch (PDOException $e) {
-//            Logger::logError($e->getMessage(), "{$model}_{$column}_findBy_{$value}");
-            return false;
+            throw new Exception($e);
         }
     }
 
     /**
-     * Gets everything from a specific table.
-     * @param string   $table The name of the table.
+     * Returns everything from the table.
      * @param int|null $limit (optional) A limit, if it's necessary.
      * @return array|false
+     * @throws Exception
      */
-    public function findAll(string $table, ?int $limit = null)
+    protected function findAll(int $limit = null)
     {
-        $sql = "SELECT * FROM {$table}";
+        $sql = "SELECT * FROM `$this->table`";
         if ($limit !== null) {
-            $sql .= " LIMIT {$limit}";
+            $sql .= " LIMIT $limit";
         }
         try {
             $query = $this->pdo->query($sql);
             return $query->fetchAll();
         } catch (PDOException $e) {
-//            Logger::logError($e->getMessage(), "{$table}_findAll");
-            return false;
+            throw new Exception($e);
+        }
+    }
+
+    /**
+     * Adds the alias for the table in the query builder and returns it back
+     * to be able to add more properties.
+     * @param string $alias
+     * @return QueryBuilder
+     */
+    protected function createQueryBuilder(string $alias): QueryBuilder
+    {
+        return $this->QueryBuilder->setAlias($alias);
+    }
+
+    /**
+     * @param string $sql
+     * @param array|null $attributes
+     * @param array|null $values
+     * @return array
+     * @throws Exception
+     */
+    public function getResults(string $sql, ?array $attributes, ?array $values): array
+    {
+        $query = $this->pdo->prepare($sql);
+        if (!empty($attributes) && !empty($values)) {
+            foreach ($attributes as $key => $attribute) {
+                $attribute = explode('=', str_replace(' ', '', $attribute));
+                $query->bindValue("$attribute[1]", $values[$attribute[0]]);
+            }
+        }
+        if ($query !== false) {
+            try {
+                $query->execute();
+                return $query->fetchAll();
+            } catch (PDOException $e) {
+                throw new Exception($e);
+            }
+        } else {
+            throw new Exception('Something went wrong!');
         }
     }
 }

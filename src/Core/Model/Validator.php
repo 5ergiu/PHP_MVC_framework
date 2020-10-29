@@ -5,13 +5,13 @@ use App\Core\Model\AbstractEntity as Entity;
 /**
  * Builds custom validations based on the rules sent by an entity,
  * checks them and sets the errors on the entity if needed.
+ * @property array $rules An array of rules.
  * @property Entity $entity
- * @property array $rules   An array of rules.
  */
 class Validator
 {
-    private Entity $entity;
     private array $rules;
+    private Entity $entity;
 
     public function __construct(Entity $entity)
     {

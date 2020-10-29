@@ -17,7 +17,9 @@ class AuthController extends AbstractController
     {
         $User = new User;
         $UserRepo = new UserRepository;
-//        var_dump($UserRepo->findBy('test', 'test', 'test'));
+//        var_dump($UserRepo); die;
+        $test = $UserRepo->findByExample('sergiu');
+        var_dump($test); die;
         if ($this->request->is('post')) {
             $User->bindValues($this->request->data);
             $test = $UserRepo->save($User);
