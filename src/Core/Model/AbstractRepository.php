@@ -100,7 +100,7 @@ abstract class AbstractRepository
     }
 
     /**
-     * Prepares the SQL statement.
+     * Prepares the insert SQL statement.
      * @param string $table
      * @param array $values
      * @return bool|PDOStatement
