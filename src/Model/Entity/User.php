@@ -41,19 +41,6 @@ class User extends AbstractEntity
             ]);
     }
 
-//    /**
-//     * @inheritDoc
-//     * @return bool
-//     */
-//    public function save(): bool
-//    {
-//        $this->validator->validate();
-//        if (!empty($this->getErrors())) {
-//            return false;
-//        }
-//        return true;
-//    }
-
     /**
      * @param $input
      * @param string $field

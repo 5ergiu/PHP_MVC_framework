@@ -9,17 +9,14 @@ use PDOStatement;
 /**
  * The framework's main repository which will be extended by all the app's repositories.
  * Used for entire table queries.
- * @property PDO $pdo
  * @property string $table     The name of the table.
  * @property array $attributes The attributes/columns of a table.
- * @property QueryBuilder $QueryBuilder
  */
 abstract class AbstractRepository
 {
-    protected PDO $pdo;
+    private PDO $pdo;
     private string $table;
     private array $attributes;
-    protected QueryBuilder $QueryBuilder;
 
     /**
      * @throws Exception
@@ -29,8 +26,13 @@ abstract class AbstractRepository
         $this->pdo = Database::connect();
         $this->table = $this->getTable();
         $this->__setAttributesFromDatabaseSchema();
-        $this->QueryBuilder = new QueryBuilder($this, $this->table);
     }
+
+    /**
+     * Gets the table's name.
+     * @return string
+     */
+    abstract public function getTable(): string;
 
     /**
      * Saves the entity in the database.
@@ -113,83 +115,5 @@ abstract class AbstractRepository
             $query->bindValue(":$attribute", $values[$attribute]);
         }
         return $query;
-    }
-
-    /**
-     * Returns a row from the table.
-     * @param string $criteria
-     * @param int|string $value
-     * @return array|false
-     * @throws Exception
-     */
-    protected function findBy(string $criteria, $value)
-    {
-        $sql = "SELECT * FROM `$this->table` WHERE $criteria=:$criteria";
-        $query = $this->pdo->prepare($sql);
-        $query->bindValue(":$criteria", $value);
-        try {
-            $query->execute();
-            return $query->fetch();
-        } catch (PDOException $e) {
-            throw new Exception($e);
-        }
-    }
-
-    /**
-     * Returns everything from the table.
-     * @param int|null $limit (optional) A limit, if it's necessary.
-     * @return array|false
-     * @throws Exception
-     */
-    protected function findAll(int $limit = null)
-    {
-        $sql = "SELECT * FROM `$this->table`";
-        if ($limit !== null) {
-            $sql .= " LIMIT $limit";
-        }
-        try {
-            $query = $this->pdo->query($sql);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            throw new Exception($e);
-        }
-    }
-
-    /**
-     * Adds the alias for the table in the query builder and returns it back
-     * to be able to add more properties.
-     * @param string $alias
-     * @return QueryBuilder
-     */
-    protected function createQueryBuilder(string $alias): QueryBuilder
-    {
-        return $this->QueryBuilder->setAlias($alias);
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    public function getResults(): array
-    {
-        $query = $this->pdo->prepare($this->QueryBuilder->query);
-        $attributes = $this->QueryBuilder->getParams();
-        $values = $this->QueryBuilder->getConditions();
-        if (!empty($attributes) && !empty($values)) {
-            foreach ($attributes as $key => $attribute) {
-                $attribute = explode('=', str_replace(' ', '', $attribute));
-                $query->bindValue("$attribute[1]", $values[$attribute[0]]);
-            }
-        }
-        if ($query !== false) {
-            try {
-                $query->execute();
-                return $query->fetchAll();
-            } catch (PDOException $e) {
-                throw new Exception($e);
-            }
-        } else {
-            throw new Exception('Something went wrong!');
-        }
     }
 }
