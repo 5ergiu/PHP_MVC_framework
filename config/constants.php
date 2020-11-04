@@ -14,3 +14,7 @@ define('TEMPLATES', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'/sr
 define('LOGS', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/var/logs/'));
 // Config directory path
 define('CONFIG', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/config/'));
+// Default controller
+define('DEFAULT_CONTROLLER', '\App\Controller\HomeController');
+// Default method
+define('DEFAULT_ACTION', 'index');

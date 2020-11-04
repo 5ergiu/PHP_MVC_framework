@@ -7,17 +7,15 @@ use App\Core\Exception\NotFoundException;
 use Throwable;
 /**
  * Handles the HTTP requests.
- * @property array $routes          The array of predefined routes.
- * @property Controller $controller The controller that will handle the request.
- * @property string|null $method    The method that will be called.
- * @property array $params          The array of params that will be sent to the called method.
- * @property Request $request
- * @property Response $response
+ * @property Controller   $controller The controller that will handle the request.
+ * @property string|null  $method     The method that will be called.
+ * @property array        $params     The array of params that will be sent to the called method.
+ * @property Request      $request
+ * @property Response     $response
  * @property ErrorHandler $errorHandler
  */
 class Router
 {
-    private array $routes;
     private Controller $controller;
     private string $method;
     private array $params = [];
@@ -26,27 +24,16 @@ class Router
     public ErrorHandler $errorHandler;
 
     /**
-     * @param array $routes The array of predefined routes.
-     * @param Request $request The Request instance.
+     * @param Request $request   The Request instance.
      * @param Response $response The Response instance.
      */
-    public function __construct(array $routes, Request $request, Response $response)
+    public function __construct(Request $request, Response $response)
     {
-        $this->routes = $routes;
         $this->request = $request;
         $this->response = $response;
         $this->errorHandler = new ErrorHandler;
-        $this->__run();
-    }
-
-    /**
-     * Actually 'runs' the app after all the logic is applied.
-     * @return void
-     */
-    private function __run(): void
-    {
         try {
-            $this->__resolve();
+            $this->__run();
         } catch (\Exception $e) {
             $this->response->setStatusCode($e->getCode());
             $this->errorHandler->handleError($e);
@@ -85,51 +72,43 @@ class Router
     }
 
     /**
-     * Resolves the http request, sets and instantiates the controller and calling respective method.
+     * Actually 'runs' the app after all the logic is applied.
      * @return void
      * @throws NotFoundException
      */
-    private function __resolve(): void
+    private function __run(): void
     {
-        $this->__parseUrl();
-        foreach ($this->routes as $name => $route) {
-            if ($this->request->url === $route['path']) {
-                if ($this->__setController($route['controller'])) {
-                    if ($this->__setMethod($route['method'])) {
-                        call_user_func_array([$this->controller, $this->method], $this->params);
-                        break;
-                    } else {
-                        continue;
-                    }
-                } else {
-                    continue;
-                }
-            } else {
-                continue;
-            }
-        }
+        $this->__resolve();
         if (!isset($this->controller) || !isset($this->method)) {
             throw new NotFoundException;
+        } else {
+            call_user_func_array([$this->controller, $this->method], $this->params);
         }
     }
 
     /**
      * Clears the Request URL by assigning any params sent and removing them,
      * leaving only the controller and method.
+     * Resolves the http request, sets and instantiates the controller and the respective action.
      * @return void
      */
-    private function __parseUrl(): void
+    private function __resolve(): void
     {
         if ($this->request->url !== Request::ROOT) {
             $url = explode(Request::ROOT, $this->request->url);
-            $request['controller'] = $url[0];
-            unset($url[0]);
-            if (isset($url[1])) {
-                $request['method'] = $url[1];
-                unset($url[1]);
+            $controller = '\App\Controller\\' . ucwords($url[0]) . 'Controller';
+            if ($this->__setController($controller)) {
+                unset($url[0]);
+                if (isset($url[1])) {
+                    if ($this->__setMethod($url[1])) {
+                        unset($url[1]);
+                        $this->__setParams($url);
+                    }
+                }
             }
-            $this->request->url = implode('/', $request);
-            $this->__setParams($url);
+        } else {
+            $this->__setController(DEFAULT_CONTROLLER);
+            $this->__setMethod(DEFAULT_ACTION);
         }
     }
 

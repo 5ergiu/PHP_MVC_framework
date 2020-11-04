@@ -11,14 +11,15 @@ use Exception;
 class AuthController extends AbstractController
 {
     /**
+     * just some text here
+     * and here
+     * @param int|null $test mare test.
      * @throws Exception
      */
-    public function login()
+    public function login(?int $test = null)
     {
         $User = new User;
         $UserRepo = new UserRepository;
-
-//        var_dump($test); die;
         if ($this->request->is('post')) {
             $User->bindValues($this->request->data);
             $test = $UserRepo->save($User);
@@ -28,6 +29,4 @@ class AuthController extends AbstractController
             'User' => $User,
         ]);
     }
-
-    public function index(){}
 }

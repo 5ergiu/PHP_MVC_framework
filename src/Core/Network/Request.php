@@ -4,7 +4,7 @@ namespace App\Core\Network;
 /**
  * Formats the Request URL to be passed to the Router.
  * Sets the request data and checks the request type.
- * @property string $url      Formatted Request URL.
+ * @property string     $url  Formatted Request URL.
  * @property array|null $data Request data.
  */
 class Request
@@ -70,21 +70,12 @@ class Request
 
     /**
      * Sets the request data.
-     * Parsing the data if it is sent in a json format, otherwise,
-     * setting the data to the respective request type.
+     * Also parses the data if it is sent in a json format.
      * @return void
      */
     public function __setData(): void
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if ($data === null) {
-            if ($this->is('GET')) {
-                $data = $_GET;
-            }
-            if ($this->is('POST')) {
-                $data = $_POST;
-            }
-        }
-        $this->data = $data;
+        $this->data = $_REQUEST;
+        $this->data['json'] = json_decode(file_get_contents('php://input'), true);
     }
 }
