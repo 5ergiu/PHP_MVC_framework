@@ -1,7 +1,6 @@
 <?php
 namespace App\Core\Model;
 
-use App\Core\Model\AbstractEntity as Entity;
 /**
  * Builds custom validations based on the rules sent by an entity,
  * checks them and sets the errors on the entity if needed.

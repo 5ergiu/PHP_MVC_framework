@@ -1,10 +1,10 @@
 <?php
 namespace App\Model\Repository;
 
-use App\Core\Model\AbstractRepository;
+use App\Core\Model\Repository;
 use Exception;
 
-class UserRepository extends AbstractRepository
+class UserRepository extends Repository
 {
     private string $table = 'users';
 

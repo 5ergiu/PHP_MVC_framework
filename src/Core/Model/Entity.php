@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Model;
 
+use App\Core\Network\Request;
 /**
  * The framework's main entity which will be extended by all the app's entities.
  * Used for binding values to entities, saving or editing entities.
@@ -8,28 +9,27 @@ namespace App\Core\Model;
  * @property array $errors  The errors array, available in each entity.
  * @property Validator $validator
  */
-abstract class AbstractEntity
+abstract class Entity
 {
     protected Validator $validator;
-    public array $context = [];
+    protected array $context;
     public array $errors = [];
 
     public function __construct()
     {
+        $this->__setContext();
         $this->validator = new Validator($this);
         $this->validations();
     }
 
     /**
      * Binds the values to an entity.
-     * @param array $data The array of data. This should be set as the entire request data so
-     * even thought not all values will be bound in case they don't correspond to the entity's
-     * fields, they could still be accessed from the $context.
+     * @param array $data The array of data. This should contain only the actual entity fields values,
+     * so, all the logic should be built in the controller's method prior to 'patching' the entity.
      * @return void
      */
     public function bindValues(array $data): void
     {
-        $this->setContext($data);
         $entityName = $this->getEntityName();
         $entityData = $data['data'][$entityName];
         foreach ($entityData as $field => $input) {
@@ -72,18 +72,20 @@ abstract class AbstractEntity
      * Returns the context.
      * @return array
      */
-    public function getContext(): array
+    protected function getContext(): array
     {
         return $this->context;
     }
 
     /**
      * Sets the context.
-     * @param array $context
+     * @return void
      */
-    public function setContext(array $context): void
+    private function __setContext(): void
     {
-        $this->context = $context;
+        $request = new Request;
+        $this->context = $request->data;
+        unset($request);
     }
 
     /**

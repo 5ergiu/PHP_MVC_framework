@@ -4,7 +4,7 @@ namespace App\Core\Controller;
 /**
  * Default controller
  */
-final class DefaultController extends AbstractController
+final class DefaultController extends Controller
 {
     public function index()
     {

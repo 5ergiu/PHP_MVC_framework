@@ -1,7 +1,7 @@
 <?php
 namespace App\Core\Network;
 
-use App\Core\Controller\AbstractController as Controller;
+use App\Core\Controller\Controller;
 use App\Core\Error\ErrorHandler;
 use App\Core\Exception\NotFoundException;
 use Throwable;
@@ -53,7 +53,7 @@ class Router
     public static function url(array $url, bool $full = false): string
     {
         $link = [];
-        $link[] = $full !== false ? HOST : null;
+        $link[] = $full ? HOST : null;
         $link[] = $url['path'];
         if (!empty($url['params'])) {
             foreach ($url['params'] as $param) {

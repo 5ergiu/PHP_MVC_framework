@@ -1,14 +1,14 @@
 <?php
 namespace App\Controller;
 
-use App\Core\Controller\AbstractController;
+use App\Core\Controller\Controller;
 use App\Model\Entity\User;
 use App\Model\Repository\UserRepository;
 use Exception;
 /**
  * @property User $User;
  */
-class AuthController extends AbstractController
+class AuthController extends Controller
 {
     /**
      * just some text here

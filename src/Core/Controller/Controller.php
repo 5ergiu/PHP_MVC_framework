@@ -12,7 +12,7 @@ use App\Core\View\Render;
  * @property LoggerHelper $log
  * The framework's main controller which will be extended by all the app's controllers.
  */
-abstract class AbstractController
+abstract class Controller
 {
     private Render $Render;
     protected Request $request;

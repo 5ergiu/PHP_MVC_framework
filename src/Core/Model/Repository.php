@@ -1,7 +1,6 @@
 <?php
 namespace App\Core\Model;
 
-use App\Core\Model\AbstractEntity as Entity;
 use Exception;
 use PDO;
 use PDOException;
@@ -12,7 +11,7 @@ use PDOStatement;
  * @property string $table     The name of the table.
  * @property array $attributes The attributes/columns of a table.
  */
-abstract class AbstractRepository
+abstract class Repository
 {
     private PDO $pdo;
     private string $table;

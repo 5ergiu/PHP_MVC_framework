@@ -1,7 +1,7 @@
 <?php
 namespace App\Core\Helper;
 
-use App\Core\Model\AbstractEntity as Entity;
+use App\Core\Model\Entity;
 use App\Core\Network\Request;
 /**
  * Generates HTML forms from given data.

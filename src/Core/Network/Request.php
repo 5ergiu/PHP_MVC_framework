@@ -4,8 +4,8 @@ namespace App\Core\Network;
 /**
  * Formats the Request URL to be passed to the Router.
  * Sets the request data and checks the request type.
- * @property string     $url  Formatted Request URL.
- * @property array|null $data Request data.
+ * @property string $url Formatted Request URL.
+ * @property array $data Request data.
  */
 class Request
 {
@@ -17,7 +17,7 @@ class Request
     public const ROOT = '/';
 
     public string $url;
-    public ?array $data;
+    public array $data;
 
     public function __construct()
     {
@@ -56,14 +56,14 @@ class Request
      */
     private function __setUrl(): void
     {
-        $url = $_SERVER['REQUEST_URI'] ?? self::ROOT;
+        $url = $_SERVER['REQUEST_URI'];
         if ($url !== self::ROOT) {
             $url = ltrim($url, $url[0]);
             $position = strpos($url, '?');
             if ($position !== false) {
                 $url = substr($url, 0, $position);
             }
-            $url = filter_var(rtrim($url, Request::ROOT), FILTER_SANITIZE_URL);
+            $url = filter_var(rtrim($url, self::ROOT), FILTER_SANITIZE_URL);
         }
         $this->url = $url;
     }
@@ -76,6 +76,9 @@ class Request
     public function __setData(): void
     {
         $this->data = $_REQUEST;
-        $this->data['json'] = json_decode(file_get_contents('php://input'), true);
+        $jsonData = json_decode(file_get_contents('php://input'), true);
+        if ($jsonData !== null) {
+            $this->data['json'] = $jsonData;
+        }
     }
 }
