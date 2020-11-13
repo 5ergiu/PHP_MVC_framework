@@ -1,7 +1,8 @@
 <?php
-namespace App\Core\Model;
+namespace App\Entity;
 
 use App\Core\Network\Request;
+use App\Core\Validator;
 /**
  * The framework's main entity which will be extended by all the app's entities.
  * Used for binding values to entities, saving or editing entities.
@@ -9,7 +10,7 @@ use App\Core\Network\Request;
  * @property array $errors  The errors array, available in each entity.
  * @property Validator $validator
  */
-abstract class Entity
+abstract class AbstractEntity
 {
     protected Validator $validator;
     protected array $context;

@@ -1,7 +1,7 @@
 <?php
 namespace App\Core\Network;
 
-use App\Core\Controller\Controller;
+use App\Controller\AbstractController as Controller;
 use App\Core\Error\ErrorHandler;
 use App\Core\Exception\NotFoundException;
 use Throwable;
@@ -34,9 +34,8 @@ class Router
         $this->errorHandler = new ErrorHandler;
         try {
             $this->__run();
-        } catch (\Exception $e) {
-            $this->response->setStatusCode($e->getCode());
-            $this->errorHandler->handleError($e);
+        } catch (Throwable $e) {
+            $this->errorHandler->handleError($e, $this->response);
         }
     }
 

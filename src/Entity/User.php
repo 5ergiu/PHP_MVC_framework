@@ -1,8 +1,7 @@
 <?php
-namespace App\Model\Entity;
+namespace App\Entity;
 
-use App\Core\Model\Entity;
-class User extends Entity
+class User extends AbstractEntity
 {
     private string $name = '';
     private ?int $age = null;

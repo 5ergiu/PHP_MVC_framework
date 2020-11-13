@@ -1,7 +1,7 @@
 <?php
 namespace App\Core;
 
-use App\Core\Helper\LoggerHelper as Logger;
+use App\Helper\LoggerHelper as Logger;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
 use App\Core\Network\Router;

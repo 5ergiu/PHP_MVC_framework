@@ -1,14 +1,14 @@
 <?php
 namespace App\Controller;
 
-use App\Core\Controller\Controller;
-use App\Model\Entity\User;
-use App\Model\Repository\UserRepository;
+use App\Entity\User;
+use App\Repository\UsersRepo;
 use Exception;
 /**
- * @property User $User;
+ * @property User $User
+ * @property UsersRepo $UsersRepo
  */
-class AuthController extends Controller
+class AuthController extends AbstractController
 {
     /**
      * just some text here
@@ -19,7 +19,8 @@ class AuthController extends Controller
     public function login(?int $test = null)
     {
         $User = new User;
-        $UserRepo = new UserRepository;
+        $this->loadRepo('users');
+        var_dump($this->UsersRepo->findByExample('sergiu')); die;
         if ($this->request->is('post')) {
             $User->bindValues($this->request->data);
             $test = $UserRepo->save($User);

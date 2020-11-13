@@ -1,7 +1,7 @@
 <?php
-namespace App\Core\View;
+namespace App\Core;
 
-use App\Core\Helper\FormHelper;
+use App\Helper\FormHelper;
 /**
  * @property FormHelper $form
  * Renders a complete view with data from the controllers and all required helpers for the view.
@@ -23,7 +23,7 @@ class Render
      * @param string|null $layout  The name of the layout.
      * @return void
      */
-    public function render(?string $folder, string $view, array $viewVariables = [], ?string $layout = null): void
+    public function render(?string $folder, string $view, array $viewVariables, ?string $layout = null): void
     {
         echo str_replace(
             '{{ content }}',
@@ -53,7 +53,7 @@ class Render
      * @param array $viewVariables
      * @return false|string
      */
-    private function  __setView(?string $folder, string $view, array $viewVariables = [])
+    private function  __setView(?string $folder, string $view, array $viewVariables)
     {
         $fullPath = TEMPLATES;
         if (!empty($viewVariables)) {
@@ -61,7 +61,7 @@ class Render
                 $$key = $value;
             }
         }
-        $fullPath .= $folder !== null ? "$folder" : null;
+        $fullPath .= $folder !== null ? $folder : null;
         $fullPath .= "/$view.php";
         $fullPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $fullPath);
         ob_start();

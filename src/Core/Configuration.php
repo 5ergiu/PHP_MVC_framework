@@ -1,5 +1,7 @@
 <?php
-final class Config
+namespace App\Core;
+
+class Configuration
 {
     public const DEV = 'dev';
     public const PROD = 'prod';
@@ -29,7 +31,7 @@ final class Config
         error_reporting(E_ALL);
         ini_set('log_errors', 1);
         ini_set('error_log', LOGS . 'errors.log');
-        if ($_ENV['APP_ENV'] === Config::DEV) {
+        if ($_ENV['APP_ENV'] === Configuration::DEV) {
             ini_set('display_errors', 1);
         } else {
             ini_set('display_errors', 0);

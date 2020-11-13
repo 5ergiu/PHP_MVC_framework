@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Helper;
+namespace App\Helper;
 
 /**
  * Logs messages or errors.

@@ -1,10 +1,10 @@
 <?php
-namespace App\Core\Controller;
+namespace App\Controller;
 
-use App\Core\Helper\LoggerHelper;
+use App\Helper\LoggerHelper;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
-use App\Core\View\Render;
+use App\Core\Render;
 /**
  * @property Render $Render
  * @property Request $request
@@ -12,7 +12,7 @@ use App\Core\View\Render;
  * @property LoggerHelper $log
  * The framework's main controller which will be extended by all the app's controllers.
  */
-abstract class Controller
+abstract class AbstractController
 {
     private Render $Render;
     protected Request $request;
@@ -49,5 +49,17 @@ abstract class Controller
     protected function redirect(array $url, $full = false): void
     {
         $this->response->redirect($url, $full);
+    }
+
+    /**
+     * Creates a new property of a repository instance on the current controller instance.
+     * @param string $repo
+     * @return void
+     */
+    protected function loadRepo(string $repo): void
+    {
+        $repo = ucwords($repo) . 'Repo';
+        $repoClass = 'App\Repository\\' . $repo;
+        $this->{$repo} = new $repoClass;
     }
 }
