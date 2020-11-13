@@ -16,7 +16,7 @@ class Database
      */
     public static function connect(): PDO
     {
-        $dsn = $_ENV['DSN'];
+        $dsn = "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']}";
         try {
             $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
             // set the PDO error mode to exception

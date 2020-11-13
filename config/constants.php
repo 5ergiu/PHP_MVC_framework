@@ -1,13 +1,23 @@
 <?php
 
 // The server/domain name
-define('HOST', 'http://localhost');
+define('HOST', '/');
+// Assets paths used in frontend
+define('ASSETS_CSS', HOST . 'css/');
+define('ASSETS_JS', HOST . 'js/');
+define('ASSETS_IMG', HOST . 'images/');
+define('ASSETS_FONT', HOST . 'css/');
+define('ASSETS_UPLOADS', HOST . 'uploads/');
+// Vendor directory path(public)
+define('VENDOR', HOST . 'vendor/');
 // Vendor directory path
-define('VENDOR', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/vendor/'));
+define('VENDOR_ROOT', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/vendor/'));
 // Templates directory path
 define('TEMPLATES', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'/src/templates/'));
 // Layouts directory path
 define('LAYOUTS', TEMPLATES . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'layouts/'));
+// Elements directory path
+define('ELEMENTS', TEMPLATES . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'elements/'));
 // Default layout
 define('DEFAULT_LAYOUT', 'base.php');
 // Logs directory path

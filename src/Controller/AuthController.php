@@ -20,13 +20,13 @@ class AuthController extends AbstractController
     {
         $User = new User;
         $this->loadRepo('users');
-        var_dump($this->UsersRepo->findByExample('sergiu')); die;
+//        var_dump($this->UsersRepo->findByExample('sergiu')); die;
         if ($this->request->is('post')) {
             $User->bindValues($this->request->data);
-            $test = $UserRepo->save($User);
+            $test = $this->UsersRepo->save($User);
             var_dump($test); die;
         }
-        $this->render('auth', 'login', [
+        $this->render('auth/login', [
             'User' => $User,
         ]);
     }

@@ -29,15 +29,14 @@ abstract class AbstractController
 
     /**
      * Renders a view.
-     * @param string|null $folder  The folder where the view is located.
-     * @param string $view         The name of the view.
+     * @param string $view         The path of the view.
      * @param array $viewVariables The variables that can be used in the view.
      * @param string|null $layout  The name of the layout.
      * @return void
      */
-    protected function render(?string $folder, string $view, array $viewVariables = [], ?string $layout = null): void
+    protected function render(string $view, array $viewVariables = [], ?string $layout = null): void
     {
-        $this->Render->render($folder ,$view, $viewVariables, $layout);
+        $this->Render->render($view, $viewVariables, $layout);
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+$this->element('test');
+
 echo $this->form->create('user');
 
 echo $this->form->input($User, 'email', [
