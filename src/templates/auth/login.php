@@ -2,42 +2,22 @@
 
 $this->element('test');
 
-echo $this->form->create('user');
+echo $this->form->create($User);
 
-echo $this->form->input($User, 'email', [
+echo $this->form->input('email', [
     'type' => 'email',
-    'class' => 'test',
     'label' => [
         'class' => 'test',
         'text' => 'email',
     ],
 ]);
 
-echo $this->form->input($User, 'name', [
-    'type' => 'text',
-    'class' => 'test',
+echo $this->form->input('name', [
     'label' => [
         'class' => 'test',
         'text' => 'name',
     ],
-]);
-
-echo $this->form->input($User, 'age', [
-    'type' => 'number',
-    'class' => 'test',
-    'label' => [
-        'class' => 'test',
-        'text' => 'age',
-    ],
-]);
-
-echo $this->form->input($User, 'password', [
-    'type' => 'password',
-    'class' => 'test',
-    'label' => [
-        'class' => 'test',
-        'text' => 'password',
-    ],
+    'multiple' => true,
 ]);
 
 echo $this->form->submit();

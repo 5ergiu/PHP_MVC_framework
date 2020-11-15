@@ -29,16 +29,24 @@ abstract class AbstractRepository
     public function __construct()
     {
         $this->pdo = Database::connect();
-        $this->__setTableName();
+        $this->__setTable();
         $this->__setAttributesFromDatabaseSchema();
         $this->QueryBuilder = new QueryBuilder($this, $this->table);
     }
 
     /**
-     * Sets the repo's name.
+     * @return string
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
+     * Sets the table's name.
      * @return void
      */
-    private function __setTableName(): void
+    private function __setTable(): void
     {
         $className = get_class($this);
         $this->table = strtolower(chop(substr($className, strrpos($className, '\\') + 1), 'Repo'));

@@ -48,12 +48,12 @@ class Render
 
     /**
      * Sets the view and view variables.
-     * @param string $folder       The folder where the view is located.
+     * @param string $path       The folder where the view is located.
      * @param string $view         The name of the view.
      * @param array $viewVariables The view variables.
      * @return false|string
      */
-    private function  __setView(string $folder, string $view, array $viewVariables)
+    private function  __setView(string $path, string $view, array $viewVariables)
     {
         $fullPath = TEMPLATES;
         if (!empty($viewVariables)) {
@@ -61,7 +61,7 @@ class Render
                 $$key = $value;
             }
         }
-        $fullPath .= $folder !== null ? $folder : null;
+        $fullPath .= $path ?: null;
         $fullPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $fullPath . "/$view.php");
         ob_start();
         require_once $fullPath;

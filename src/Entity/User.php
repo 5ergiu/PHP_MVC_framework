@@ -1,6 +1,12 @@
 <?php
 namespace App\Entity;
 
+/**
+ * @property string $name The name of the user.
+ * @property int|null $age The age of the user.
+ * @property string $email The email address of the user.
+ * @property string $password The user's password.
+ */
 class User extends AbstractEntity
 {
     private string $name = '';

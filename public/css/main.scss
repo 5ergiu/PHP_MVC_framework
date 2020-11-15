@@ -40,17 +40,17 @@ $borderRadius: .25rem;
 
 @font-face {
   font-family: "Nunito";
-  src: url(../fonts/Nunito-Regular.ttf);
+  src: url(fonts/Nunito-Regular.ttf);
 }
 
 @font-face {
   font-family: "Source Sans Pro";
-  src: url(../fonts/SourceSansPro-Regular.ttf);
+  src: url(fonts/SourceSansPro-Regular.ttf);
 }
 
 @font-face {
   font-family: "Roboto";
-  src: url(../fonts/Roboto-Regular.ttf);
+  src: url(fonts/Roboto-Regular.ttf);
 }
 
 /*
@@ -98,14 +98,14 @@ $borderRadius: .25rem;
   to { background-position:right;}
  }
 
+// TODO: improve images: https://tinypng.com/?fbclid=IwAR22Azn58M3TSwbvWDRvr5SaFWjF5uELyVtWoCX233-Nt1M6elvrp27w5Wo
+
 /*
 |--------------------------------------------------------------------------
 | Global styles
 |--------------------------------------------------------------------------
-|
-| Since the app is following the BEM
-| methodology(https://en.bem.info/methodology/quick-start/#block), these
-| convetions need to be followed:
+| BEM methodology(https://en.bem.info/methodology/quick-start/#block)
+| conventions need to be followed:
 |
 | - WHEN TO USE BLOCKS:
 |   These basically encapsulate a standalone entity that is meaningful on its own.
@@ -120,7 +120,6 @@ $borderRadius: .25rem;
 |
 | - WHEN TO USE MODIFIERS:
 |   Flags on blocks or elements. Use them to change appearance, behavior or state.
-|
 */
 
 :root {
@@ -516,7 +515,7 @@ a {
 .sticky {
   position: -webkit-sticky;
   position: sticky;
-  top: 6rem; // navbar is 4rem in height + 2rem applied to the container = perfect allignment 6rem for sticky aside
+  top: 6rem; // navbar is 4rem in height + 2rem applied to the container = perfect alignment 6rem for sticky aside
 }
 
 .notification {
@@ -553,14 +552,6 @@ a {
     img {
       width: 50%;
     }
-  }
-}
-
-.post {
-  &__edit, &__preview {
-    background-color: $backgroundColor;
-    border-radius: 0.25rem;
-    padding: 2rem;
   }
 }
 
