@@ -3,6 +3,8 @@ namespace App\Entity;
 
 use App\Core\Network\Request;
 use App\Core\Validator;
+use Exception;
+
 /**
  * The framework's main entity which will be extended by all the app's entities.
  * Used for binding values to entities, saving or editing entities.
@@ -13,7 +15,7 @@ use App\Core\Validator;
 abstract class AbstractEntity
 {
     protected Validator $validator;
-    protected array $context;
+    public array $context;
     public array $errors = [];
 
     public function __construct()
@@ -27,9 +29,9 @@ abstract class AbstractEntity
      * Binds the values to an entity.
      * @param array $data The array of data. This should contain only the actual entity fields values,
      * so, all the logic should be built in the controller's method prior to 'patching' the entity.
-     * @return void
+     * @return bool
      */
-    public function bindValues(array $data): void
+    public function bindValues(array $data): bool
     {
         $entityName = $this->getEntityName();
         $entityData = $data['data'][$entityName];
@@ -41,6 +43,11 @@ abstract class AbstractEntity
                 }
             }
         }
+        $this->validator->validate();
+        if (!empty($this->errors)) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -73,7 +80,7 @@ abstract class AbstractEntity
      * Returns the context.
      * @return array
      */
-    protected function getContext(): array
+    public function getContext(): array
     {
         return $this->context;
     }

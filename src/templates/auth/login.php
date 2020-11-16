@@ -2,7 +2,7 @@
 
 $this->element('test');
 
-echo $this->form->create($User);
+echo $this->form->create(null);
 
 echo $this->form->input('email', [
     'type' => 'email',
@@ -20,5 +20,7 @@ echo $this->form->input('name', [
     'multiple' => true,
 ]);
 
-echo $this->form->submit();
+echo $this->form->button('Save', [
+    'class' => 'button'
+]);
 echo $this->form->end();

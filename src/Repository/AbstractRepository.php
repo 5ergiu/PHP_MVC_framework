@@ -53,19 +53,32 @@ abstract class AbstractRepository
     }
 
     /**
+     * Get the last inserted id.
+     * @return string
+     */
+    public function lastInsertedId(): string
+    {
+        return $this->pdo->lastInsertId();
+    }
+
+    /**
      * Saves the entity in the database.
      * @param Entity $entity The entity to be saved.
-     * @return string
+     * @param array $data    The data that will be bound to the entity.
+     * @return bool
      * @throws Exception
      */
-    public function save(Entity $entity): string
+    public function save(Entity $entity, array $data): bool
     {
+        if (!$entity->bindValues($data)) {
+            return false;
+        }
         $values = $this->__getValuesFromEntity($entity, $this->attributes);
         $query = $this->__prepareSaveStatement($this->table, $values);
         if ($query !== false) {
             try {
                 $query->execute();
-                return $this->pdo->lastInsertId();
+                return true;
             } catch (PDOException $e) {
                 throw new Exception($e);
             }
@@ -82,10 +95,10 @@ abstract class AbstractRepository
     private function __setAttributesFromDatabaseSchema(): void
     {
         $sql = "
-            SELECT COLUMN_NAME 
-            FROM INFORMATION_SCHEMA.COLUMNS 
-            WHERE TABLE_SCHEMA = :db_name AND 
-            TABLE_NAME = :table_name AND 
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = :db_name AND
+            TABLE_NAME = :table_name AND
             COLUMN_KEY <> 'PRI'
         ";
         try {
@@ -111,8 +124,13 @@ abstract class AbstractRepository
     {
         $values = [];
         foreach ($attributes as $attribute) {
+            // Default values set in entities are easy to access because of this.
             $funcName = 'get' . ucwords($attribute);
-            $values[$attribute] = $entity->{$funcName}();
+            if (property_exists($entity, $attribute)) {
+                $values[$attribute] = $entity->{$funcName}();
+            } else {
+                unset($this->attributes[array_search($attribute, $this->attributes)]);
+            }
         }
         return $values;
     }

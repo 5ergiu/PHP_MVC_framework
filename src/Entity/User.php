@@ -1,18 +1,27 @@
 <?php
 namespace App\Entity;
 
+use App\Core\Security;
 /**
- * @property string $name The name of the user.
- * @property int|null $age The age of the user.
- * @property string $email The email address of the user.
- * @property string $password The user's password.
+ * @property string $username
+ * @property string $email
+ * @property string $role    User's role('user' by default).
+ * @property string $password
+ * @property string $image   User's profile picture.
+ * @property string $summary User's profile small description.
  */
 class User extends AbstractEntity
 {
-    private string $name = '';
-    private ?int $age = null;
-    private string $email = '';
-    private string $password = '';
+    private string $username;
+    private string $email;
+    private string $role = self::ROLE_USER;
+    private string $password;
+    private string $image;
+    private string $summary;
+
+    public const ROLE_ADMIN = 'Admin';
+    public const ROLE_USER = 'User';
+    public const ROLE_AUTHOR = 'Author';
 
     /**
      * @inheritDoc
@@ -25,25 +34,22 @@ class User extends AbstractEntity
                 'required',
                 'isEmail',
             ])
-            ->add('name', [
-                'required',
-            ])
             ->add('password', [
-                'maxLength' => [
-                    'maxLength' => 8,
-                    'message' => 'mai mult',
-                ],
+//                'maxLength' => [
+//                    'maxLength' => 8,
+//                    'message' => 'mai mult',
+//                ],
                 'minLength' => [
                     'minLength' => 5,
                     'message' => 'mai putin',
                 ],
-            ])
-            ->add('age', [
-                'checkMoreThanWhateverFunction' => [
-                    'method' => 'checkMoreThanWhateverFunction',
-                    'message' => 'check more no mers'
-                ],
             ]);
+//            ->add('age', [
+//                'checkMoreThanWhateverFunction' => [
+//                    'method' => 'checkMoreThanWhateverFunction',
+//                    'message' => 'check more no mers'
+//                ],
+//            ]);
     }
 
     /**
@@ -63,33 +69,17 @@ class User extends AbstractEntity
     /**
      * @return string
      */
-    public function getName(): string
+    public function getUsername(): string
     {
-        return $this->name;
+        return $this->username;
     }
 
     /**
-     * @param string $name
+     * @param string $username
      */
-    public function setName(string $name): void
+    protected function setUsername(string $username): void
     {
-        $this->name = $name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAge(): int
-    {
-        return (int)$this->age;
-    }
-
-    /**
-     * @param int $age
-     */
-    public function setAge(int $age): void
-    {
-        $this->age = $age;
+        $this->username = $username;
     }
 
     /**
@@ -103,9 +93,25 @@ class User extends AbstractEntity
     /**
      * @param string $email
      */
-    public function setEmail(string $email): void
+    protected function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param string $role
+     */
+    protected function setRole(string $role): void
+    {
+        $this->role = $role;
     }
 
     /**
@@ -119,8 +125,43 @@ class User extends AbstractEntity
     /**
      * @param string $password
      */
-    public function setPassword(string $password): void
+    protected function setPassword(string $password): void
     {
-        $this->password = $password;
+        $security = new Security($password);
+        $security->hashPassword($password);
+        $this->password = $security->getPassword();
+        unset($security);
+    }
+
+    /**
+     * @return string
+     */
+    public function getImage(): string
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param string $image
+     */
+    public function setImage(string $image): void
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSummary(): string
+    {
+        return $this->summary;
+    }
+
+    /**
+     * @param string $summary
+     */
+    public function setSummary(string $summary): void
+    {
+        $this->summary = $summary;
     }
 }

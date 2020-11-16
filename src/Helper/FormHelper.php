@@ -6,30 +6,30 @@ use App\Core\Network\Request;
 /**
  * Generates HTML forms from given data.
  * @property Entity $entity
- * @property string $entityName
  */
 class FormHelper
 {
     private ?Entity $entity = null;
-    private string $entityName;
 
     /**
      * Creates the <form> tag.
      * @param Entity|null $entity The Entity that will deal with the input.
-     * @param array $options      The form's options.
+     * @param array $options      The form's attributes.
      * @return string
      */
     public function create(?Entity $entity, array $options = []): string
     {
         $form = '<form ';
         if (!empty($entity)) {
-            $this->entityName = $entity->getEntityName();
+            $this->entity = $entity;
         }
         if (!empty($options['id'])) {
             $form .= "id={$options['id']} ";
             unset($options['id']);
         } else {
-            $form .= "id=$this->entityName ";
+            if (!empty($entity)) {
+                $form .= "id={$this->entity->getEntityName()} ";
+            }
         }
         if (!empty($options['method'])) {
             $form .= "method={$options['method']} ";
@@ -39,7 +39,7 @@ class FormHelper
         }
         if (!empty($options)) {
             foreach ($options as $key => $value) {
-                $form .= "$key=$value ";
+                $form .= "$key='$value' ";
             }
         }
         $form .= '>';
@@ -47,13 +47,12 @@ class FormHelper
     }
 
     /**
-     * Creates <input> tags.
-
-     * @param string|null $fieldName The input's 'name' attribute.
-     * @param array $options         Various options: type attribute, class attribute, label info.
+     * @param string $type
+     * @param string|null $fieldName
+     * @param array $options
      * @return string
      */
-    public function input(?string $fieldName, array $options = []): string
+    private function __buildInput(string $type, ?string $fieldName, array $options = []): string
     {
         $name = $fieldName;
         $type = null;
@@ -76,7 +75,7 @@ class FormHelper
             unset($options['id']);
         } else {
             if (!empty($this->entity)) {
-                $id = $this->entityName . ucwords($fieldName);
+                $id = $this->entity->getEntityName() . ucwords($fieldName);
             }
         }
         $label = null;
@@ -85,22 +84,27 @@ class FormHelper
             $label['text'] = $options['label']['text'] ?? null;
             unset($options['label']);
         }
-        $errors = false;
+        $errors = null;
         $value = null;
         if ($this->entity !== null && $this->entity instanceof Entity) {
-            $name = "data[$this->entityName][$fieldName]";
-            $funcName = 'get' . ucwords($fieldName);
-            $value = $this->entity->{$funcName}();
-            if (!empty($this->entity->errors[$fieldName])) {
-                $errors[$fieldName] = $this->entity->errors[$fieldName];
+            $name = "data[{$this->entity->getEntityName()}][$fieldName]";
+            $context = $this->entity->getContext();
+//            var_dump($context); die;
+            if (!empty($context['data'][$this->entity->getEntityName()])) {
+                if (!empty($this->entity->errors[$fieldName])) {
+                    $errors[$fieldName] = $this->entity->errors[$fieldName];
+                } else {
+                    $funcName = 'get' . ucwords($fieldName);
+                    $value = $this->entity->{$funcName}();
+                }
             }
         }
         $displayErrors = null;
         if (!empty($errors)) {
-            $displayErrors = '<div>';
+            $displayErrors = '<div class="form__input_errors">';
             foreach ($errors as $field => $error) {
                 foreach ($error as $rule => $message) {
-                    $displayErrors .= '<p class="error">$message</p>';
+                    $displayErrors .= "<p class='error'>$message</p>";
                 }
             }
             $displayErrors .= '</div>';
@@ -113,68 +117,90 @@ class FormHelper
                 $label['class'], $id, $label['text']
             );
         }
-        $input .= '<input ';
+        switch ($type) {
+            case 'textarea' :
+                $input .= '<textarea autocomplete="off" ';
+                break;
+            default :
+                $input .= "<input type=$type autocomplete='off' ";
+                break;
+        }
         if (!empty($id)) {
-            $input .= "id=$id ";
+            $input .= "id='$id' ";
         }
         if (!empty($class)) {
-            $input .= "class=$class ";
+            $input .= "class='$class' ";
         }
-        $input .= sprintf(
-            'type="%s" name="%s" ',
-            $type, $name
-        );
+        if (!empty($name)) {
+            $input .= "name='$name' ";
+        }
         if (!empty($value)) {
-            $input .= "value=$value ";
+            $input .= "value='$value' ";
         }
         if (!empty($options)) {
             foreach ($options as $key => $value) {
                 if ($value === true) {
-                    $input .= "$value ";
+                    $input .= "'$value' ";
                 } else {
-                    $input .= "$key=$value ";
+                    $input .= "$key='$value' ";
                 }
             }
         }
-        $input .= ' />';
-        $input .= $displayErrors ?: '</div>';
+        switch ($type) {
+            case 'textarea' :
+                $input .= '</textarea>';
+                break;
+            default :
+                $input .= ' />';
+                break;
+        }
+        $input .= $displayErrors ?? null;
+        $input .= '</div>';
         return $input;
     }
 
     /**
-     * Creates <input> type hidden.
+     * Creates <input> tags.
+     * @param string|null $fieldName The input's 'name' attribute.
+     * @param array $options         The input's attributes.
      * @return string
      */
-    public function hidden(): string
+    public function input(?string $fieldName, array $options = []): string
     {
-        return 'test';
-    }
-
-    /**
-     * Creates <button> tags.
-     * @return string
-     */
-    public function button(): string
-    {
-        return 'test';
+       return $this->__buildInput('input', $fieldName, $options);
     }
 
     /**
      * Creates <textarea> tags.
+     * @param string|null $fieldName The textarea's 'name' attribute.
+     * @param array $options         The textarea's attributes.
      * @return string
      */
-    public function text(): string
+    public function text(?string $fieldName, array $options = []): string
     {
-        return 'test';
+        return $this->__buildInput('textarea', $fieldName, $options);
     }
 
     /**
-     * Creates <button> type 'submit'.
+     * Creates <button> tag.
+     * @param string $text   The inner text of the button.
+     * @param array $options The button's attributes.
      * @return string
      */
-    public function submit(): string
+    public function button(string $text, array $options = []): string
     {
-        return '<button>Submit</button>';
+        $button = '<button ';
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                if ($value === true) {
+                    $button .= "$value ";
+                } else {
+                    $button .= "$key='$value' ";
+                }
+            }
+        }
+        $button .= ">$text</button>";
+        return $button;
     }
 
     /**
