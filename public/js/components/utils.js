@@ -1,11 +1,8 @@
-/**
- This class will contain all the useful methods that can be re-used
- throughout the project.
- */
 export default class Utils {
 
-    // method used to fetch data.
-    fetchJsonData = async (url, formData, method = 'POST') => {
+    #formData = null;
+
+    fetchJsonData = async (url, formData = this.#formData, method = 'POST') => {
         let response = await fetch(url, {
             method: method,
             headers: {
@@ -17,14 +14,14 @@ export default class Utils {
         return await response.json()
     }
 
-    // method used to serialize form data.
-    serializeForm = (form) => {
+    serializeForm = form => {
         let serializedData = {}
         let formData = new FormData(form)
         for (let key of formData.keys()) {
             serializedData[key] = formData.get(key)
         }
-        return serializedData
+        this.#formData = serializedData
+        return this
     }
 
     // method used to read cookies.

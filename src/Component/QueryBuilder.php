@@ -1,5 +1,5 @@
 <?php
-namespace App\Core;
+namespace App\Component;
 
 use App\Repository\AbstractRepository as Repository;
 /**

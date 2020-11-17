@@ -15,8 +15,8 @@ class App {
     constructor() {
         // this.Loading = new Loading
         // this.Notification = new Notification
-        // this.Utils = new Utils
-        // new Auth(this.Loading)
+        this.Utils = new Utils
+        new Auth(this.Utils)
         // new Articles(this.Loading, this.Notification)
         new Dropdown
         // new Actions(this.Utils, this.Notification)

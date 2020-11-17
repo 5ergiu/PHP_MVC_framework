@@ -1,7 +1,7 @@
 <?php
 namespace App\Entity;
 
-use App\Core\Security;
+use App\Component\Security;
 /**
  * @property string $username
  * @property string $email

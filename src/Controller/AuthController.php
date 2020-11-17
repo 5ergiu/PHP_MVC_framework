@@ -18,15 +18,12 @@ class AuthController extends AbstractController
      */
     public function login(?int $test = null)
     {
-        $User = new User;
-        $this->loadRepo('users');
-        var_dump($this->UsersRepo->findByExample('sergiu')); die;
         if ($this->request->is('post')) {
-//            var_dump($test); die;
+            $this->loadRepo('users');
+            $user = $this->UsersRepo->findBy('username', $this->request->data['username']);
+//            var_dump($user); die;
+            $this->newJsonResponse($user);
         }
-        $this->render('auth/login', [
-            'User' => $User,
-        ]);
     }
 
     public function register()

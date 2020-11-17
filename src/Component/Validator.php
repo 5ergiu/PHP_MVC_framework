@@ -1,5 +1,5 @@
 <?php
-namespace App\Core;
+namespace App\Component;
 
 use App\Entity\AbstractEntity as Entity;
 /**

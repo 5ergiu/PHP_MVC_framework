@@ -5,7 +5,7 @@ namespace App\Entity;
 /**
  * @property int $authorId The id of the user that created the article.
  * @property string $title The article's title.
- * @property string $content The artcile's content.
+ * @property string $content The article's content.
  * @property string $cover The article's cover image.
  * @property $string $status The article's status:
  * - draft(default): Article that hasn't been submitted for review yet.

@@ -5,11 +5,18 @@ use App\Entity\AbstractEntity as Entity;
 use App\Core\Network\Request;
 /**
  * Generates HTML forms from given data.
+ * @property array $data
  * @property Entity $entity
  */
 class FormHelper
 {
     private ?Entity $entity = null;
+    public array $data;
+
+    public function __construct(array $data)
+    {
+        $this->data = $data;
+    }
 
     /**
      * Creates the <form> tag.
@@ -48,13 +55,12 @@ class FormHelper
 
     /**
      * @param string $type
-     * @param string|null $fieldName
+     * @param string $fieldName
      * @param array $options
      * @return string
      */
-    private function __buildInput(string $type, ?string $fieldName, array $options = []): string
+    private function __buildInput(string $type, string $fieldName, array $options = []): string
     {
-        $name = $fieldName;
         $type = null;
         if (!empty($options['type'])) {
             $type = $options['type'];
@@ -86,16 +92,24 @@ class FormHelper
         }
         $errors = null;
         $value = null;
+        $context = $this->data;
         if ($this->entity !== null && $this->entity instanceof Entity) {
-            $name = "data[{$this->entity->getEntityName()}][$fieldName]";
             $context = $this->entity->getContext();
-//            var_dump($context); die;
+            $fieldName = "data[{$this->entity->getEntityName()}][$fieldName]";
             if (!empty($context['data'][$this->entity->getEntityName()])) {
                 if (!empty($this->entity->errors[$fieldName])) {
                     $errors[$fieldName] = $this->entity->errors[$fieldName];
                 } else {
                     $funcName = 'get' . ucwords($fieldName);
                     $value = $this->entity->{$funcName}();
+                }
+            }
+        } else {
+            if (!empty($context[$fieldName]['errors'])) {
+                $errors[$fieldName] = $context[$fieldName]['errors']['message'];
+            } else {
+                if (!empty($context[$fieldName])) {
+                    $value = $context[$fieldName];
                 }
             }
         }
@@ -131,9 +145,7 @@ class FormHelper
         if (!empty($class)) {
             $input .= "class='$class' ";
         }
-        if (!empty($name)) {
-            $input .= "name='$name' ";
-        }
+        $input .= "name='$fieldName' ";
         if (!empty($value)) {
             $input .= "value='$value' ";
         }
@@ -161,22 +173,22 @@ class FormHelper
 
     /**
      * Creates <input> tags.
-     * @param string|null $fieldName The input's 'name' attribute.
+     * @param string $fieldName The input's 'name' attribute.
      * @param array $options         The input's attributes.
      * @return string
      */
-    public function input(?string $fieldName, array $options = []): string
+    public function input(string $fieldName, array $options = []): string
     {
        return $this->__buildInput('input', $fieldName, $options);
     }
 
     /**
      * Creates <textarea> tags.
-     * @param string|null $fieldName The textarea's 'name' attribute.
+     * @param string $fieldName The textarea's 'name' attribute.
      * @param array $options         The textarea's attributes.
      * @return string
      */
-    public function text(?string $fieldName, array $options = []): string
+    public function text(string $fieldName, array $options = []): string
     {
         return $this->__buildInput('textarea', $fieldName, $options);
     }

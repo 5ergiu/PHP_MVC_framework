@@ -1,30 +1,35 @@
 <?php
 namespace App\Controller;
 
+use App\Component\Auth;
 use App\Helper\LoggerHelper;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
-use App\Core\Render;
+use App\Core\Renderer;
 /**
- * @property Render $Render
  * @property Request $request
  * @property Response $response
+ * @property Renderer $renderer
  * @property LoggerHelper $log
+ * @property Auth $auth
  * The framework's main controller which will be extended by all the app's controllers.
  */
 abstract class AbstractController
 {
-    private Render $Render;
+
     protected Request $request;
     protected Response $response;
+    private Renderer $renderer;
     protected LoggerHelper $log;
+    protected Auth $auth;
 
     public function __construct()
     {
-        $this->Render = new Render;
         $this->request = new Request;
         $this->response = new Response;
+        $this->renderer = new Renderer($this->request);
         $this->log = new LoggerHelper;
+        $this->auth = new Auth;
     }
 
     /**
@@ -36,7 +41,18 @@ abstract class AbstractController
      */
     protected function render(string $view, array $viewVariables = [], ?string $layout = null): void
     {
-        $this->Render->render($view, $viewVariables, $layout);
+        $this->renderer->render($view, $viewVariables, $layout);
+    }
+
+    /**
+     * Echo a json response.
+     * @param array|null $response
+     */
+    protected function newJsonResponse(?array $response)
+    {
+        $response['result'] = $response ? true : false;
+        $response['message'] = $response['message'] ?? null;
+        echo json_encode($response, JSON_PRETTY_PRINT);
     }
 
     /**
@@ -60,5 +76,17 @@ abstract class AbstractController
         $repo = ucwords($repo) . 'Repo';
         $repoClass = 'App\Repository\\' . $repo;
         $this->{$repo} = new $repoClass;
+    }
+
+    /**
+     * Creates a new property of a component instance on the current controller instance.
+     * @param string $component
+     * @return void
+     */
+    protected function loadComponent(string $component): void
+    {
+        $component = ucwords($component);
+        $componentClass = 'App\Component\\' . $component;
+        $this->{$component} = new $componentClass;
     }
 }

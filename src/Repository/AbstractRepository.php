@@ -1,8 +1,8 @@
 <?php
 namespace App\Repository;
 
-use App\Core\Database;
-use App\Core\QueryBuilder;
+use App\Component\Database;
+use App\Component\QueryBuilder;
 use App\Entity\AbstractEntity as Entity;
 use Exception;
 use PDO;
@@ -156,30 +156,30 @@ abstract class AbstractRepository
     /**
      * Returns a row from the table.
      * @param string $criteria
-     * @param int|string $value
-     * @return array|false
+     * @param mixed $value
+     * @return array|null
      * @throws Exception
      */
-    public function findBy(string $criteria, $value)
+    public function findBy(string $criteria, $value): ?array
     {
-        $sql = "SELECT * FROM `$this->table` WHERE $criteria=:$criteria";
-        $query = $this->pdo->prepare($sql);
-        $query->bindValue(":$criteria", $value);
-        try {
-            $query->execute();
-            return $query->fetch();
-        } catch (PDOException $e) {
-            throw new Exception($e);
-        }
+        return $this->createQueryBuilder('t')
+            ->setParams([
+                "t.$criteria = :$criteria"
+            ])
+            ->addConditions([
+                "t.$criteria" => $value,
+            ])
+            ->getQuery()
+            ->firstOrNull();
     }
 
     /**
      * Returns everything from the table.
      * @param int|null $limit (optional) A limit, if it's necessary.
-     * @return array|false
+     * @return array|null
      * @throws Exception
      */
-    public function findAll(int $limit = null)
+    public function findAll(int $limit = null): ?array
     {
         $sql = "SELECT * FROM `$this->table`";
         if ($limit !== null) {
@@ -205,10 +205,10 @@ abstract class AbstractRepository
     }
 
     /**
-     * @return array
-     * @throws Exception
+     * Binds the values to the query.
+     * @return bool|PDOStatement
      */
-    public function getResults(): array
+    private function __prepareQuery()
     {
         $query = $this->pdo->prepare($this->QueryBuilder->query);
         $attributes = $this->QueryBuilder->getParams();
@@ -219,10 +219,42 @@ abstract class AbstractRepository
                 $query->bindValue("$attribute[1]", $values[$attribute[0]]);
             }
         }
+        return $query;
+    }
+
+    /**
+     * @return array|null
+     * @throws Exception
+     */
+    public function getResults(): ?array
+    {
+        $query = $this->__prepareQuery();
         if ($query !== false) {
             try {
                 $query->execute();
-                return $query->fetchAll();
+                $result = $query->fetchAll();
+                return $result ?: null;
+            } catch (PDOException $e) {
+                throw new Exception($e);
+            }
+        } else {
+            throw new Exception('Something went wrong!');
+        }
+    }
+
+    /**
+     * Returns a row from the table.
+     * @return array|null
+     * @throws Exception
+     */
+    public function firstOrNull(): ?array
+    {
+        $query = $this->__prepareQuery();
+        if ($query !== false) {
+            try {
+                $query->execute();
+                $result = $query->fetch();
+                return $result ?: null;
             } catch (PDOException $e) {
                 throw new Exception($e);
             }
