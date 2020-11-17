@@ -22,7 +22,7 @@ class SessionComponent
     public function get(?string $key = null)
     {
         if ($key !== null) {
-            return $_SESSION[$key] ?? false;
+            return $_SESSION[$key] ?? null;
         } else {
             return $_SESSION;
         }

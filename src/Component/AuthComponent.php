@@ -1,9 +1,18 @@
 <?php
 namespace App\Component;
 
-class AuthComponent extends AbstractComponent
+/**
+ * @property SessionComponent $session
+ */
+class AuthComponent
 {
     public static string $sessionKey = 'Auth';
+    private SessionComponent $session;
+
+    public function __construct()
+    {
+        $this->session = new SessionComponent;
+    }
 
     /**
      * Logs the user and writes the user's info to the session.
@@ -33,12 +42,11 @@ class AuthComponent extends AbstractComponent
     }
 
     /**
-     * Checks if a user is already authenticated.
-     * @return bool
+     * Returns the authenticated user if there is one, if not, false.
+     * @return array|null
      */
-    public function loggedIn(): bool
+    public function user(): ?array
     {
-        $isLoggedIn = $this->session->get(self::$sessionKey);
-        return $isLoggedIn !== false;
+        return $this->session->get(self::$sessionKey);
     }
 }

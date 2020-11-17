@@ -20,7 +20,7 @@ class AuthController extends AbstractController
         $user = null;
         $errors = [];
         if ($this->request->is('post')) {
-            if (!$this->auth->loggedIn()) {
+            if (empty($this->auth->user())) {
                 $this->loadRepo('users');
                 $user = $this->UsersRepo->findBy('username', $this->request->data['username']);
                 if (
