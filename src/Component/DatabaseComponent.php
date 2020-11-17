@@ -7,7 +7,7 @@ use PDOException;
 /**
  * Connects to the database.
  */
-class Database
+class DatabaseComponent
 {
     /**
      * Connects to the database and returns the PDO object.

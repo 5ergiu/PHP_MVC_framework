@@ -8,7 +8,7 @@ use App\Entity\AbstractEntity as Entity;
  * @property array $rules An array of rules.
  * @property Entity $entity
  */
-class Validator
+class ValidatorComponent
 {
     private array $rules;
     private Entity $entity;

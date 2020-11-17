@@ -1,8 +1,8 @@
 <?php
 namespace App\Repository;
 
-use App\Component\Database;
-use App\Component\QueryBuilder;
+use App\Component\DatabaseComponent;
+use App\Component\QueryBuilderComponent;
 use App\Entity\AbstractEntity as Entity;
 use Exception;
 use PDO;
@@ -14,24 +14,24 @@ use PDOStatement;
  * @property PDO $pdo
  * @property string $table     The name of the table.
  * @property array $attributes The attributes/columns of a table.
- * @property QueryBuilder $QueryBuilder
+ * @property QueryBuilderComponent $QueryBuilder
  */
 abstract class AbstractRepository
 {
     private PDO $pdo;
     private string $table;
     private array $attributes;
-    protected QueryBuilder $QueryBuilder;
+    protected QueryBuilderComponent $QueryBuilder;
 
     /**
      * @throws Exception
      */
     public function __construct()
     {
-        $this->pdo = Database::connect();
+        $this->pdo = DatabaseComponent::connect();
         $this->__setTable();
         $this->__setAttributesFromDatabaseSchema();
-        $this->QueryBuilder = new QueryBuilder($this, $this->table);
+        $this->QueryBuilder = new QueryBuilderComponent($this, $this->table);
     }
 
     /**
@@ -154,6 +154,16 @@ abstract class AbstractRepository
     }
 
     /**
+     * Returns a PDO statement.
+     * @param string $query
+     * @return PDOStatement
+     */
+    public function prepareStatement(string $query): PDOStatement
+    {
+        return $this->pdo->prepare($query);
+    }
+
+    /**
      * Returns a row from the table.
      * @param string $criteria
      * @param mixed $value
@@ -162,14 +172,15 @@ abstract class AbstractRepository
      */
     public function findBy(string $criteria, $value): ?array
     {
-        return $this->createQueryBuilder('t')
+        $table = $this->getTable();
+        return $this->createQueryBuilder($table)
             ->setParams([
-                "t.$criteria = :$criteria"
+                "$table.$criteria = :$criteria"
             ])
             ->addConditions([
-                "t.$criteria" => $value,
+                "$table.$criteria" => $value,
             ])
-            ->getQuery()
+            ->prepareStatement()
             ->firstOrNull();
     }
 
@@ -179,87 +190,56 @@ abstract class AbstractRepository
      * @return array|null
      * @throws Exception
      */
-    public function findAll(int $limit = null): ?array
+    public function findAll(?int $limit = null): ?array
     {
-        $sql = "SELECT * FROM `$this->table`";
-        if ($limit !== null) {
-            $sql .= " LIMIT $limit";
-        }
-        try {
-            $query = $this->pdo->query($sql);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            throw new Exception($e);
-        }
+        return $this->createQueryBuilder($this->getTable())
+            ->prepareStatement()
+            ->setMaxResults($limit)
+            ->getResults();
     }
 
     /**
      * Adds the alias for the table in the query builder and returns it back
      * to be able to add more properties.
      * @param string $alias
-     * @return QueryBuilder
+     * @return QueryBuilderComponent
      */
-    public function createQueryBuilder(string $alias): QueryBuilder
+    public function createQueryBuilder(string $alias): QueryBuilderComponent
     {
         return $this->QueryBuilder->setAlias($alias);
     }
 
     /**
-     * Binds the values to the query.
-     * @return bool|PDOStatement
-     */
-    private function __prepareQuery()
-    {
-        $query = $this->pdo->prepare($this->QueryBuilder->query);
-        $attributes = $this->QueryBuilder->getParams();
-        $values = $this->QueryBuilder->getConditions();
-        if (!empty($attributes) && !empty($values)) {
-            foreach ($attributes as $key => $attribute) {
-                $attribute = explode('=', str_replace(' ', '', $attribute));
-                $query->bindValue("$attribute[1]", $values[$attribute[0]]);
-            }
-        }
-        return $query;
-    }
-
-    /**
+     * Returns one or more rows from the table.
+     * @param PDOStatement $statement PDO Statement.
      * @return array|null
      * @throws Exception
      */
-    public function getResults(): ?array
+    public function fetchAll(PDOStatement $statement): ?array
     {
-        $query = $this->__prepareQuery();
-        if ($query !== false) {
-            try {
-                $query->execute();
-                $result = $query->fetchAll();
-                return $result ?: null;
-            } catch (PDOException $e) {
-                throw new Exception($e);
-            }
-        } else {
-            throw new Exception('Something went wrong!');
+        try {
+            $statement->execute();
+            $result = $statement->fetchAll();
+            return $result ?: null;
+        } catch (PDOException $e) {
+            throw new Exception($e);
         }
     }
 
     /**
      * Returns a row from the table.
+     * @param PDOStatement $statement PDO Statement.
      * @return array|null
      * @throws Exception
      */
-    public function firstOrNull(): ?array
+    public function fetch(PDOStatement $statement): ?array
     {
-        $query = $this->__prepareQuery();
-        if ($query !== false) {
-            try {
-                $query->execute();
-                $result = $query->fetch();
-                return $result ?: null;
-            } catch (PDOException $e) {
-                throw new Exception($e);
-            }
-        } else {
-            throw new Exception('Something went wrong!');
+        try {
+            $statement->execute();
+            $result = $statement->fetch();
+            return $result ?: null;
+        } catch (PDOException $e) {
+            throw new Exception($e);
         }
     }
 }

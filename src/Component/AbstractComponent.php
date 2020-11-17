@@ -2,14 +2,14 @@
 namespace App\Component;
 
 /**
- * @property Session $session The session component.
+ * @property SessionComponent $session The session component.
  */
 class AbstractComponent
 {
-    protected Session $session;
+    protected SessionComponent $session;
 
     public function __construct()
     {
-        $this->session = new Session;
+        $this->session = new SessionComponent;
     }
 }

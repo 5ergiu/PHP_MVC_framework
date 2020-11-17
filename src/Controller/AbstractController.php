@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use App\Component\Auth;
+use App\Component\AuthComponent;
 use App\Helper\LoggerHelper;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
@@ -11,7 +11,7 @@ use App\Core\Renderer;
  * @property Response $response
  * @property Renderer $renderer
  * @property LoggerHelper $log
- * @property Auth $auth
+ * @property AuthComponent $auth
  * The framework's main controller which will be extended by all the app's controllers.
  */
 abstract class AbstractController
@@ -21,7 +21,7 @@ abstract class AbstractController
     protected Response $response;
     private Renderer $renderer;
     protected LoggerHelper $log;
-    protected Auth $auth;
+    protected AuthComponent $auth;
 
     public function __construct()
     {
@@ -29,7 +29,7 @@ abstract class AbstractController
         $this->response = new Response;
         $this->renderer = new Renderer($this->request);
         $this->log = new LoggerHelper;
-        $this->auth = new Auth;
+        $this->auth = new AuthComponent;
     }
 
     /**
@@ -46,12 +46,15 @@ abstract class AbstractController
 
     /**
      * Echo a json response.
-     * @param array|null $response
+     * @param mixed $response      The result to be returned to js.
+     * @param array $errors
+     * @return void
      */
-    protected function newJsonResponse(?array $response)
+    protected function newJsonResponse($response, array $errors = []): void
     {
-        $response['result'] = $response ? true : false;
-        $response['message'] = $response['message'] ?? null;
+        if (!empty($errors)) {
+            $response['errors'] = $errors;
+        }
         echo json_encode($response, JSON_PRETTY_PRINT);
     }
 

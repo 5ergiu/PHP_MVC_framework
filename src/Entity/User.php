@@ -1,7 +1,6 @@
 <?php
 namespace App\Entity;
 
-use App\Component\Security;
 /**
  * @property string $username
  * @property string $email
@@ -127,10 +126,7 @@ class User extends AbstractEntity
      */
     protected function setPassword(string $password): void
     {
-        $security = new Security($password);
-        $security->hashPassword($password);
-        $this->password = $security->getPassword();
-        unset($security);
+        $this->password = password_hash($password, PASSWORD_BCRYPT);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 namespace App\Component;
 
-class Session
+class SessionComponent
 {
     /**
      *  Writes value to given session variable name.
@@ -21,7 +21,11 @@ class Session
      */
     public function get(?string $key = null)
     {
-        return $key ? $_SESSION[$key] : $_SESSION;
+        if ($key !== null) {
+            return $_SESSION[$key] ?? false;
+        } else {
+            return $_SESSION;
+        }
     }
 
     /**

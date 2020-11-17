@@ -11,22 +11,42 @@ use Exception;
 class AuthController extends AbstractController
 {
     /**
-     * just some text here
-     * and here
-     * @param int|null $test mare test.
+     * Logs users in.
+     * @return void
      * @throws Exception
      */
-    public function login(?int $test = null)
+    public function login(): void
     {
+        $user = null;
+        $errors = [];
         if ($this->request->is('post')) {
-            $this->loadRepo('users');
-            $user = $this->UsersRepo->findBy('username', $this->request->data['username']);
-//            var_dump($user); die;
-            $this->newJsonResponse($user);
+            if (!$this->auth->loggedIn()) {
+                $this->loadRepo('users');
+                $user = $this->UsersRepo->findBy('username', $this->request->data['username']);
+                if (
+                    !empty($user) &&
+                    $this->auth->login($this->request->data['password'], $user)
+                ) {
+                    unset($user['password']);
+                } else {
+                    $user = null;
+                    $errors['credentials'] = 'Wrong credentials';
+                }
+            } else {
+                $errors['user'] = 'Already logged in';
+            }
+        } else {
+            $errors['method'] = 'Method not allowed';
         }
+        $this->newJsonResponse($user, $errors);
     }
 
-    public function register()
+    /**
+     * Registers new users.
+     * @return void
+     * @throws Exception
+     */
+    public function register(): void
     {
         $User = new User;
         $this->loadRepo('users');

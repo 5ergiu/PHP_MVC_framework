@@ -2,20 +2,23 @@
 namespace App\Component;
 
 use App\Repository\AbstractRepository as Repository;
+use Exception;
+use PDOStatement;
 /**
  * Builds queries.
  * @property Repository $repository
- * @property string $table     The name of the table.
- * @property string $alias     The table alias.
- * @property array $selections The selected fields('*' by default).
- * @property array $params     Query parameters.
- * @property array $conditions Query conditions.
- * @property array $orderBy    Query order by conditions.
- * @property array $groupBy    Query group by conditions.
- * @property int $limit        Query limit.
- * @property string $query     Query to be executed on the database.
+ * @property string $table           The name of the table.
+ * @property string $alias           The table alias.
+ * @property array $selections       The selected fields('*' by default).
+ * @property array $params           Query parameters.
+ * @property array $conditions       Query conditions.
+ * @property array $orderBy          Query order by conditions.
+ * @property array $groupBy          Query group by conditions.
+ * @property int $limit              Query limit.
+ * @property string $query           Query to be executed on the database.
+ * @property PDOStatement $statement PDO Statement to be ran to get results.
  */
-class QueryBuilder
+class QueryBuilderComponent
 {
     private Repository $repository;
     private string $table;
@@ -26,7 +29,8 @@ class QueryBuilder
     private array $orderBy;
     private array $groupBy;
     private int $limit;
-    public string $query;
+    private string $query;
+    private PDOStatement $statement;
 
     public function __construct(Repository $repository, string $table)
     {
@@ -44,9 +48,9 @@ class QueryBuilder
 
     /**
      * @param string $alias
-     * @return QueryBuilder
+     * @return QueryBuilderComponent
      */
-    public function setAlias(string $alias): QueryBuilder
+    public function setAlias(string $alias): QueryBuilderComponent
     {
         $this->alias = $alias;
         return $this;
@@ -62,9 +66,9 @@ class QueryBuilder
 
     /**
      * @param array $selections
-     * @return QueryBuilder
+     * @return QueryBuilderComponent
      */
-    public function select(array $selections): QueryBuilder
+    public function select(array $selections): QueryBuilderComponent
     {
         foreach ($selections as $selection) {
             $this->selections[] = $selection;
@@ -82,9 +86,9 @@ class QueryBuilder
 
     /**
      * @param array $params
-     * @return QueryBuilder
+     * @return QueryBuilderComponent
      */
-    public function setParams(array $params): QueryBuilder
+    public function setParams(array $params): QueryBuilderComponent
     {
         foreach ($params as $param) {
             $this->params[] = $param;
@@ -102,9 +106,9 @@ class QueryBuilder
 
     /**
      * @param array $conditions
-     * @return QueryBuilder
+     * @return QueryBuilderComponent
      */
-    public function addConditions(array $conditions): QueryBuilder
+    public function addConditions(array $conditions): QueryBuilderComponent
     {
         foreach ($conditions as $attribute => $condition) {
             $this->conditions[$attribute] = $condition;
@@ -122,9 +126,9 @@ class QueryBuilder
 
     /**
      * @param array $orderBy
-     * @return QueryBuilder
+     * @return QueryBuilderComponent
      */
-    public function orderBy(array $orderBy): QueryBuilder
+    public function orderBy(array $orderBy): QueryBuilderComponent
     {
         $this->orderBy = $orderBy;
         return $this;
@@ -156,9 +160,9 @@ class QueryBuilder
 
     /**
      * @param int $limit
-     * @return QueryBuilder
+     * @return QueryBuilderComponent
      */
-    public function setMaxResults(int $limit): QueryBuilder
+    public function setMaxResults(int $limit): QueryBuilderComponent
     {
         $this->limit = $limit;
         return $this;
@@ -167,12 +171,12 @@ class QueryBuilder
     /**
      * Returns the repository instance after the query is built,
      * to get the results.
-     * @return Repository
+     * @return string
      */
-    public function getQuery(): Repository
+    public function getQuery(): string
     {
         $this->setQuery();
-        return $this->repository;
+        return $this->query;
     }
 
     /**
@@ -231,5 +235,55 @@ class QueryBuilder
             $this->query .= "LIMIT $this->limit";
         }
         $this->query .= ';';
+    }
+
+    /**
+     * Prepares the query and binds the values.
+     * @return QueryBuilderComponent
+     */
+    public function prepareStatement(): QueryBuilderComponent
+    {
+        $this->setQuery();
+        $query = $this->repository->prepareStatement($this->query);
+        $attributes = $this->getParams();
+        $values = $this->getConditions();
+        if (!empty($attributes) && !empty($values)) {
+            foreach ($attributes as $key => $attribute) {
+                $attribute = explode('=', str_replace(' ', '', $attribute));
+                $query->bindValue("$attribute[1]", $values[$attribute[0]]);
+            }
+        }
+        if ($query !== false && $query instanceof PDOStatement) {
+            $this->statement = $query;
+        }
+        return $this;
+    }
+
+    /**
+     * Returns one or more rows from the table.
+     * @return array|null
+     * @throws Exception
+     */
+    public function getResults(): ?array
+    {
+        if (isset($this->statement)) {
+            return $this->repository->fetchAll($this->statement);
+        } else {
+            throw new Exception('something went wrong when trying to bind values');
+        }
+    }
+
+    /**
+     * Returns a row from the table.
+     * @return array|null
+     * @throws Exception
+     */
+    public function firstOrNull(): ?array
+    {
+        if (isset($this->statement)) {
+            return $this->repository->fetch($this->statement);
+        } else {
+            throw new Exception('something went wrong when trying to bind values');
+        }
     }
 }
