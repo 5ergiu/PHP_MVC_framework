@@ -18,19 +18,19 @@ class Response
 
     /**
      * Returns a json encoded response.
-     * @param array $response The response array from the controllers.
+     * @param array $json The json array from the controllers.
      * @return void
      */
-    public function json(array $response): void
+    public function json(array $json): void
     {
         header('Content-type:application/json');
-        echo json_encode($response, JSON_PRETTY_PRINT);
+        echo json_encode($json, JSON_PRETTY_PRINT);
     }
 
     /**
      * Redirect to a location.
      * @param array $url Url options.
-     * @param bool $full (optional) True if the link should be full(including hostname), false otherwise.
+     * @param bool $full True if the link should be full(including hostname), false otherwise.
      * @return void
      */
     public function redirect(array $url, $full = false): void

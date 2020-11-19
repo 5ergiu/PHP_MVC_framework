@@ -21,7 +21,6 @@ abstract class AbstractController
     private Renderer $renderer;
     protected LoggerHelper $log;
     protected AuthComponent $auth;
-    protected string $referer;
 
     public function __construct()
     {
@@ -30,7 +29,6 @@ abstract class AbstractController
         $this->renderer = new Renderer($this->request);
         $this->log = new LoggerHelper;
         $this->auth = new AuthComponent;
-        $this->referer = $_SERVER['HTTP_REFERER'] ?? '/';
     }
 
     /**
@@ -53,9 +51,10 @@ abstract class AbstractController
      */
     protected function newJsonResponse($response, array $errors = []): void
     {
-        $response['result'] = empty($errors);
-        $response['errors'] = $errors ?? [];
-        $this->response->json($response);
+        $json['response'] = $response;
+        $json['result'] = empty($errors);
+        $json['errors'] = $errors ?? [];
+        $this->response->json($json);
     }
 
     /**

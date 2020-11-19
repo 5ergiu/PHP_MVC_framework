@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Core\Network\Request;
 use App\Entity\User;
 use App\Repository\UsersRepo;
 use Exception;
@@ -41,15 +42,19 @@ class AuthController extends AbstractController
      */
     public function register(): void
     {
-
+        if (!empty($this->auth->user())) {
+            $this->redirect(['path' => Request::ROOT]);
+        }
         $User = new User;
         $this->loadRepo('users');
         if ($this->request->is('post')) {
             if ($this->UsersRepo->save($User, $this->request->data)) {
                 $lastInsertedId = $this->UsersRepo->lastInsertedId();
                 $username = $this->UsersRepo->findBy('id', $lastInsertedId)['username'];
-                $user = $this->auth->login($username, $this->request->data['password']);
-
+                $user = $this->auth->login($username, null, true);
+                if (!empty($user)) {
+                    $this->redirect(['path' => Request::ROOT]);
+                }
             }
         }
         $this->render('auth/register', [

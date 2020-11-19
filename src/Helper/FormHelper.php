@@ -95,12 +95,13 @@ class FormHelper
         $context = $this->data;
         if ($this->entity !== null && $this->entity instanceof Entity) {
             $context = $this->entity->getContext();
+            $field = $fieldName;
             $fieldName = "data[{$this->entity->getEntityName()}][$fieldName]";
             if (!empty($context['data'][$this->entity->getEntityName()])) {
-                if (!empty($this->entity->errors[$fieldName])) {
-                    $errors[$fieldName] = $this->entity->errors[$fieldName];
+                if (!empty($this->entity->errors[$field])) {
+                    $errors[$field] = $this->entity->errors[$field];
                 } else {
-                    $funcName = 'get' . ucwords($fieldName);
+                    $funcName = 'get' . ucwords($field);
                     $value = $this->entity->{$funcName}();
                 }
             }

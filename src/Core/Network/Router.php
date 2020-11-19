@@ -33,7 +33,7 @@ class Router
         $this->response = $response;
         $this->errorHandler = new ErrorHandler;
         try {
-            $this->__run();
+            $this->__resolve();
         } catch (Throwable $e) {
             $this->errorHandler->handleError($e, $this->response);
         }
@@ -46,11 +46,14 @@ class Router
      * 'params' => parameters sent to the controller's method
      * '?' => query parameters
      * @param array $url Url options.
-     * @param bool $full (optional) True if the link should be full(including hostname), false otherwise.
+     * @param bool $full True if the link should be full(including hostname), false otherwise.
      * @return string
      */
-    public static function url(array $url, bool $full = false): string
+    public static function url(array $url, bool $full): string
     {
+        if ($url['path'] === Request::ROOT) {
+            return Request::ROOT;
+        }
         $link = [];
         $link[] = $full ? HOST : null;
         $link[] = $url['path'];
@@ -63,26 +66,18 @@ class Router
         if (!empty($url['?'])) {
             $link .= '?';
             foreach ($url['?'] as $key => $value) {
-                $link .= "$key=$value&";
+                if ($key !== array_key_last($url['?'])) {
+                    $link .= "$key=$value&";
+                } else {
+                    $link .= "$key=$value";
+                }
             }
             $link = substr($link, 0, -1);
         }
-        return $link;
-    }
-
-    /**
-     * Actually 'runs' the app after all the logic is applied.
-     * @return void
-     * @throws NotFoundException
-     */
-    private function __run(): void
-    {
-        $this->__resolve();
-        if (!isset($this->controller) || !isset($this->method)) {
-            throw new NotFoundException;
-        } else {
-            call_user_func_array([$this->controller, $this->method], $this->params);
+        if (!empty($url['ext'])) {
+            $link .= "{$url['ext']}.json";
         }
+        return $link;
     }
 
     /**
@@ -90,11 +85,13 @@ class Router
      * leaving only the controller and method.
      * Resolves the http request, sets and instantiates the controller and the respective action.
      * @return void
+     * @throws NotFoundException
      */
     private function __resolve(): void
     {
         if ($this->request->url !== Request::ROOT) {
             $url = explode(Request::ROOT, $this->request->url);
+            $url[0] = str_replace('_', '', ucwords($url[0], '_'));
             $controller = '\App\Controller\\' . ucwords($url[0]) . 'Controller';
             if ($this->__setController($controller)) {
                 unset($url[0]);
@@ -108,6 +105,11 @@ class Router
         } else {
             $this->__setController(DEFAULT_CONTROLLER);
             $this->__setMethod(DEFAULT_ACTION);
+        }
+        if (!isset($this->controller) || !isset($this->method)) {
+            throw new NotFoundException;
+        } else {
+            call_user_func_array([$this->controller, $this->method], $this->params);
         }
     }
 
@@ -132,6 +134,7 @@ class Router
      */
     private function __setMethod(string $method): bool
     {
+        $method = str_replace('_', '', lcfirst(ucwords($method, '_')));
         if (method_exists($this->controller, $method)) {
             $this->method = $method;
             return true;

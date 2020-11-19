@@ -19,15 +19,22 @@ class AuthComponent
     /**
      * Logs the user and writes the user's info to the session.
      * @param string $username
-     * @param string $password
+     * @param string|null $password
+     * @param bool $skipVerification Used in case suer registers to log in automatically.
      * @throws Exception
      * @return array|null
      */
-    public function login(string $username, string $password): ?array
+    public function login(string $username, ?string $password, bool $skipVerification = false): ?array
     {
         $user = $this->__getUser($username);
         if (!empty($user)) {
-            $checkPassword = password_verify($password, $user['password']);
+            // In PHP, 'if' doesn't have its own scope. So, if you define something inside the if statement
+            // it will be available inside the block/function the 'if' statement is in.
+            if ($password === null && $skipVerification) {
+                $checkPassword = true;
+            } else {
+                $checkPassword = password_verify($password, $user['password']);
+            }
             if ($checkPassword) {
                 unset($user['password']);
                 $this->session->write(self::$sessionKey, $user);
