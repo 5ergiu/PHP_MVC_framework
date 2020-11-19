@@ -1,6 +1,8 @@
 <?php
 namespace App\Component;
 
+use App\Repository\UsersRepo;
+use Exception;
 /**
  * @property SessionComponent $session
  */
@@ -16,19 +18,25 @@ class AuthComponent
 
     /**
      * Logs the user and writes the user's info to the session.
+     * @param string $username
      * @param string $password
-     * @param array $user
-     * @return bool
+     * @throws Exception
+     * @return array|null
      */
-    public function login(string $password,array $user): bool
+    public function login(string $username, string $password): ?array
     {
-        $checkPassword = password_verify($password, $user['password']);
-        if ($checkPassword) {
-            unset($user['password']);
-            $this->session->write(self::$sessionKey, $user);
-            return true;
+        $user = $this->__getUser($username);
+        if (!empty($user)) {
+            $checkPassword = password_verify($password, $user['password']);
+            if ($checkPassword) {
+                unset($user['password']);
+                $this->session->write(self::$sessionKey, $user);
+                return $user;
+            } else {
+                return null;
+            }
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -48,5 +56,19 @@ class AuthComponent
     public function user(): ?array
     {
         return $this->session->get(self::$sessionKey);
+    }
+
+    /**
+     * Returns a user's info or null if there's no user found.
+     * @param string $username
+     * @return array|null
+     * @throws Exception
+     */
+    private function __getUser(string $username): ?array
+    {
+        $UsersRepo = new UsersRepo;
+        $user = $UsersRepo->findBy('username', $username);
+        unset($UsersRepo);
+        return $user;
     }
 }

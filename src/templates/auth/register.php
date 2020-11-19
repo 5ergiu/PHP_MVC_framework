@@ -3,7 +3,6 @@ use App\Entity\User;
 /**
  * @var User $User
  */
-$this->element('test');
 
 echo $this->form->create($User);
 

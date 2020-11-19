@@ -6,8 +6,6 @@
     <title><?= $title ?? 'Blog'; ?></title>
     <link type="text/css" rel="stylesheet" href="<?= VENDOR . 'fontawesome/css/all.min.css'; ?>" />
     <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . 'main.css'; ?>" />
-    <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . 'login.css'; ?>" />
-    <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . 'articles.css'; ?>" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 </head>
 <body>
@@ -71,7 +69,8 @@
                             <div class="dropdown__content">
                                 <?php
                                     echo $this->form->create(null, [
-                                        'id' => 'login',
+                                        'id' => 'js-login',
+                                        'class' => 'login',
                                         'autocomplete' => 'off',
                                     ]);
                                     echo $this->form->input('username', [
@@ -81,9 +80,18 @@
                                         'type' => 'password',
                                         'placeholder' => 'Enter password',
                                     ]);
+                                ?>
+                                <div class="login__buttons">
+                                <?php
                                     echo $this->form->button('Login', [
                                         'class' => 'button'
                                     ]);
+                                ?>
+                                    <a class="button button--secondary" href="/auth/register">
+                                        Register
+                                    </a>
+                                </div>
+                                <?php
                                     echo $this->form->end();
                                 ?>
                             </div>

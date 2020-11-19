@@ -5,7 +5,7 @@ export default class Auth {
     constructor(Utils) {
         // this.Loading = Loading
         this.Utils = Utils
-        this.loginForm = document.getElementById('login')
+        this.loginForm = document.getElementById('js-login')
         // this.registerForm = document.querySelector('.register__form')
         this.addEventListeners()
     }

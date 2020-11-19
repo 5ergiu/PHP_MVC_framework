@@ -13,8 +13,8 @@
 |
 */
 
-$dark: #292e33;
-$backgroundColor: #1d2126;
+$dark: #1d2126;
+$backgroundColor: #292e33;
 $grayish: #333940;
 $text: #B2B6BB;
 $tag: #a7adb2;
@@ -500,6 +500,13 @@ a {
       text-align: center;
       margin-top: 1rem;
     }
+  }
+}
+
+.login {
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
   }
 }
 

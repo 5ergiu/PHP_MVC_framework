@@ -16,12 +16,12 @@ use App\Core\Renderer;
  */
 abstract class AbstractController
 {
-
     protected Request $request;
     protected Response $response;
     private Renderer $renderer;
     protected LoggerHelper $log;
     protected AuthComponent $auth;
+    protected string $referer;
 
     public function __construct()
     {
@@ -30,6 +30,7 @@ abstract class AbstractController
         $this->renderer = new Renderer($this->request);
         $this->log = new LoggerHelper;
         $this->auth = new AuthComponent;
+        $this->referer = $_SERVER['HTTP_REFERER'] ?? '/';
     }
 
     /**
@@ -52,10 +53,9 @@ abstract class AbstractController
      */
     protected function newJsonResponse($response, array $errors = []): void
     {
-        if (!empty($errors)) {
-            $response['errors'] = $errors;
-        }
-        echo json_encode($response, JSON_PRETTY_PRINT);
+        $response['result'] = empty($errors);
+        $response['errors'] = $errors ?? [];
+        $this->response->json($response);
     }
 
     /**

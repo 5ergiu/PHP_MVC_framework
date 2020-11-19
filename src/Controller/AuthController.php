@@ -21,15 +21,8 @@ class AuthController extends AbstractController
         $errors = [];
         if ($this->request->is('post')) {
             if (empty($this->auth->user())) {
-                $this->loadRepo('users');
-                $user = $this->UsersRepo->findBy('username', $this->request->data['username']);
-                if (
-                    !empty($user) &&
-                    $this->auth->login($this->request->data['password'], $user)
-                ) {
-                    unset($user['password']);
-                } else {
-                    $user = null;
+                $user = $this->auth->login($this->request->data['username'], $this->request->data['password']);
+                if (empty($user)) {
                     $errors['credentials'] = 'Wrong credentials';
                 }
             } else {
@@ -48,11 +41,15 @@ class AuthController extends AbstractController
      */
     public function register(): void
     {
+
         $User = new User;
         $this->loadRepo('users');
         if ($this->request->is('post')) {
             if ($this->UsersRepo->save($User, $this->request->data)) {
-                var_dump($this->UsersRepo->lastInsertedId()); die;
+                $lastInsertedId = $this->UsersRepo->lastInsertedId();
+                $username = $this->UsersRepo->findBy('id', $lastInsertedId)['username'];
+                $user = $this->auth->login($username, $this->request->data['password']);
+
             }
         }
         $this->render('auth/register', [
