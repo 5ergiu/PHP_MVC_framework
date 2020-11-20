@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Component\AuthComponent;
+use App\Component\SessionComponent;
 use App\Helper\LoggerHelper;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
@@ -9,26 +10,29 @@ use App\Core\Renderer;
 /**
  * @property Request $request
  * @property Response $response
+ * @property AuthComponent $auth
  * @property Renderer $renderer
  * @property LoggerHelper $log
- * @property AuthComponent $auth
+ * @property SessionComponent $session
  * The framework's main controller which will be extended by all the app's controllers.
  */
 abstract class AbstractController
 {
     protected Request $request;
     protected Response $response;
+    protected AuthComponent $auth;
     private Renderer $renderer;
     protected LoggerHelper $log;
-    protected AuthComponent $auth;
+    protected SessionComponent $session;
 
     public function __construct()
     {
         $this->request = new Request;
         $this->response = new Response;
-        $this->renderer = new Renderer($this->request);
-        $this->log = new LoggerHelper;
         $this->auth = new AuthComponent;
+        $this->renderer = new Renderer($this->request, $this->auth);
+        $this->log = new LoggerHelper;
+        $this->session = new SessionComponent;
     }
 
     /**
@@ -90,5 +94,14 @@ abstract class AbstractController
         $component = ucwords($component);
         $componentClass = 'App\Component\\' . $component;
         $this->{$component} = new $componentClass;
+    }
+
+    /**
+     * Sets the notification message in the session to be used in the view.
+     * @return void
+     */
+    protected function notification(): void
+    {
+
     }
 }

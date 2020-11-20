@@ -1,22 +1,26 @@
 <?php
 namespace App\Core;
 
+use App\Component\AuthComponent;
 use App\Core\Network\Request;
 use App\Helper\FormHelper;
 /**
  * @property FormHelper $form
  * @property Request $request
+ * @property array|null $user Logged user or null.
  * Renders a complete view with data from the controllers and all required helpers for the view.
  */
 class Renderer
 {
     private FormHelper $form;
     public Request $request;
+    public ?array $user;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request, AuthComponent $authComponent)
     {
         $this->request = $request;
         $this->form = new FormHelper($this->request->data);
+        $this->user = $authComponent->user();
     }
 
     /**

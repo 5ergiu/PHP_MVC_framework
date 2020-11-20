@@ -591,10 +591,6 @@ a.button:hover {
   margin-left: auto;
 }
 
-.navigation__menu > li:first-child {
-  margin-right: 1rem;
-}
-
 .navigation__menu li + li ul li:last-child {
   text-align: center;
   margin-top: 1rem;
@@ -612,6 +608,23 @@ a.button:hover {
 .logo__img {
   width: 2rem;
   height: auto;
+}
+
+.avatar {
+  background-color: unset;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+.avatar img {
+  width: 2rem;
+  height: auto;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  overflow: hidden;
 }
 
 footer {

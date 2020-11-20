@@ -36,6 +36,21 @@ class AuthController extends AbstractController
     }
 
     /**
+     * Logs users out.
+     * @return void
+     * @throws Exception
+     */
+    public function logout(): void
+    {
+        if (!empty($this->auth->user())) {
+            $this->auth->logout();
+            $this->redirect(['path' => Request::ROOT]);
+        } else {
+            var_dump('error, still logged in'); die;
+        }
+    }
+
+    /**
      * Registers new users.
      * @return void
      * @throws Exception
