@@ -1,7 +1,6 @@
 import Notification from './components/notification.js'
 import Loading from './components/loading.js'
 import Dropdown from './components/dropdown.js'
-import Auth from './auth/auth.js'
 import Articles from './articles/articles.js'
 import Actions from './components/actions.js'
 import Utils from './components/utils.js';
@@ -16,7 +15,6 @@ class App {
         // this.Loading = new Loading
         // this.Notification = new Notification
         this.Utils = new Utils
-        new Auth(this.Utils)
         // new Articles(this.Loading, this.Notification)
         new Dropdown
         // new Actions(this.Utils, this.Notification)

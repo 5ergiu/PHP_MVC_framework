@@ -65,14 +65,17 @@ class Router
         $link = implode('/', $link);
         if (!empty($url['?'])) {
             $link .= '?';
-            foreach ($url['?'] as $key => $value) {
-                if ($key !== array_key_last($url['?'])) {
-                    $link .= "$key=$value&";
-                } else {
-                    $link .= "$key=$value";
+            if (is_array($url['?'])) {
+                foreach ($url['?'] as $key => $value) {
+                    if ($key !== array_key_last($url['?'])) {
+                        $link .= "$key=$value&";
+                    } else {
+                        $link .= "$key=$value";
+                    }
                 }
+            } elseif (is_string($url['?'])) {
+                $link .= $url['?'];
             }
-            $link = substr($link, 0, -1);
         }
         if (!empty($url['ext'])) {
             $link .= "{$url['ext']}.json";

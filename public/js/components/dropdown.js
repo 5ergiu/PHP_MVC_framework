@@ -20,7 +20,7 @@ export default class Dropdown {
      * Also there's another 'click' event listener added to the document so we can
      * check when the user clicks outside the dropdown so it can be closed.
      */
-    open = (event) => {
+    open = event => {
         // https://www.blustemy.io/detecting-a-click-outside-an-element-in-javascript/
         let dropdownContent = event.currentTarget.nextElementSibling
         let dropdown = dropdownContent.closest('.dropdown')

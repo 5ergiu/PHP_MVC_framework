@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use App\Core\Exception\MethodNotAllowedException;
 use App\Core\Network\Request;
 use App\Entity\User;
 use App\Repository\UsersRepo;
@@ -18,21 +19,22 @@ class AuthController extends AbstractController
      */
     public function login(): void
     {
-        $user = null;
-        $errors = [];
         if ($this->request->is('post')) {
+            $user = null;
+            $errors = [];
             if (empty($this->auth->user())) {
                 $user = $this->auth->login($this->request->data['username'], $this->request->data['password']);
-                if (empty($user)) {
+                if (!empty($user)) {
+                    $this->redirect($this->referer);
+                } else {
                     $errors['credentials'] = 'Wrong credentials';
                 }
             } else {
                 $errors['user'] = 'Already logged in';
             }
         } else {
-            $errors['method'] = 'Method not allowed';
+            throw new MethodNotAllowedException();
         }
-        $this->newJsonResponse($user, $errors);
     }
 
     /**
@@ -44,9 +46,7 @@ class AuthController extends AbstractController
     {
         if (!empty($this->auth->user())) {
             $this->auth->logout();
-            $this->redirect(['path' => Request::ROOT]);
-        } else {
-            var_dump('error, still logged in'); die;
+            $this->redirect($this->referer);
         }
     }
 
@@ -58,7 +58,7 @@ class AuthController extends AbstractController
     public function register(): void
     {
         if (!empty($this->auth->user())) {
-            $this->redirect(['path' => Request::ROOT]);
+            $this->redirect($this->referer);
         }
         $User = new User;
         $this->loadRepo('users');
@@ -68,7 +68,7 @@ class AuthController extends AbstractController
                 $username = $this->UsersRepo->findBy('id', $lastInsertedId)['username'];
                 $user = $this->auth->login($username, null, true);
                 if (!empty($user)) {
-                    $this->redirect(['path' => Request::ROOT]);
+                    $this->redirect($this->referer);
                 }
             }
         }

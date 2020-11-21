@@ -591,6 +591,10 @@ a.button:hover {
   margin-left: auto;
 }
 
+.navigation__menu > li:first-child {
+  margin-right: 1rem;
+}
+
 .navigation__menu li + li ul li:last-child {
   text-align: center;
   margin-top: 1rem;
@@ -615,7 +619,6 @@ a.button:hover {
   border: none;
   padding: 0;
   cursor: pointer;
-  margin-left: 1rem;
 }
 
 .avatar img {

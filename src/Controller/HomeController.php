@@ -13,7 +13,6 @@ class HomeController extends AbstractController
 
     public function mareTest(string $test, int $test2)
     {
-
         $this->render('home/index');
     }
 }

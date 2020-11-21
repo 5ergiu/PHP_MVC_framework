@@ -493,6 +493,9 @@ a {
     display: flex;
     align-items: center;
     margin-left: auto;
+    > li:first-child {
+      margin-right: 1rem;
+    }
     li + li ul li:last-child {
       text-align: center;
       margin-top: 1rem;
@@ -517,7 +520,6 @@ a {
   border: none;
   padding: 0;
   cursor: pointer;
-  margin-left: 1rem;
   img {
     width: 2rem;
     height: auto;

@@ -9,6 +9,7 @@ use App\Core\Network\Response;
 use App\Core\Renderer;
 /**
  * @property Request $request
+ * @property array $referer
  * @property Response $response
  * @property AuthComponent $auth
  * @property Renderer $renderer
@@ -19,6 +20,7 @@ use App\Core\Renderer;
 abstract class AbstractController
 {
     protected Request $request;
+    protected array $referer;
     protected Response $response;
     protected AuthComponent $auth;
     private Renderer $renderer;
@@ -28,6 +30,7 @@ abstract class AbstractController
     public function __construct()
     {
         $this->request = new Request;
+        $this->referer = $this->__buildReferer();
         $this->response = new Response;
         $this->auth = new AuthComponent;
         $this->renderer = new Renderer($this->request, $this->auth);
@@ -37,9 +40,9 @@ abstract class AbstractController
 
     /**
      * Renders a view.
-     * @param string $view         The path of the view.
+     * @param string $view The path of the view.
      * @param array $viewVariables The variables that can be used in the view.
-     * @param string|null $layout  The name of the layout.
+     * @param string|null $layout The name of the layout.
      * @return void
      */
     protected function render(string $view, array $viewVariables = [], ?string $layout = null): void
@@ -49,7 +52,7 @@ abstract class AbstractController
 
     /**
      * Echo a json response.
-     * @param mixed $response      The result to be returned to js.
+     * @param mixed $response The result to be returned to js.
      * @param array $errors
      * @return void
      */
@@ -103,5 +106,36 @@ abstract class AbstractController
     protected function notification(): void
     {
 
+    }
+
+    /**
+     * TODO: add more security to this
+     * Returns a formatted array of the referer.
+     * @return array
+     */
+    private function __buildReferer(): array
+    {
+        $url = [];
+        if (isset($_SERVER['HTTP_REFERER'])) {
+            $path = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH);
+            if ($path !== Request::ROOT) {
+                $path = ltrim($path, '/');
+                $path = explode('/', $path);
+                $url['path'] = "$path[0]/$path[1]";
+                unset($path[0], $path[1]);
+                if (!empty($path)) {
+                    $url['params'] = array_values($path);
+                }
+            } else {
+                $url['path'] = Request::ROOT;
+            }
+            $queryParams = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY);
+            if (!empty($queryParams)) {
+                $url['?'] = $queryParams;
+            }
+        } else {
+            $url['path'] = Request::ROOT;
+        }
+        return $url;
     }
 }

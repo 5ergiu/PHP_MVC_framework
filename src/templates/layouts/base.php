@@ -72,9 +72,9 @@ use App\Entity\User;
                     <div class="dropdown__content">
                         <?php
                             echo $this->form->create(null, [
-                                'id' => 'js-login',
                                 'class' => 'login',
                                 'autocomplete' => 'off',
+                                'action' => 'auth/login',
                             ]);
                             echo $this->form->input('username', [
                                 'placeholder' => 'Enter username',
@@ -87,7 +87,8 @@ use App\Entity\User;
                         <div class="login__buttons">
                         <?php
                             echo $this->form->button('Login', [
-                                'class' => 'button'
+                                'type' => 'submit',
+                                'class' => 'button',
                             ]);
                         ?>
                             <a class="button button--secondary" href="/auth/register">
