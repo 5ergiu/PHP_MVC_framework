@@ -3,9 +3,15 @@ namespace App\Core\Network;
 
 /**
  * Manipulates the app's response.
+ * @property string $body
+ * @property array $headers
  */
 class Response
 {
+
+    private string $body;
+    private array $headers;
+
     /**
      * Sets the http response code.
      * @param int $code Status code.
@@ -23,8 +29,9 @@ class Response
      */
     public function json(array $json): void
     {
-        header('Content-type:application/json');
-        echo json_encode($json, JSON_PRETTY_PRINT);
+        $this->__setHeaders(['Content-type' => 'application/json']);
+        $this->__setBody(json_encode($json, JSON_PRETTY_PRINT));
+        echo $this->body;
     }
 
     /**
@@ -36,5 +43,31 @@ class Response
     public function redirect(array $url, $full = false): void
     {
         header('Location: ' . Router::url($url, $full));
+    }
+
+    /**
+     * @param string $body
+     */
+    private function __setBody(string $body): void
+    {
+        $this->body = $body;
+    }
+
+    /**
+     * @param array $headers
+     */
+    private function __setHeaders(array $headers): void
+    {
+        foreach ($headers as $header => $value) {
+            if (!is_array($value)) {
+                $this->headers[$header] = $value;
+                header("$header:$value");
+            } else {
+                foreach ($header as $key => $val) {
+                    $this->headers[$key] = $val;
+                    header("$key:$val");
+                }
+            }
+        }
     }
 }

@@ -24,7 +24,6 @@ export default class Utils {
         return this
     }
 
-    // method used to read cookies.
     readCookie = (name) => {
         let cookies = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')
         return cookies ? cookies.pop() : ''

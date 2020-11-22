@@ -3,39 +3,41 @@ namespace App\Controller;
 
 use App\Component\AuthComponent;
 use App\Component\SessionComponent;
+use App\Core\Exception\MethodNotAllowedException;
 use App\Helper\LoggerHelper;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
 use App\Core\Renderer;
 /**
+ * @property SessionComponent $session
  * @property Request $request
  * @property array $referer
  * @property Response $response
  * @property AuthComponent $auth
  * @property Renderer $renderer
  * @property LoggerHelper $log
- * @property SessionComponent $session
+
  * The framework's main controller which will be extended by all the app's controllers.
  */
 abstract class AbstractController
 {
+    protected SessionComponent $session;
     protected Request $request;
     protected array $referer;
     protected Response $response;
     protected AuthComponent $auth;
     private Renderer $renderer;
     protected LoggerHelper $log;
-    protected SessionComponent $session;
 
     public function __construct()
     {
+        $this->session = new SessionComponent;
         $this->request = new Request;
         $this->referer = $this->__buildReferer();
         $this->response = new Response;
         $this->auth = new AuthComponent;
-        $this->renderer = new Renderer($this->request, $this->auth);
+        $this->renderer = new Renderer($this->request, $this->auth, $this->__getNotification());
         $this->log = new LoggerHelper;
-        $this->session = new SessionComponent;
     }
 
     /**
@@ -59,9 +61,28 @@ abstract class AbstractController
     protected function newJsonResponse($response, array $errors = []): void
     {
         $json['response'] = $response;
-        $json['result'] = empty($errors);
-        $json['errors'] = $errors ?? [];
+        if (!empty($errors)) {
+            $json['errors'] = $errors;
+        }
         $this->response->json($json);
+    }
+
+    /**
+     * Checks the allowed methods for a controller action.
+     * @param array $methods Array of allowed methods.
+     * @return bool
+     * @throws MethodNotAllowedException
+     */
+    protected function methodsAllowed(array $methods): bool
+    {
+        foreach ($methods as $key => $value) {
+            $methods[$key] = strtoupper($value);
+        }
+        if (!in_array($this->request->method, $methods)) {
+            throw new MethodNotAllowedException;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -100,15 +121,6 @@ abstract class AbstractController
     }
 
     /**
-     * Sets the notification message in the session to be used in the view.
-     * @return void
-     */
-    protected function notification(): void
-    {
-
-    }
-
-    /**
      * TODO: add more security to this
      * Returns a formatted array of the referer.
      * @return array
@@ -137,5 +149,35 @@ abstract class AbstractController
             $url['path'] = Request::ROOT;
         }
         return $url;
+    }
+
+    /**
+     * Sets the notification message in the session to be used in the view.
+     * @param string $icon
+     * @param string $message
+     * @return void
+     */
+    protected function notify(string $icon, string $message): void
+    {
+        $this->session->write('icon', "$icon.png");
+        $this->session->write('message', $message);
+    }
+
+    /**
+     * Returns an array with the notification options.
+     * @return array
+     */
+    private function __getNotification(): array
+    {
+        $notification = [];
+        if (!empty($this->session->get('icon'))) {
+            $notification['icon'] = $this->session->get('icon');
+            $this->session->delete('icon');
+        }
+        if (!empty($this->session->get('message'))) {
+            $notification['message'] = $this->session->get('message');
+            $this->session->delete('message');
+        }
+        return $notification;
     }
 }

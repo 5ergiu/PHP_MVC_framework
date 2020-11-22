@@ -7,7 +7,8 @@ use App\Helper\FormHelper;
 /**
  * @property FormHelper $form
  * @property Request $request
- * @property array|null $user Logged user or null.
+ * @property array|null $user    Logged user or null.
+ * @property array $notification An array with the notification options.
  * Renders a complete view with data from the controllers and all required helpers for the view.
  */
 class Renderer
@@ -15,12 +16,14 @@ class Renderer
     private FormHelper $form;
     public Request $request;
     public ?array $user;
+    public array $notification;
 
-    public function __construct(Request $request, AuthComponent $authComponent)
+    public function __construct(Request $request, AuthComponent $authComponent, array $notification)
     {
         $this->request = $request;
         $this->form = new FormHelper($this->request->data);
         $this->user = $authComponent->user();
+        $this->notification = $notification;
     }
 
     /**

@@ -6,6 +6,7 @@ namespace App\Core\Network;
  * Sets the request data and checks the request type.
  * @property string $url Formatted Request URL.
  * @property array $data Request data.
+ * @property string $method
  */
 class Request
 {
@@ -18,11 +19,13 @@ class Request
 
     public string $url;
     public array $data;
+    public string $method;
 
     public function __construct()
     {
         $this->__setUrl();
         $this->__setData();
+        $this->method = $_SERVER['REQUEST_METHOD'];
     }
 
     /**
@@ -35,15 +38,15 @@ class Request
         $type = strtoupper($type);
         switch ($type) {
             case self::POST :
-                return $_SERVER['REQUEST_METHOD'] === self::POST;
+                return $this->method === self::POST;
             case self::GET :
-                return $_SERVER['REQUEST_METHOD'] === self::GET;
+                return $this->method === self::GET;
             case self::PUT :
-                return $_SERVER['REQUEST_METHOD'] === self::PUT;
+                return $this->method === self::PUT;
             case self::PATCH :
-                return $_SERVER['REQUEST_METHOD'] === self::PATCH;
+                return $this->method === self::PATCH;
             case self::DELETE :
-                return $_SERVER['REQUEST_METHOD'] === self::DELETE;
+                return $this->method === self::DELETE;
             default :
                 return false;
         }

@@ -37,34 +37,45 @@ use App\Entity\User;
                     <button class="dropdown__toggler avatar">
                         <img src="<?= ASSETS_IMG . "{$this->user['image']}"; ?>" alt="profile" />
                     </button>
-                    <ul class="dropdown__content">
-                        <?php if ($this->user['role'] === User::ROLE_ADMIN) : ?>
-                            <li class="dropdown__item navigation__user__admin"><a href="/admin">Admin</a></li>
-                        <?php endif; ?>
-                        <li class="dropdown__item">
-                            <a href="/account/reading-list">
-                                Reading list
-                            </a>
-                            <span class="counter" id="bookmarksCount" >
-                            <?= isset($data['user']['bookmarks_count']) ? $data['user']['bookmarks_count'] : 0; ?>
-                        </span>
-                        </li>
-                        <li class="dropdown__item"><a href="/account/dashboard">Dashboard</a></li>
-                        <li class="dropdown__item">
-                            <a href="/account/drafts">
-                                Drafs
-                            </a>
-                            <span class="counter" id="draftsCount" >
-                            <?= isset($data['user']['drafts_count']) ? $data['user']['drafts_count'] : 0; ?>
-                        </span>
-                        </li>
-                        <li class="dropdown__item"><a href="/account/settings">Account Settings</a></li>
-                        <li>
-                            <a class="button button--secondary" href="/auth/logout">
-                                Logout
-                            </a>
-                        </li>
-                    </ul>
+                    <div class="dropdown__content">
+                        <ul id="js-navigation-user" class="navigation__user">
+                            <div id="js-logout-loading-spinner" class="spinner hide"></div>
+                            <?php if ($this->user['role'] === User::ROLE_ADMIN) : ?>
+                                <li class="dropdown__item navigation__user__admin">
+                                    <a href="/admin">💪 Admin</a>
+                                </li>
+                            <?php endif; ?>
+                            <li class="dropdown__item">
+                                <a href="/account/dashboard">🖥️ Dashboard</a>
+                            </li>
+                            <?php if ($this->user['role'] === User::ROLE_ADMIN || $this->user['role'] === User::ROLE_AUTHOR) : ?>
+                                <li class="dropdown__item">
+                                    <a href="/account/drafts">
+                                        📋 Drafts
+                                        <span class="navigation__user_counter" id="draftsCount" >
+                                            <?= isset($data['user']['drafts_count']) ? $data['user']['drafts_count'] : 0; ?>
+                                        </span>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                            <li class="dropdown__item">
+                                <a href="/account/reading-list">
+                                    📚 Reading list
+                                    <span class="navigation__user_counter" id="bookmarksCount">
+                                        <?= isset($data['user']['bookmarks_count']) ? $data['user']['bookmarks_count'] : 0; ?>
+                                    </span>
+                                </a>
+                            </li>
+                            <li class="dropdown__item">
+                                <a href="/account/settings">🛠️ Account Settings</a>
+                            </li>
+                            <li>
+                                <button class="button button--secondary" id="js-logout">
+                                    Logout
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                 <?php else : ?>
                     <button class="button dropdown__toggler">
                         Login
@@ -73,9 +84,14 @@ use App\Entity\User;
                         <?php
                             echo $this->form->create(null, [
                                 'class' => 'login',
+                                'id' => 'js-login',
                                 'autocomplete' => 'off',
                                 'action' => 'auth/login',
                             ]);
+                        ?>
+                        <div id="js-login-loading-spinner" class="spinner hide"></div>
+                        <div id="js-login-message" class="login__message">Hello there! 👋</div>
+                        <?php
                             echo $this->form->input('username', [
                                 'placeholder' => 'Enter username',
                             ]);
@@ -112,15 +128,15 @@ use App\Entity\User;
         test footer
     </div>
 </footer>
-<div id="main-spinner" class="spinner hide" role="status"><div></div><div></div><div></div><div></div></div>
-<div class="notification">
-    <img class="notification__image"
-        <?php if (isset($data['response']['icon'])) : ?>
-            src="<?= ASSETS_IMG . "{$data['response']['icon']}"; ?>"
-        <?php endif; ?>
-         alt="img" />
-    <p class="notification__message">
-        <?= $data['response']['message'] ?? null; ?>
+<div id="js-notification"  class="notification">
+    <img id="js-notification-icon" class="notification__icon"
+     <?php if (isset($this->notification['icon'])) : ?>
+         src="<?= ASSETS_IMG . "{$this->notification['icon']}"; ?>"
+     <?php endif; ?>
+         alt="Notice: "
+    />
+    <p id="js-notification-message" class="notification__message">
+        <?= $this->notification['message'] ?? null; ?>
     </p>
 </div>
 <script type="module" src="<?= ASSETS_JS . 'app.js'; ?>"></script>

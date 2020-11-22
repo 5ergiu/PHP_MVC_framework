@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-use App\Core\Exception\MethodNotAllowedException;
 use App\Core\Network\Request;
 use App\Entity\User;
 use App\Repository\UsersRepo;
@@ -13,32 +12,32 @@ use Exception;
 class AuthController extends AbstractController
 {
     /**
-     * Logs users in.
+     * @api Logs users in.
      * @return void
      * @throws Exception
      */
     public function login(): void
     {
-        if ($this->request->is('post')) {
-            $user = null;
-            $errors = [];
-            if (empty($this->auth->user())) {
-                $user = $this->auth->login($this->request->data['username'], $this->request->data['password']);
-                if (!empty($user)) {
-                    $this->redirect($this->referer);
-                } else {
-                    $errors['credentials'] = 'Wrong credentials';
-                }
+        $this->methodsAllowed(['post']);
+        $user = null;
+        $errors = [];
+        if (empty($this->auth->user())) {
+            $user = $this->auth->login($this->request->data['username'], $this->request->data['password']);
+            if (empty($user)) {
+                $user = false;
+                $errors['credentials'] = 'Wrong credentials';
             } else {
-                $errors['user'] = 'Already logged in';
+                $this->notify('check', 'Successfully logged in');
+                $user['redirect'] = $this->referer;
             }
         } else {
-            throw new MethodNotAllowedException();
+            $errors['user'] = 'Already logged in';
         }
+        $this->newJsonResponse($user, $errors);
     }
 
     /**
-     * Logs users out.
+     * @api Logs users out.
      * @return void
      * @throws Exception
      */
@@ -46,8 +45,19 @@ class AuthController extends AbstractController
     {
         if (!empty($this->auth->user())) {
             $this->auth->logout();
-            $this->redirect($this->referer);
+            $this->notify('check', 'Successfully logged out');
+            $this->redirect(['path' => Request::ROOT]);
         }
+    }
+
+    /**
+     * @api Checks if a user is logged in or not.
+     * @return void
+     */
+    public function isloggedIn(): void
+    {
+        $response = !empty($this->auth->user());
+        $this->newJsonResponse($response);
     }
 
     /**

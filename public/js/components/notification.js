@@ -1,16 +1,10 @@
-/**
- This class will be used to show notifications such as messages, errors, etc.
- */
 export default class Notification {
-
     constructor() {
-        this.notification = document.querySelector('.notification')
-        this.notificationMessage = document.querySelector('.notification__message')
-        this.notificationsImg = document.querySelector('.notification__image')
-        if (this.notificationMessage !== null) {
-            if (this.notificationMessage.innerText !== '') {
-                this.show()
-            }
+        this.notification = document.getElementById('js-notification')
+        this.notificationIcon = document.getElementById('js-notification-icon')
+        this.notificationMessage = document.getElementById('js-notification-message')
+        if (this.notificationMessage.innerText !== '') {
+            this.show()
         }
     }
 
@@ -28,34 +22,38 @@ export default class Notification {
      | calling this method('options.prompt' has to be true).
      |
      */
-    show = (options = {}) => {
-        if (options.isPrompt) {
+    show = (options = null) => {
+        if (options) {
             this.notificationMessage.innerHTML = options.message
-            this.notificationsImg.src = options.imgPath
+            this.notificationIcon.src = options.imgPath
         }
-        this.notification.classList.add('notification--show')
-        this.notification.animate([
-            {
-                top: '100%',
-                opacity: 0,
-            },
-            {
-                top: '85%',
-                opacity: 1,
-            },
-            ], {
-            duration: 500,
-            },
-        )
-        setTimeout(() => {
-            this.notification.animate([
-                {top: '85%'},
-                {top: '100%'},
-                ], {
-                    duration: 300,
-                },
-            )
-            this.notification.classList.remove('notification--show')
-        }, 3000)
+        // we first check to see if the show class has already been added so we won't
+        // have any weird animations
+        if (!this.notification.classList.contains('notification--show')) {
+            this.notification.className  = 'notification notification--show'
+            // this.notification.animate([
+            //         {
+            //             top: '100%',
+            //             opacity: 0,
+            //         },
+            //         {
+            //             top: '90%',
+            //             opacity: 1,
+            //         },
+            //     ], {
+            //         duration: 300,
+            //     },
+            // )
+            setTimeout(() => {
+                // this.notification.animate([
+                //         {top: '90%'},
+                //         {top: '100%'},
+                //     ], {
+                //         duration: 300,
+                //     },
+                // )
+                this.notification.className = 'notification notification--hide'
+            }, 3000)
+        }
     }
 }
