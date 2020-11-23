@@ -1,18 +1,33 @@
 <?php
-
 namespace App\Controller;
 
+use App\Repository\ArticleLikesRepo;
+use App\Repository\ArticlesRepo;
+use Exception;
+/**
+ * @property ArticlesRepo $ArticlesRepo
+ * @property ArticleLikesRepo $ArticleLikesRepo
+ */
 class HomeController extends AbstractController
 {
-    public function index()
+    /**
+     * Index method.
+     * @return void
+     * @throws Exception
+     */
+    public function index(): void
     {
+        $this->loadRepo('articles');
+        $this->loadRepo('articleLikes');
+        $likedByLoggedUserSubQuery = null;
+        $userId =  $this->auth->user('id');
+        if (!empty($userId)) {
+            $likedByLoggedUserSubQuery = $this->ArticleLikesRepo->likedByLoggedUserSubQuery();
+        }
+        $articles = $this->ArticlesRepo->getArticles($likedByLoggedUserSubQuery, $userId);
+        var_dump($articles); die;
         $this->render('home/index', [
-            'tacac' => 'ceva',
+//            'articles' => $articles,
         ]);
-    }
-
-    public function mareTest(string $test, int $test2)
-    {
-        $this->render('home/index');
     }
 }

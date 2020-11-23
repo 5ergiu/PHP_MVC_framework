@@ -5,22 +5,23 @@ use App\Repository\AbstractRepository as Repository;
 use Exception;
 class UsersRepo extends Repository
 {
-
-//    /**
-//     * @param string $username
-//     * @return array
-//     * @throws Exception
-//     */
-//    public function findByUsername(string $username): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->setParams([
-//                'u.username = :username'
-//            ])
-//            ->addConditions([
-//                'u.username' => $username,
-//            ])
-//            ->getQuery()
-//            ->getResults();
-//    }
+    /**
+     * Returns a username based on a user's id.
+     * @param int $userId
+     * @return string
+     * @throws Exception
+     */
+    public function getUsernameById(int $userId): string
+    {
+        return $this->createQueryBuilder('u')
+            ->where([
+                'u.id = :id'
+            ])
+            ->setParameters([
+                'id' => $userId,
+            ])
+            ->getQuery()
+            ->firstOrNull()['username']
+        ;
+    }
 }

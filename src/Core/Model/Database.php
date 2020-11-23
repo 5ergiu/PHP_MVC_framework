@@ -1,5 +1,5 @@
 <?php
-namespace App\Component;
+namespace App\Core\Model;
 
 use Exception;
 use PDO;
@@ -7,14 +7,14 @@ use PDOException;
 /**
  * Connects to the database.
  */
-class DatabaseComponent
+class Database
 {
     /**
      * Connects to the database and returns the PDO object.
      * @return PDO
      * @throws Exception
      */
-    public static function connect(): PDO
+    protected static function connect(): PDO
     {
         $dsn = "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']}";
         try {

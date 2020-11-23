@@ -1,7 +1,6 @@
 <?php
 namespace App\Core\Exception;
 
-
 use Exception;
 class MethodNotAllowedException extends Exception
 {

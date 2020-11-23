@@ -54,7 +54,7 @@ class AuthController extends AbstractController
      * @api Checks if a user is logged in or not.
      * @return void
      */
-    public function isloggedIn(): void
+    public function isLoggedIn(): void
     {
         $response = !empty($this->auth->user());
         $this->newJsonResponse($response);
@@ -73,12 +73,12 @@ class AuthController extends AbstractController
         $User = new User;
         $this->loadRepo('users');
         if ($this->request->is('post')) {
-            if ($this->UsersRepo->save($User, $this->request->data)) {
-                $lastInsertedId = $this->UsersRepo->lastInsertedId();
-                $username = $this->UsersRepo->findBy('id', $lastInsertedId)['username'];
+            $userId = $this->UsersRepo->save($User, $this->request->data);
+            if ($userId) {
+                $username = $this->UsersRepo->getUsernameById($userId);
                 $user = $this->auth->login($username, null, true);
                 if (!empty($user)) {
-                    $this->redirect($this->referer);
+                    $this->redirect(['path' => Request::ROOT]);
                 }
             }
         }

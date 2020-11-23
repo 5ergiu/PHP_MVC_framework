@@ -1,26 +1,28 @@
 <?php
-
 namespace App\Entity;
 
 /**
- * @property int $authorId The id of the user that created the article.
- * @property string $title The article's title.
- * @property string $content The article's content.
- * @property string $cover The article's cover image.
- * @property $string $status The article's status:
+ * @property int $authorId       The id of the user that created the article.
+ * @property string $title       The article's title.
+ * @property $slug               The article's slug.
+ * @property string $cover       The article's cover image.
+ * @property string $description The article's description(small text).
+ * @property string $content     The article's content.
+ * @property string $status      The article's status:
  * - draft(default): Article that hasn't been submitted for review yet.
  * - approved: Article that has been submitted for review and approved.
  * - rejected: Article that has been submitted for review and was rejected.
- * @property $slug The article's slug.
+
  */
 class Article extends AbstractEntity
 {
     private int $authorId;
     private string $title;
-    private string $content;
-    private string $cover;
-    private string $status = 'draft';
     private string $slug;
+    private string $cover;
+    private string $description;
+    private string $content;
+    private string $status = 'draft';
 
     /**
      * @inheritDoc
@@ -64,19 +66,11 @@ class Article extends AbstractEntity
     }
 
     /**
-     * @return string
+     * @param string $slug
      */
-    public function getContent(): string
+    public function setSlug(string $slug): void
     {
-        return $this->content;
-    }
-
-    /**
-     * @param string $content
-     */
-    public function setContent(string $content): void
-    {
-        $this->content = $content;
+        $this->slug = $this->slugify($this->getTitle());
     }
 
     /**
@@ -98,6 +92,38 @@ class Article extends AbstractEntity
     /**
      * @return string
      */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     */
+    public function setContent(string $content): void
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * @return string
+     */
     public function getStatus(): string
     {
         return $this->status;
@@ -109,13 +135,5 @@ class Article extends AbstractEntity
     public function setStatus(string $status): void
     {
         $this->status = $status;
-    }
-
-    /**
-     * @param string $slug
-     */
-    public function setSlug(string $slug): void
-    {
-        $this->slug = $this->slugify($this->getTitle());
     }
 }

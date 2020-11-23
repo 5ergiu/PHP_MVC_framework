@@ -2,24 +2,24 @@
 namespace App\Entity;
 
 use App\Core\Network\Request;
-use App\Component\ValidatorComponent;
+use App\Core\Model\Validator;
 /**
  * The framework's main entity which will be extended by all the app's entities.
  * Used for binding values to entities, saving or editing entities.
  * @property array $context The request data at the point of binding the values, available in each entity.
  * @property array $errors  The errors array, available in each entity.
- * @property ValidatorComponent $validator
+ * @property Validator $validator
  */
 abstract class AbstractEntity
 {
-    protected ValidatorComponent $validator;
+    protected Validator $validator;
     public array $context;
     public array $errors = [];
 
     public function __construct()
     {
         $this->__setContext();
-        $this->validator = new ValidatorComponent($this);
+        $this->validator = new Validator($this);
         $this->validations();
     }
 

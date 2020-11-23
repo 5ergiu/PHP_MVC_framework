@@ -1,5 +1,5 @@
 <?php
-namespace App\Component;
+namespace App\Core\Model;
 
 use App\Entity\AbstractEntity as Entity;
 /**
@@ -8,7 +8,7 @@ use App\Entity\AbstractEntity as Entity;
  * @property array $rules An array of rules.
  * @property Entity $entity
  */
-class ValidatorComponent
+class Validator
 {
     private array $rules;
     private Entity $entity;
