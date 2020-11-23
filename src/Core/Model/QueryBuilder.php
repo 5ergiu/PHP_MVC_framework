@@ -1,51 +1,99 @@
 <?php
 namespace App\Core\Model;
 
+use App\Core\Exception\HaveToWorkOnTheseExceptions;
 use App\Entity\AbstractEntity as Entity;
 use Exception;
+use PDO;
+use PDOException;
+use PDOStatement;
 /**
  * Builds queries.
  * @property string $table           The name of the table.
+ * @property PDO $pdo                PDO instance.
  * @property array $attributes       The table's attributes.
  * @property string $alias           The table alias.
- * @property array $selections       The selected fields('*' by default).
- * @property array $joins            Query joins.
+ * @property string|null $selections The selected fields('*' by default).
+ * @property string|null $joins      Query joins.
  * @property array $parameters       Query parameters.
- * @property array $conditions       Query conditions.
- * @property array $orderBy          Query order by conditions.
- * @property array $groupBy          Query group by conditions.
- * @property int $limit              Query limit.
+ * @property string|null $conditions Query conditions.
+ * @property string|null $orderBy    Query order by conditions.
+ * @property string|null $groupBy    Query group by conditions.
+ * @property int|null $limit         Query limit.
  * @property string $query           Query to be executed on the database.
+ * @property PDOStatement $statement PDO Statement to be executed.
  */
 class QueryBuilder extends Query
 {
     private string $table;
+    private PDO $pdo;
     private array $attributes;
     private string $alias;
-    private array $selections = [];
-    private array $joins = [];
+    private ?string $selections = null;
+    private ?string $joins = null;
     private array $parameters = [];
-    private array $conditions = [];
-    private array $orderBy = [];
-    private array $groupBy = [];
-    private int $limit;
+    private ?string $conditions = null;
+    private ?string $orderBy = null;
+    private ?string $groupBy = null;
+    private ?int $limit;
     private string $query;
 
     public function __construct(string $table)
     {
         $this->table = $table;
-        parent::__construct();
-        $this->__setAttributes();
+        $this->pdo = $this->__connect();
+        $this->__setAttributesFromDatabaseSchema();
     }
 
     /**
-     * Sets the table's attributes.
+     * Connects to the database and returns the PDO object.
+     * @return PDO
+     * @throws Exception
+     */
+    private static function __connect(): PDO
+    {
+        $dsn = "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']}";
+        try {
+            $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
+            // set the PDO error mode to exception
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // set default fetch mode to fetch associative
+            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            return $pdo;
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Queries the database for the table's attributes and sets them.
      * @return void
      * @throws Exception
      */
-    private function __setAttributes(): void
+    private function __setAttributesFromDatabaseSchema(): void
     {
-        $this->attributes = $this->setAttributesFromDatabaseSchema($this->table);
+        $sql = "
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
+            WHERE TABLE_SCHEMA = :db_name AND
+            TABLE_NAME = :table_name AND
+            COLUMN_KEY <> 'PRI'
+        ";
+        try {
+            $query = $this->pdo->prepare($sql);
+            $query->execute([
+                ':db_name' => $_ENV['DB_NAME'],
+                ':table_name' => $this->table,
+            ]);
+            $result = $query->fetchAll();
+            $result = array_map('array_pop', $result);
+            foreach ($result as &$column) {
+                $column = str_replace('_', '', lcfirst(ucwords($column, '_')));
+            }
+            $this->attributes = $result;
+        } catch (PDOException $e) {
+            throw new HaveToWorkOnTheseExceptions($e);
+        }
     }
 
     /**
@@ -64,7 +112,17 @@ class QueryBuilder extends Query
      */
     public function select(array $selections): QueryBuilder
     {
-        $this->selections = $selections;
+        $tempSelections = [];
+//        var_dump($selections); die;
+        foreach ($selections as $selection => $alias) {
+            if (is_int($selection)) {
+                $tempSelections[] = "$alias";
+            } else {
+                $tempSelections[] = "$selection as $alias";
+            }
+        }
+        $this->selections = implode(', ', $tempSelections);
+        $this->selections = "$this->selections FROM $this->table as $this->alias ";
         return $this;
     }
 
@@ -74,7 +132,16 @@ class QueryBuilder extends Query
      */
     public function joins(array $joins): QueryBuilder
     {
-        $this->joins = $joins;
+        foreach ($joins as $join) {
+            $this->joins .= "{$join['type']} JOIN {$join['table']} as {$join['alias']} ON ";
+            foreach ($join['conditions'] as $key => $condition) {
+                if ($key !== array_key_last($join['conditions'])) {
+                    $this->joins .= "$condition AND";
+                } else {
+                    $this->joins .= "$condition ";
+                }
+            }
+        }
         return $this;
     }
 
@@ -84,7 +151,14 @@ class QueryBuilder extends Query
      */
     public function where(array $conditions): QueryBuilder
     {
-        $this->conditions = $conditions;
+        $this->conditions .= 'WHERE ';
+        foreach ($conditions as $key => $condition) {
+            if ($key !== array_key_last($conditions)) {
+                $this->conditions .= "$condition AND ";
+            } else {
+                $this->conditions .= "$condition ";
+            }
+        }
         return $this;
     }
 
@@ -104,17 +178,39 @@ class QueryBuilder extends Query
      */
     public function orderBy(array $orderBy): QueryBuilder
     {
-        $this->orderBy = $orderBy;
+        $this->orderBy .= 'ORDER BY ';
+        foreach ($orderBy as $sort => $order) {
+            if (is_int($sort)) {
+                if ($sort !== array_key_last($orderBy)) {
+                    $this->orderBy .= "$sort, ";
+                } else {
+                    $this->orderBy .= "$sort ";
+                }
+            } else {
+                if ($sort !== array_key_last($orderBy)) {
+                    $this->orderBy .= "$sort $order, ";
+                } else {
+                    $this->orderBy .= "$sort $order ";
+                }
+            }
+        }
         return $this;
     }
 
     /**
-     * @param array $groupBy
+     * @param array $group
      * @return $this
      */
-    public function groupBy(array $groupBy): QueryBuilder
+    public function groupBy(array $group): QueryBuilder
     {
-        $this->groupBy = $groupBy;
+        $this->groupBy .= 'GROUP BY ';
+        foreach ($group as $key => $groupBy) {
+            if ($key !== array_key_last($group)) {
+                $this->groupBy .= "$groupBy, ";
+            } else {
+                $this->groupBy .= "$groupBy ";
+            }
+        }
         return $this;
     }
 
@@ -124,7 +220,7 @@ class QueryBuilder extends Query
      */
     public function setMaxResults(int $limit): QueryBuilder
     {
-        $this->limit = $limit;
+        $this->limit .= "LIMIT $limit";
         return $this;
     }
 
@@ -134,65 +230,26 @@ class QueryBuilder extends Query
      */
     public function getQuery(): QueryBuilder
     {
-        $this->query = "SELECT ";
+        $this->query = 'SELECT ';
         if (!empty($this->selections)) {
-            $selections = implode(', ', $this->selections);
-            $this->query .= "$selections FROM $this->table as $this->alias ";
+            $this->query .= $this->selections;
         } else {
             $this->query .= "* FROM $this->table as $this->alias ";
         }
         if (!empty($this->joins)) {
-            foreach ($this->joins as $join) {
-                $this->query .= "{$join['type']} JOIN {$join['table']} as {$join['alias']} ON ";
-                foreach ($join['conditions'] as $key => $condition) {
-                    if ($key !== array_key_last($join['conditions'])) {
-                        $this->query .= "$condition AND";
-                    } else {
-                        $this->query .= "$condition ";
-                    }
-                }
-            }
+            $this->query .= $this->joins;
         }
         if (!empty($this->conditions)) {
-            $this->query .= "WHERE ";
-            foreach ($this->conditions as $key => $condition) {
-                if ($key !== array_key_last($this->conditions)) {
-                    $this->query .= "$condition AND ";
-                } else {
-                    $this->query .= "$condition ";
-                }
-            }
-        }
-        if (!empty($this->groupBy)) {
-            $this->query .= "GROUP BY ";
-            foreach ($this->groupBy as $key => $groupBy) {
-                if ($key !== array_key_last($this->groupBy)) {
-                    $this->query .= "$groupBy, ";
-                } else {
-                    $this->query .= "$groupBy ";
-                }
-            }
+            $this->query .= $this->conditions;
         }
         if (!empty($this->orderBy)) {
-            $this->query .= "ORDER BY ";
-            foreach ($this->orderBy as $sort => $order) {
-                if (is_int($sort)) {
-                    if ($sort !== array_key_last($this->orderBy)) {
-                        $this->query .= "$sort, ";
-                    } else {
-                        $this->query .= "$sort ";
-                    }
-                } else {
-                    if ($sort !== array_key_last($this->orderBy)) {
-                        $this->query .= "$sort $order, ";
-                    } else {
-                        $this->query .= "$sort $order ";
-                    }
-                }
-            }
+            $this->query .= $this->orderBy;
+        }
+        if (!empty($this->groupBy)) {
+            $this->query .= $this->groupBy;
         }
         if (!empty($this->limit)) {
-            $this->query .= "LIMIT $this->limit";
+            $this->query .= $this->limit;
         }
         $this->query = rtrim($this->query);
         $this->query .= ';';
@@ -210,19 +267,23 @@ class QueryBuilder extends Query
     }
 
     /**
-     * Saves a new record to the database.
-     * @param Entity $entity
-     * @return int
-     * @throws Exception
+     * Prepares the query and binds the values.
+     * @return void
+     * @throws HaveToWorkOnTheseExceptions
      */
-    public function saveRecord(Entity $entity): int
+    private function __prepareStatement(): void
     {
-        $parameters = $this->__getValuesFromEntity($entity);
-        $attributes = implode(', ', array_keys($parameters));
-        $prepareAttributes = implode(', ', array_map(fn($attr) => ":$attr", array_keys($parameters)));
-        $query = "INSERT INTO $this->table($attributes) VALUES ($prepareAttributes)";
-        $this->prepareStatement($query, $parameters);
-        return $this->getLastInsertedId();
+        $statement = $this->pdo->prepare($this->query);
+        if (!empty($this->parameters)) {
+            foreach ($this->parameters as $parameter => $value) {
+                $statement->bindValue(":$parameter", $value);
+            }
+        }
+        if ($statement !== false && $statement instanceof PDOStatement) {
+            $this->statement = $statement;
+        } else {
+            throw new HaveToWorkOnTheseExceptions;
+        }
     }
 
     /**
@@ -246,14 +307,34 @@ class QueryBuilder extends Query
     }
 
     /**
+     * Saves a new record to the database.
+     * @param Entity $entity
+     * @return int|null
+     * @throws Exception
+     */
+    public function getLastInsertedId(Entity $entity): ?int
+    {
+        $this->parameters = $this->__getValuesFromEntity($entity);
+        $attributes = implode(', ', array_keys($this->parameters));
+        $prepareAttributes = implode(', ', array_map(fn($attr) => ":$attr", array_keys($this->parameters)));
+        $this->query = "INSERT INTO $this->table($attributes) VALUES ($prepareAttributes)";
+        $this->__prepareStatement();
+        if ($this->insert($this->statement)) {
+            return $this->pdo->lastInsertId();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Returns one or more rows from the table.
      * @return array|null
      * @throws Exception
      */
     public function getResults(): ?array
     {
-        $this->prepareStatement($this->query, $this->parameters);
-        return $this->fetchAll();
+        $this->__prepareStatement();
+        return $this->fetchAll($this->statement);
     }
 
     /**
@@ -263,8 +344,8 @@ class QueryBuilder extends Query
      */
     public function firstOrNull(): ?array
     {
-        $this->prepareStatement($this->query, $this->parameters);
-        return $this->fetch();
+        $this->__prepareStatement();
+        return $this->fetch($this->statement);
     }
 
     /**
@@ -274,7 +355,7 @@ class QueryBuilder extends Query
      */
     public function count()
     {
-        $this->prepareStatement($this->query, $this->parameters);
-        return $this->fetchColumn();
+        $this->__prepareStatement();
+        return $this->fetchColumn($this->statement);
     }
 }

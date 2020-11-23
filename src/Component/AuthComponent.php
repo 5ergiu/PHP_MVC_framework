@@ -64,7 +64,9 @@ class AuthComponent
     public function user(string $value = null)
     {
         if ($value !== null) {
-            return $this->session->get(self::$sessionKey)[$value];
+            if ($this->session->get(self::$sessionKey)) {
+                return $this->session->get(self::$sessionKey)[$value];
+            }
         }
         return $this->session->get(self::$sessionKey);
     }

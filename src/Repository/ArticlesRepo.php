@@ -6,27 +6,33 @@ class ArticlesRepo extends AbstractRepository
 {
     /**
      * Returns all articles.
-     * @param string|null $likedByLoggedUserSubQuery
-     * @param int|null $userId Logged user.
+     * @param array|null $likedByLoggedUserSubQuery
      * @return array|string
      * @throws Exception
      */
-    public function getArticles(?string $likedByLoggedUserSubQuery, ?int $userId)
+    public function getArticles(?array $likedByLoggedUserSubQuery = null)
     {
-        $selections = ['a.id', 'a.title', 'a.content', 'a.cover', 'a.slug', 'count(DISTINCT l.liked_by) as likes'];
-        if ($userId !== null) {
-            $selections[] = "$likedByLoggedUserSubQuery AS liked_by_current_user";
+        $parameters = ['status' => 'approved'];
+        $selections = [
+            'a.id',
+            'a.title',
+            'a.content',
+            'a.cover',
+            'a.slug',
+            'count(DISTINCT l.liked_by)' => 'likes',
+        ];
+        if ($likedByLoggedUserSubQuery !== null) {
+            $selections["{$likedByLoggedUserSubQuery['query']}"] = 'liked_by_current_user';
+            foreach ($likedByLoggedUserSubQuery['parameters'] as $parameter => $value) {
+                $parameters[$parameter] = $value;
+            }
         }
         return $this->createQueryBuilder('a')
             ->select($selections)
             ->where([
                 'a.status = :status'
             ])
-            ->setParameters([
-                'status' => 'approved',
-                'liked_by' => $userId,
-                'article_id' => 'a.id',
-            ])
+            ->setParameters($parameters)
             ->joins([
                 [
                     'table' => 'article_likes',

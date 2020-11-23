@@ -5,7 +5,6 @@ use App\Core\Model\QueryBuilder;
 use App\Entity\AbstractEntity as Entity;
 use Exception;
 use PDOException;
-
 /**
  * The framework's main repository which will be extended by all the app's repositories.
  * Used for entire table queries.
@@ -43,11 +42,7 @@ abstract class AbstractRepository
         if (!$entity->bindValues($data)) {
             return false;
         }
-        try {
-            return $this->QueryBuilder->saveRecord($entity);
-        } catch (PDOException $e) {
-            return false;
-        }
+        return $this->QueryBuilder->getLastInsertedId($entity);
     }
 
     /**
