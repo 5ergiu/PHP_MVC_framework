@@ -6,33 +6,30 @@ class ArticlesRepo extends AbstractRepository
 {
     /**
      * Returns all articles.
-     * @param array|null $likedByLoggedUserSubQuery
+     * @param string|null $likedByLoggedUserSubQuery
+     * @param int|null $userId Logged user.
      * @return array|string
      * @throws Exception
      */
-    public function getArticles(?array $likedByLoggedUserSubQuery = null)
+    public function getArticles(string $likedByLoggedUserSubQuery, ?int $userId)
     {
-        $parameters = ['status' => 'approved'];
-        $selections = [
-            'a.id',
-            'a.title',
-            'a.content',
-            'a.cover',
-            'a.slug',
-            'count(DISTINCT l.liked_by)' => 'likes',
-        ];
-        if ($likedByLoggedUserSubQuery !== null) {
-            $selections["{$likedByLoggedUserSubQuery['query']}"] = 'liked_by_current_user';
-            foreach ($likedByLoggedUserSubQuery['parameters'] as $parameter => $value) {
-                $parameters[$parameter] = $value;
-            }
-        }
-        return $this->createQueryBuilder('a')
-            ->select($selections)
+        $articles = $this->createQueryBuilder('a')
+            ->select([
+                'a.id',
+                'a.title',
+                'a.content',
+                'a.cover',
+                'a.slug',
+                'count(DISTINCT l.liked_by)' => 'likes',
+                $likedByLoggedUserSubQuery => 'liked_by_logged_user',
+            ])
             ->where([
                 'a.status = :status'
             ])
-            ->setParameters($parameters)
+            ->setParameters([
+                'status' => 'approved',
+                'liked_by' => $userId,
+            ])
             ->joins([
                 [
                     'table' => 'article_likes',
@@ -47,5 +44,10 @@ class ArticlesRepo extends AbstractRepository
             ->getQuery()
             ->getResults()
         ;
+        foreach ($articles as &$article) {
+            $article['liked_by_logged_user'] =
+                $article['liked_by_logged_user'] === '1';
+        }
+        return $articles;
     }
 }

@@ -21,10 +21,10 @@ class HomeController extends AbstractController
         $this->loadRepo('articleLikes');
         $likedByLoggedUserSubQuery = null;
         $userId =  $this->auth->user('id');
-        if (!empty($userId)) {
-            $likedByLoggedUserSubQuery = $this->ArticleLikesRepo->likedByLoggedUserSubQuery($userId);
-        }
-        $articles = $this->ArticlesRepo->getArticles($likedByLoggedUserSubQuery);
+        $articles = $this->ArticlesRepo->getArticles(
+            $this->ArticleLikesRepo->getLikedByLoggedUserSubQuery(),
+            $userId
+        );
         var_dump($articles); die;
         $this->render('home/index', [
 //            'articles' => $articles,

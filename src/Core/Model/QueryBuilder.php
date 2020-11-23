@@ -262,6 +262,15 @@ class QueryBuilder extends Query
      */
     public function toQueryString(): string
     {
+        return $this->query;
+    }
+
+    /**
+     * Returns the formatted subQuery query string.
+     * @return string
+     */
+    public function subQuery(): string
+    {
         $query = substr($this->query, 0, -1);
         return "($query)";
     }
