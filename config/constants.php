@@ -1,15 +1,15 @@
 <?php
 
 // The server/domain name
-define('HOST', '/');
+define('HOST', 'http://localhost:8080');
 // Assets paths used in frontend
-define('ASSETS_CSS', HOST . 'css/');
-define('ASSETS_JS', HOST . 'js/');
-define('ASSETS_IMG', HOST . 'images/');
-define('ASSETS_FONT', HOST . 'css/');
-define('ASSETS_UPLOADS', HOST . 'uploads/');
+define('ASSETS_CSS', HOST . '/css/');
+define('ASSETS_JS', HOST . '/js/');
+define('ASSETS_IMG', HOST . '/images/');
+define('ASSETS_FONT', HOST . '/css/');
+define('ASSETS_UPLOADS', HOST . '/uploads/');
 // Vendor directory path(public)
-define('VENDOR', HOST . 'vendor/');
+define('VENDOR', HOST . '/vendor/');
 // Vendor directory path
 define('VENDOR_ROOT', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/vendor/'));
 // Templates directory path
