@@ -4,7 +4,6 @@ namespace App\Repository;
 use App\Core\Model\QueryBuilder;
 use App\Entity\AbstractEntity as Entity;
 use Exception;
-use PDOException;
 /**
  * The framework's main repository which will be extended by all the app's repositories.
  * Used for entire table queries.
@@ -28,6 +27,17 @@ abstract class AbstractRepository
     {
         $className = get_class($this);
         return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', chop(substr($className, strrpos($className, '\\') + 1), 'Repo')));
+    }
+
+    /**
+     * Sets sub queries on a specific repo instance.
+     * @param string $name     The name of the sub query.
+     * @param string $subQuery The sub query.
+     * @return void
+     */
+    public function setSubQuery(string $name, string $subQuery): void
+    {
+        $this->{$name} = $subQuery;
     }
 
     /**

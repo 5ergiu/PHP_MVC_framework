@@ -113,7 +113,6 @@ class QueryBuilder extends Query
     public function select(array $selections): QueryBuilder
     {
         $tempSelections = [];
-//        var_dump($selections); die;
         foreach ($selections as $selection => $alias) {
             if (is_int($selection)) {
                 $tempSelections[] = "$alias";
@@ -266,7 +265,7 @@ class QueryBuilder extends Query
     }
 
     /**
-     * Returns the formatted subQuery query string.
+     * Returns the formatted sub query query string.
      * @return string
      */
     public function subQuery(): string

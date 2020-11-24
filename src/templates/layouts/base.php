@@ -13,6 +13,11 @@ use App\Entity\User;
     <title><?= $title ?? 'Blog'; ?></title>
     <link type="text/css" rel="stylesheet" href="<?= VENDOR . 'fontawesome/css/all.min.css'; ?>" />
     <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . 'main.css'; ?>" />
+    <?php if (!empty($this->customCss)) :
+        foreach ($this->customCss as $css) : ?>
+            <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . $css; ?>" />
+        <?php endforeach; ?>
+    <?php endif; ?>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 </head>
 <body>

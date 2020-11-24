@@ -24,16 +24,12 @@ class HomeController extends AbstractController
         $this->loadRepo('articles');
         $this->loadRepo('articleLikes');
         $this->loadRepo('articleBookmarks');
-        $likedByLoggedUserSubQuery = null;
+        $this->ArticlesRepo->setSubQuery('likedByLoggedUserSubQuery', $this->ArticleLikesRepo->getLikedByLoggedUserSubQuery());
+        $this->ArticlesRepo->setSubQuery('bookmarkedByLoggedUserSubQuery', $this->ArticleBookmarksRepo->getBookmarkedByLoggedUserSubQuery());
         $userId =  $this->auth->user('id');
-        $articles = $this->ArticlesRepo->getArticlesFull(
-            $this->ArticleLikesRepo->getLikedByLoggedUserSubQuery(),
-            $this->ArticleBookmarksRepo->getBookmarkedByLoggedUserSubQuery(),
-            $userId
-        );
-        var_dump($articles); die;
+        $articles = $this->ArticlesRepo->getArticlesFull($userId);
         $this->render('home/index', [
-//            'articles' => $articles,
+            'articles' => $articles,
         ]);
     }
 }

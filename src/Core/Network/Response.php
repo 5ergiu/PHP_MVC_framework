@@ -8,7 +8,6 @@ namespace App\Core\Network;
  */
 class Response
 {
-
     private string $body;
     private array $headers;
 

@@ -1,44 +1,44 @@
 <article class="article article--mini">
-    <?php if (!empty($article['cover'])) : ?>
-        <a href="<?= "/articles/read/{$article['slug']}" ;?>">
+    <?php if (!empty($data['cover'])) : ?>
+        <a href="<?= "/articles/read/{$data['slug']}" ;?>">
             <div class="article__cover"
-                 style="background-image: url(<?= ASSETS_UPLOADS . "{$article['cover']}" ;?>)"
+                 style="background-image: url(<?= ASSETS_UPLOADS . "{$data['cover']}" ;?>)"
             ></div>
         </a>
     <?php endif; ?>
     <div class="article__container">
         <div class="article__info">
             <div class="avatar">
-                <a href="/users/<?= $article['username']; ?>">
-                    <img src="<?= ASSETS_IMG . "{$article['user_image']}"; ?>" alt="profile" />
+                <a href="/users/<?= $data['username']; ?>">
+                    <img src="<?= ASSETS_IMG . "{$data['avatar']}"; ?>" alt="profile" />
                 </a>
             </div>
             <div>
-                <a href="/users/<?= $article['username']; ?>">
-                    <?= $article['username']; ?>
+                <a href="/users/<?= $data['username']; ?>">
+                    <?= $data['username']; ?>
                 </a>
                 <p class="muted">
-                    <?= date("M jS, Y", strtotime($article['created_at'])); ?>
+                    <?= date("M jS, Y", strtotime($data['created_at'])); ?>
                 </p>
             </div>
             <div>
                 <button
-                    class="button--like <?= $article['liked_by_current_user'] ? 'liked' : null; ?>"
+                    class="button--like <?= $data['liked_by_logged_user'] ? 'liked' : null; ?>"
                     type="button"
-                    data-article-id="<?=$article['id'];?>"
-                    title="<?= $article['liked_by_current_user'] ? 'Unlike article' : 'Like article'; ?>"
+                    data-article-id="<?=$data['id'];?>"
+                    title="<?= $data['liked_by_logged_user'] ? 'Unlike article' : 'Like article'; ?>"
                 >
                 </button>
-                <span class="button--like__count muted"><?= $article['likes'] ;?></span>
+                <span class="button--like__count muted"><?= $data['likes'] ;?></span>
             </div>
         </div>
         <div class="article__title">
-            <a href="<?="/articles/read/{$article['slug']}";?>"><?= $article['title']; ?></a>
+            <a href="<?="/articles/read/{$data['slug']}";?>"><?= $data['title']; ?></a>
         </div>
         <div class="article__misc">
-            <?php if (!empty($article['tags'])) : ?>
+            <?php if (!empty($data['tags'])) : ?>
                 <div class="article__tags">
-                    <?php foreach($article['tags'] as $tag) : ?>
+                    <?php foreach($data['tags'] as $tag) : ?>
                         <a class="tag" href="/tags/<?= $tag; ?>">
                             <span>#</span><?= $tag; ?>
                         </a>
@@ -46,17 +46,17 @@
                 </div>
             <?php endif; ?>
             <button
-                class="button button--bookmark <?= $article['bookmarked_by_current_user'] ? 'bookmarked' : null; ?>"
+                class="button button--bookmark <?= $data['bookmarked_by_logged_user'] ? 'bookmarked' : null; ?>"
                 type="button"
-                data-article-id="<?=$article['id'];?>"
-                title="<?= $article['liked_by_current_user'] ? 'Remove bookmark' : 'Bookmark article'; ?>"
+                data-article-id="<?=$data['id'];?>"
+                title="<?= $data['bookmarked_by_logged_user'] ? 'Remove bookmark' : 'Bookmark article'; ?>"
             >
-                <?= $article['bookmarked_by_current_user'] ? 'SAVED' : 'SAVE'; ?>
+                <?= $data['bookmarked_by_logged_user'] ? 'UNSAVE' : 'SAVE'; ?>
             </button>
         </div>
-        <?php if (!empty($article['description'])) : ?>
+        <?php if (!empty($data['description'])) : ?>
             <div class="article__description">
-                <?= $article['description']; ?>
+                <?= $data['description']; ?>
             </div>
         <?php endif; ?>
     </div>

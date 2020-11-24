@@ -4,7 +4,7 @@ namespace App\Repository;
 class ArticleBookmarksRepo extends AbstractRepository
 {
     /**
-     * Returns a subQuery to find the articles liked by the logged user.
+     * Returns a sub query to find the bookmarked articles by the logged user.
      * @return string
      */
     public function getBookmarkedByLoggedUserSubQuery(): string

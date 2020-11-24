@@ -17,6 +17,7 @@ class Renderer
     public Request $request;
     public ?array $user;
     public array $notification;
+    public array $customCss = [];
 
     public function __construct(Request $request, AuthComponent $authComponent, array $notification)
     {
@@ -81,12 +82,18 @@ class Renderer
 
     /**
      * Renders an element.
-     * @param string $element The name of the element.
-     * @param array $data     The variables for the element.
+     * @param string $element  The name of the element.
+     * @param array $data      The variables for the element.
+     * @param array $customCss Custom css files to include in the head.
      * @return void
      */
-    public function element(string $element, array $data = []): void
+    public function element(string $element, array $data = [], array $customCss = []): void
     {
+        if (!empty($customCss)) {
+            foreach ($customCss as $css) {
+                $this->customCss[] = "$css.css";
+            }
+        }
         require ELEMENTS . "$element.php";
     }
 }
