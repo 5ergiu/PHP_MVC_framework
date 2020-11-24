@@ -82,6 +82,8 @@ class Renderer
 
     /**
      * Renders an element.
+     * Will NOT use reference variable here so they don't interfere with the ones from the actual view.
+     * All data will be accessed from the '$data' array inside any element.
      * @param string $element  The name of the element.
      * @param array $data      The variables for the element.
      * @param array $customCss Custom css files to include in the head.
