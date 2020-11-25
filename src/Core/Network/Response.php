@@ -171,9 +171,10 @@ class Response
             $this->statusCode(302);
         }
         $this->__setHttpCode();
-        $this->__sendHeaders();
         $this->__setContentType();
         $this->__setCookies();
+        $this->__sendHeaders();
         $this->__sendContent();
+        exit($this->statusCode);
     }
 }

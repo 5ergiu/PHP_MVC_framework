@@ -53,13 +53,13 @@ abstract class AbstractRepository
      * Saves a new record to the database.
      * @param Entity $entity The entity to be saved.
      * @param array $data    The data that will be bound to the entity.
-     * @return mixed
+     * @return int|null
      * @throws Exception
      */
-    public function save(Entity $entity, array $data)
+    public function save(Entity $entity, array $data): ?int
     {
         if (!$entity->bindValues($data)) {
-            return false;
+            return null;
         }
         return $this->QueryBuilder->getLastInsertedId($entity);
     }
@@ -91,6 +91,27 @@ abstract class AbstractRepository
             ])
             ->setParameters([
                 "$criteria" => $value,
+            ])
+            ->getQuery()
+            ->firstOrNull()
+        ;
+    }
+
+    /**
+     * Returns a row from the table.
+     * @param int $id
+     * @return array|null
+     * @throws Exception
+     */
+    public function findById(int $id): ?array
+    {
+        $table = $this->getTable();
+        return $this->createQueryBuilder($table)
+            ->where([
+                "$table.id = :id"
+            ])
+            ->setParameters([
+                'id' => $id,
             ])
             ->getQuery()
             ->firstOrNull()

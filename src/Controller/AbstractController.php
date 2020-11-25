@@ -5,7 +5,7 @@ use App\Component\AuthComponent;
 use App\Component\SessionComponent;
 use App\Core\Exception\MethodNotAllowedException;
 use App\Core\Network\Router;
-use App\Core\Renderer;
+use App\Core\View;
 use App\Helper\LoggerHelper;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
@@ -38,17 +38,19 @@ abstract class AbstractController
     }
 
     /**
-     * Renders a view.
-     * @param string $view The path of the view.
-     * @param array $viewVariables The variables that can be used in the view.
+     * Creates a view that will be rendered.
+     * @param string $viewPath    The path of the view.
+     * @param array $variables    The variables that will be used in the view.
      * @param string|null $layout The name of the layout.
      * @return void
      */
-    protected function render(string $view, array $viewVariables = [], ?string $layout = null): void
+    protected function render(string $viewPath, array $variables = [], ?string $layout = null): void
     {
-        $renderer = new Renderer($this->request, $this->auth, $this->__getNotification());
-        $renderer->setBody($view, $viewVariables, $layout);
-        $this->response->body($renderer->getBody());
+        $requestData = $this->request->data;
+        $authenticatedUser = $this->auth->user();
+        $notification = $this->__getNotification();
+        $View = new View($requestData, $authenticatedUser, $notification, $viewPath, $variables, $layout);
+        $this->response->body($View->geView());
         $this->response->send();
     }
 

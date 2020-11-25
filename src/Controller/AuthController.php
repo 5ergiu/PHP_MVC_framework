@@ -21,14 +21,20 @@ class AuthController extends AbstractController
         $this->methodsAllowed(['post']);
         $user = null;
         $errors = [];
-        if (empty($this->auth->user())) {
-            $user = $this->auth->login($this->request->data['username'], $this->request->data['password']);
-            if (empty($user)) {
-                $user = false;
-                $errors['credentials'] = 'Wrong credentials';
+        if (empty($this->auth->user)) {
+            $this->loadRepo('users');
+            $user = $this->UsersRepo->findBy('username', $this->request->data['username']);
+            if (!empty($user)) {
+                $authenticatedUser = $this->auth->login($user, $this->request->data['password']);
+                if (!empty($authenticatedUser)) {
+                    $user = $authenticatedUser;
+                    $this->notify('check', 'Successfully logged in');
+                    $user['redirect'] = $this->referer;
+                } else {
+                    $errors['credentials'] = 'Wrong credentials';
+                }
             } else {
-                $this->notify('check', 'Successfully logged in');
-                $user['redirect'] = $this->referer;
+                $errors['credentials'] = 'Wrong credentials';
             }
         } else {
             $errors['user'] = 'Already logged in';
@@ -43,7 +49,7 @@ class AuthController extends AbstractController
      */
     public function logout(): void
     {
-//        $this->methodsAllowed(['post']);
+        $this->methodsAllowed(['post']);
         if (!empty($this->auth->user())) {
             $this->auth->logout();
             $this->notify('check', 'Successfully logged out');
@@ -60,7 +66,7 @@ class AuthController extends AbstractController
      */
     public function isLoggedIn(): void
     {
-        $response = !empty($this->auth->user());
+        $response = !empty($this->auth->user);
         $this->newJsonResponse($response);
     }
 
@@ -71,20 +77,21 @@ class AuthController extends AbstractController
      */
     public function register(): void
     {
-        if (!empty($this->auth->user())) {
+        if (!empty($this->auth->user)) {
             $this->redirect($this->referer);
         }
         $User = new User;
-        $this->loadRepo('users');
         if ($this->request->is('post')) {
+            $this->loadRepo('users');
             $userId = $this->UsersRepo->save($User, $this->request->data);
             if ($userId) {
-                $username = $this->UsersRepo->getUsernameById($userId);
-                $user = $this->auth->login($username, null, true);
+                $user = $this->UsersRepo->findById($userId);
                 if (!empty($user)) {
+                    $this->auth->login($user, null, true);
                     $this->redirect(['path' => Request::ROOT]);
                 }
             }
+            $this->notify('error', 'Something went wrong, please try again');
         }
         $this->render('auth/register', [
             'User' => $User,

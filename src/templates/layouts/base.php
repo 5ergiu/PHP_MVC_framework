@@ -1,8 +1,8 @@
 <?php
-use App\Core\Renderer;
+use App\Core\View;
 use App\Entity\User;
 /**
- * @var $this Renderer
+ * @var $this View
  */
 ?>
 <!DOCTYPE html>
