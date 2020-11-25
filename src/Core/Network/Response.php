@@ -2,71 +2,178 @@
 namespace App\Core\Network;
 
 /**
- * Manipulates the app's response.
- * @property string $body
+ * Responsible for managing the response text, status and headers of a HTTP response.
+ * Controllers will use this class to render their response.
+ * @property Request $request
+ * @property int $statusCode
+ * @property string $charSet
+ * @property string $contentType
+ * @property array $mimeTypes
  * @property array $headers
+ * @property array $cookies
+ * @property string $body
  */
 class Response
 {
+    private int $statusCode = 200;
+    private string $charSet = 'UTF-8';
+    private string $contentType = 'text/html';
+    private array $headers = [];
+    private array $cookies = [];
     private string $body;
-    private array $headers;
 
     /**
-     * Sets the http response code.
+     * Holds 'allowed' mime type mappings
+     */
+    private array $mimeTypes = [
+        'html' => 'text/html',
+        'json' => 'application/json',
+    ];
+
+    /**
      * @param int $code Status code.
-     * @return int
+     * @return void
      */
-    public function setStatusCode(int $code): int
+    public function statusCode(int $code): void
     {
-        return http_response_code($code);
+        $this->statusCode = $code;
     }
 
     /**
-     * Returns a json encoded response.
-     * @param array $json The json array from the controllers.
+     * @param string $type
      * @return void
      */
-    public function json(array $json): void
+    public function contentType(string $type): void
     {
-        $this->__setHeaders(['Content-type' => 'application/json']);
-        $this->__setBody(json_encode($json, JSON_PRETTY_PRINT));
-        echo $this->body;
-    }
-
-    /**
-     * Redirect to a location.
-     * @param array $url Url options.
-     * @param bool $full True if the link should be full(including hostname), false otherwise.
-     * @return void
-     */
-    public function redirect(array $url, $full = false): void
-    {
-        header('Location: ' . Router::url($url, $full));
+        if (array_key_exists($type, $this->mimeTypes)) {
+            $this->contentType = $this->mimeTypes[$type];
+        }
     }
 
     /**
      * @param string $body
+     * @return void
      */
-    private function __setBody(string $body): void
+    public function body(string $body): void
     {
         $this->body = $body;
     }
 
     /**
-     * @param array $headers
+     * @param string $charSet
+     * @return void
      */
-    private function __setHeaders(array $headers): void
+    public function charSet(string $charSet): void
     {
-        foreach ($headers as $header => $value) {
-            if (!is_array($value)) {
-                $this->headers[$header] = $value;
-                header("$header:$value");
-            } else {
-                foreach ($header as $key => $val) {
-                    $this->headers[$key] = $val;
-                    header("$key:$val");
-                }
-            }
+        $this->charSet = $charSet;
+    }
+
+    /**
+     * Set the Location header value.
+     * @param string $url Location.
+     * @return void
+     */
+    public function location(string $url): void
+    {
+        $this->header('Location', $url);
+    }
+
+    /**
+     * @param string $name The name of the header.
+     * @param mixed $value The value of the header.
+     */
+    public function header(string $name, $value): void
+    {
+        $this->headers[$name] = $value;
+    }
+
+    /**
+     * @param array $options
+     * @return void
+     */
+    public function cookie(array $options): void
+    {
+        $defaults = [
+            'name' => 'Cookie',
+            'value' => '',
+            'expire' => 0,
+            'path' => '/',
+            'domain' => '',
+            'secure' => false,
+            'httpOnly' => true,
+        ];
+        $options += $defaults;
+        $this->cookies[$options['name']] = $options;
+    }
+
+    /**
+     * Sets the http response code.
+     * @return void
+     */
+    private function __setHttpCode(): void
+    {
+        http_response_code($this->statusCode);
+    }
+
+    /**
+     * Formats the Content-Type header based on the configured contentType.
+     * @return void
+     */
+    private function __setContentType(): void
+    {
+        $this->header('Content-Type', "{$this->contentType}; charset={$this->charSet}");
+    }
+
+    /**
+     * Sends the headers.
+     * @return void
+     */
+    private function __sendHeaders(): void
+    {
+        if (headers_sent($filename, $linenum)) {
+            return;
         }
+        foreach ($this->headers as $name => $value) {
+            header("{$name}: {$value}");
+        }
+    }
+
+    /**
+     * Sets the cookies before any other output is sent to the client.
+     * have been set.
+     * @return void
+     */
+    private function __setCookies(): void
+    {
+        foreach ($this->cookies as $name => $c) {
+            setcookie(
+                $name, $c['value'], $c['expire'], $c['path'],
+                $c['domain'], $c['secure'], $c['httpOnly']
+            );
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function __sendContent(): void
+    {
+        echo $this->body;
+    }
+
+    /**
+     * Sends the complete response to the client including headers and message body.
+     * Will echo out the content in the response body.
+     */
+    public function send()
+    {
+        if (isset($this->headers['Location']) && $this->statusCode === 200) {
+            $this->statusCode(302);
+        }
+        $this->__setHttpCode();
+        $this->__sendHeaders();
+        $this->__setContentType();
+        $this->__setCookies();
+        $this->__sendContent();
     }
 }

@@ -26,7 +26,15 @@ abstract class AbstractRepository
     public function getTable(): string
     {
         $className = get_class($this);
-        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', chop(substr($className, strrpos($className, '\\') + 1), 'Repo')));
+        return strtolower(
+            preg_replace(
+                '/(?<!^)[A-Z]/',
+                '_$0', chop(
+                    substr($className, strrpos($className, '\\') + 1),
+                    'Repo'
+                )
+            )
+        );
     }
 
     /**
@@ -37,6 +45,7 @@ abstract class AbstractRepository
      */
     public function setSubQuery(string $name, string $subQuery): void
     {
+        $subQuery = '(' . substr($subQuery, 0, -1) . ')';
         $this->{$name} = $subQuery;
     }
 

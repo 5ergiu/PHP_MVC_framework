@@ -9,11 +9,10 @@ use Exception;
 class AuthComponent
 {
     public static string $sessionKey = 'Auth';
-    private SessionComponent $session;
 
-    public function __construct()
+    public function __construct(SessionComponent $session)
     {
-        $this->session = new SessionComponent;
+        $this->session = $session;
     }
 
     /**

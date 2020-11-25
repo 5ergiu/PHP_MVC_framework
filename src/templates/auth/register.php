@@ -4,32 +4,32 @@ use App\Entity\User;
  * @var User $User
  */
 
-echo $this->form->create($User);
+$this->form->create($User);
 
-echo $this->form->input('username', [
+$this->form->input('username', [
     'placeholder' => 'Enter username',
 ]);
 
-echo $this->form->input('email', [
+$this->form->input('email', [
     'type' => 'email',
     'placeholder' => 'Enter email',
 ]);
 
-echo $this->form->input('password', [
+$this->form->input('password', [
     'type' => 'password',
     'placeholder' => 'Enter password',
 ]);
 
-echo $this->form->input('image', [
+$this->form->input('image', [
     'placeholder' => 'Enter image',
 ]);
 
-echo $this->form->input('summary', [
+$this->form->input('summary', [
     'placeholder' => 'Enter summary',
 ]);
 
-echo $this->form->button('Save', [
+$this->form->button('Save', [
     'class' => 'button'
 ]);
 
-echo $this->form->end();
+$this->form->end();

@@ -5,43 +5,55 @@ use App\Component\AuthComponent;
 use App\Core\Network\Request;
 use App\Helper\FormHelper;
 /**
- * @property FormHelper $form
  * @property Request $request
+ * @property FormHelper $form
  * @property array|null $user    Logged user or null.
  * @property array $notification An array with the notification options.
+ * @property string|null $css    Custom css files to include in the head.
+ * @property string $body        Response body.
  * Renders a complete view with data from the controllers and all required helpers for the view.
  */
 class Renderer
 {
+    private Request $request;
     private FormHelper $form;
-    public Request $request;
     public ?array $user;
     public array $notification;
-    public array $customCss = [];
+    public ?string $css = null;
+    private string $body;
 
     public function __construct(Request $request, AuthComponent $authComponent, array $notification)
     {
         $this->request = $request;
-        $this->form = new FormHelper($this->request->data);
+        $requestData = $this->request->data;
+        $this->form = new FormHelper($requestData);
         $this->user = $authComponent->user();
         $this->notification = $notification;
     }
 
     /**
-     * Renders a view.
+     * Sets the body that will be rendered.
      * @param string $view         The path of the view.
      * @param array $viewVariables The variables that can be used in the view.
      * @param string|null $layout  The name of the layout.
      * @return void
      */
-    public function render(string $view, array $viewVariables, string $layout = null): void
+    public function setBody(string $view, array $viewVariables, string $layout = null): void
     {
         $view = explode('/', $view);
-        echo str_replace(
+        $this->body = str_replace(
             '{{ content }}',
             $this->__setView($view[0], $view[1], $viewVariables),
             $this->__setLayout($layout)
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getBody(): string
+    {
+        return $this->body;
     }
 
     /**
@@ -86,15 +98,13 @@ class Renderer
      * All data will be accessed from the '$data' array inside any element.
      * @param string $element  The name of the element.
      * @param array $data      The variables for the element.
-     * @param array $customCss Custom css files to include in the head.
+     * @param string|null $css Custom css files to include in the head.
      * @return void
      */
-    public function element(string $element, array $data = [], array $customCss = []): void
+    public function element(string $element, array $data = [], string $css = null): void
     {
-        if (!empty($customCss)) {
-            foreach ($customCss as $css) {
-                $this->customCss[] = "$css.css";
-            }
+        if (!empty($css)) {
+            $this->css = "$css.css";
         }
         require ELEMENTS . "$element.php";
     }

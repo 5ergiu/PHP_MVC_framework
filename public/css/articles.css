@@ -780,19 +780,39 @@ a.button:hover {
 }
 
 .avatar {
-  background-color: unset;
-  border: none;
-  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
   cursor: pointer;
 }
 
 .avatar img {
-  width: 2rem;
+  width: 100%;
   height: auto;
-  border-radius: 50%;
   -o-object-fit: cover;
      object-fit: cover;
   overflow: hidden;
+}
+
+a.avatar {
+  display: block;
+}
+
+.tag {
+  font-weight: normal;
+  color: #B2B6BB;
+}
+
+.tag span {
+  color: #687078;
+}
+
+.tag:hover {
+  color: #528BFF;
+}
+
+.tag:hover span {
+  color: #687078;
 }
 
 footer {
@@ -802,6 +822,7 @@ footer {
 /* Articles */
 .article {
   /* Everything related to the article element itself(mini or not) */
+  position: relative;
   background-color: #292e33;
   margin-bottom: 1rem;
   border-radius: 0.25rem;
@@ -812,39 +833,8 @@ footer {
   /* Read page */
 }
 
-.article__info {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin-bottom: 1rem;
-}
-
-.article__info .profile-image {
-  margin-right: 0.5rem;
-}
-
-.article__info > div:last-child {
-  margin-left: auto;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-}
-
-.article__info > div:last-child span {
-  margin-top: 0.3rem;
-  -ms-flex-item-align: center;
-      -ms-grid-row-align: center;
-      align-self: center;
-}
-
 .article__container {
+  position: relative;
   padding: 1rem;
 }
 
@@ -858,12 +848,10 @@ footer {
   border-bottom: 2px solid #303840;
 }
 
-.article__title {
-  margin-bottom: 1rem;
-  font-size: 2.5rem;
-}
-
-.article__misc {
+.article__likes {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -872,8 +860,54 @@ footer {
           align-items: center;
 }
 
-.article__misc button {
-  margin-left: auto;
+.article__likes p {
+  font-size: 1rem;
+}
+
+.article__likes span {
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+}
+
+.article__bookmark {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1rem;
+}
+
+.article__link {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.article__info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.article__info time {
+  display: block;
+}
+
+.article__info .avatar {
+  margin-right: 0.5rem;
+}
+
+.article__title {
+  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+}
+
+.article__tags {
+  margin-bottom: 0.5rem;
 }
 
 .article__label--tag {

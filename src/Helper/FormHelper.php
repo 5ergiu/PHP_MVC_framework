@@ -22,9 +22,9 @@ class FormHelper
      * Creates the <form> tag.
      * @param Entity|null $entity The Entity that will deal with the input.
      * @param array $options      The form's attributes.
-     * @return string
+     * @return void
      */
-    public function create(?Entity $entity, array $options = []): string
+    public function create(?Entity $entity, array $options = []): void
     {
         $form = '<form ';
         if (!empty($entity)) {
@@ -50,7 +50,7 @@ class FormHelper
             }
         }
         $form .= '>';
-        return $form;
+        echo $form;
     }
 
     /**
@@ -176,31 +176,31 @@ class FormHelper
      * Creates <input> tags.
      * @param string $fieldName The input's 'name' attribute.
      * @param array $options         The input's attributes.
-     * @return string
+     * @return void
      */
-    public function input(string $fieldName, array $options = []): string
+    public function input(string $fieldName, array $options = []): void
     {
-       return $this->__buildInput('input', $fieldName, $options);
+       echo $this->__buildInput('input', $fieldName, $options);
     }
 
     /**
      * Creates <textarea> tags.
      * @param string $fieldName The textarea's 'name' attribute.
      * @param array $options         The textarea's attributes.
-     * @return string
+     * @return void
      */
-    public function text(string $fieldName, array $options = []): string
+    public function text(string $fieldName, array $options = []): void
     {
-        return $this->__buildInput('textarea', $fieldName, $options);
+        echo $this->__buildInput('textarea', $fieldName, $options);
     }
 
     /**
      * Creates <button> tag.
      * @param string $text   The inner text of the button.
      * @param array $options The button's attributes.
-     * @return string
+     * @return void
      */
-    public function button(string $text, array $options = []): string
+    public function button(string $text, array $options = []): void
     {
         $button = '<button ';
         if (!empty($options)) {
@@ -213,17 +213,17 @@ class FormHelper
             }
         }
         $button .= ">$text</button>";
-        return $button;
+        echo $button;
     }
 
     /**
      * Resets the entity.
      * Creates the end tag(</form>) for the form.
-     * @return string
+     * @return void
      */
-    public function end(): string
+    public function end(): void
     {
         $this->entity = null;
-        return '</form>';
+        echo '</form>';
     }
 }

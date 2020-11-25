@@ -16,14 +16,7 @@ export default class Auth {
     }
 
     authListener = isLoggedIn => {
-        if (isLoggedIn) {
-            let logout = document.getElementById('js-logout')
-            logout.addEventListener('click', () => {
-                localStorage.removeItem('isLoggedIn')
-                this.#Loading.show(document.getElementById('js-logout-loading-spinner'), document.getElementById('js-navigation-user'))
-                window.location.replace('/auth/logout')
-            })
-        } else {
+        if (!isLoggedIn) {
             let login = document.getElementById('js-login')
             let loginMessage = document.getElementById('js-login-message')
             login.querySelectorAll('.form__input').forEach(item => {

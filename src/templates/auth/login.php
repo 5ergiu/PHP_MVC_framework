@@ -2,9 +2,9 @@
 
 $this->element('test');
 
-echo $this->form->create(null);
+$this->form->create(null);
 
-echo $this->form->input('email', [
+$this->form->input('email', [
     'type' => 'email',
     'label' => [
         'class' => 'test',
@@ -12,7 +12,7 @@ echo $this->form->input('email', [
     ],
 ]);
 
-echo $this->form->input('name', [
+$this->form->input('name', [
     'label' => [
         'class' => 'test',
         'text' => 'name',
@@ -20,7 +20,7 @@ echo $this->form->input('name', [
     'multiple' => true,
 ]);
 
-echo $this->form->button('Save', [
+$this->form->button('Save', [
     'class' => 'button'
 ]);
-echo $this->form->end();
+$this->form->end();

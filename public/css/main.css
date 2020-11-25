@@ -469,25 +469,10 @@ ul {
   background-color: unset;
 }
 
-.button--bookmark.bookmarked {
+.button--bookmarked {
   background-color: #444F5B;
   -webkit-box-shadow: unset;
           box-shadow: unset;
-}
-
-.button--bookmark--mini {
-  width: 50px;
-  cursor: pointer;
-  background-color: unset !important;
-  border-radius: 0.25rem;
-  border: none;
-  padding: 0;
-  margin-top: 1rem;
-}
-
-.button--bookmark--mini i {
-  margin: 0 auto;
-  font-size: 2rem;
 }
 
 .button--top {
@@ -635,12 +620,7 @@ a.button:hover {
 
 .notification {
   position: fixed;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  display: none;
   background-color: #292e33;
   z-index: 999;
   bottom: -10%;
@@ -652,6 +632,12 @@ a.button:hover {
 }
 
 .notification--show {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   bottom: 1rem;
   -webkit-animation: notificationUp 1s ease-in-out;
           animation: notificationUp 1s ease-in-out;
@@ -780,19 +766,39 @@ a.button:hover {
 }
 
 .avatar {
-  background-color: unset;
-  border: none;
-  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
   cursor: pointer;
 }
 
 .avatar img {
-  width: 2rem;
+  width: 100%;
   height: auto;
-  border-radius: 50%;
   -o-object-fit: cover;
      object-fit: cover;
   overflow: hidden;
+}
+
+a.avatar {
+  display: block;
+}
+
+.tag {
+  font-weight: normal;
+  color: #B2B6BB;
+}
+
+.tag span {
+  color: #687078;
+}
+
+.tag:hover {
+  color: #528BFF;
+}
+
+.tag:hover span {
+  color: #687078;
 }
 
 footer {

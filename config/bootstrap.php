@@ -6,6 +6,6 @@ require_once VENDOR_ROOT . 'autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
 
-Configuration::initializeSession(0, '/', 'localhost', false, true);
+Configuration::initializeSession(0, '/', 'blog-project.local', false, true);
 
 Configuration::initializeDebugging();

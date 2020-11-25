@@ -121,7 +121,7 @@ class QueryBuilder extends Query
             }
         }
         $this->selections = implode(', ', $tempSelections);
-        $this->selections = "$this->selections FROM $this->table as $this->alias ";
+        $this->selections = "{$this->selections} FROM {$this->table} as {$this->alias} ";
         return $this;
     }
 
@@ -262,16 +262,6 @@ class QueryBuilder extends Query
     public function toQueryString(): string
     {
         return $this->query;
-    }
-
-    /**
-     * Returns the formatted sub query query string.
-     * @return string
-     */
-    public function subQuery(): string
-    {
-        $query = substr($this->query, 0, -1);
-        return "($query)";
     }
 
     /**

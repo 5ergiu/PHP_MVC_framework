@@ -9,7 +9,7 @@ use Throwable;
  */
 class ErrorHandler
 {
-    public function handleError(Throwable $error, Response $response)
+    public function handleError(Throwable $error)
     {
         var_dump($error); die;
     }

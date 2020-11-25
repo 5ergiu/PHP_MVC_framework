@@ -4,29 +4,14 @@
 
 .article {
   /* Everything related to the article element itself(mini or not) */
+  position: relative;
   background-color: $backgroundColor;
   margin-bottom: 1rem;
   border-radius: 0.25rem;
   border: 2px solid $borderGray;
   box-shadow: 0 0 17px 0 rgba(0,0,0,0.75);
-  &__info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    .profile-image {
-      margin-right: 0.5rem;
-    }
-    > div:last-child {
-      margin-left: auto;
-      display: flex;
-      flex-direction: column;
-      span {
-        margin-top: 0.3rem;
-        align-self: center;
-      }
-    }
-  }
   &__container {
+    position: relative;
     padding: 1rem;
   }
   &__cover {
@@ -38,18 +23,51 @@
     border-top-right-radius: 0.25rem;
     border-bottom: 2px solid $borderGray;
   }
+  &__likes {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    p {
+      font-size: 1rem;
+    }
+    span {
+      font-size: 1.5rem;
+      margin-left: 0.5rem;
+    }
+  }
+  &__bookmark {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1rem;
+  }
+  &__link {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+  &__info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    time {
+      display: block;
+    }
+    .avatar {
+      margin-right: 0.5rem;
+    }
+  }
   &__title {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     font: {
       size: 2.5rem;
     }
   }
-  &__misc {
-    display: flex;
-    align-items: center;
-    button {
-      margin-left: auto;
-    }
+  &__tags {
+    margin-bottom: 0.5rem;
   }
   &__label {
     &--tag {

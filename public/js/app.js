@@ -4,8 +4,8 @@ import Auth from './components/auth.js'
 import Notification from './components/notification.js'
 import Loading from './components/loading.js'
 import Dropdown from './components/dropdown.js'
-import Articles from './articles/articles.js'
 import Actions from './components/actions.js'
+import Articles from './components/articles.js'
 
 export default class App {
 
@@ -20,6 +20,7 @@ export default class App {
         this.Utils = new Utils
         this.initializeAuth()
         new Dropdown
+        new Actions(this.Loading, this.Utils, this.Notification)
         // new Articles(this.Loading, this.Notification)
         // new Actions(this.Utils, this.Notification)
     }

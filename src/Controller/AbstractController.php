@@ -4,40 +4,37 @@ namespace App\Controller;
 use App\Component\AuthComponent;
 use App\Component\SessionComponent;
 use App\Core\Exception\MethodNotAllowedException;
+use App\Core\Network\Router;
+use App\Core\Renderer;
 use App\Helper\LoggerHelper;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
-use App\Core\Renderer;
 /**
  * @property SessionComponent $session
  * @property Request $request
  * @property array $referer
  * @property Response $response
  * @property AuthComponent $auth
- * @property Renderer $renderer
  * @property LoggerHelper $log
-
  * The framework's main controller which will be extended by all the app's controllers.
  */
 abstract class AbstractController
 {
     protected SessionComponent $session;
-    protected Request $request;
+    public ?Request $request;
     protected array $referer;
-    protected Response $response;
     protected AuthComponent $auth;
-    private Renderer $renderer;
     protected LoggerHelper $log;
+
 
     public function __construct()
     {
         $this->session = new SessionComponent;
-        $this->request = new Request;
+        $this->request = null;
         $this->referer = $this->__buildReferer();
-        $this->response = new Response;
-        $this->auth = new AuthComponent;
-        $this->renderer = new Renderer($this->request, $this->auth, $this->__getNotification());
+        $this->auth = new AuthComponent($this->session);
         $this->log = new LoggerHelper;
+        $this->response = new Response;
     }
 
     /**
@@ -49,22 +46,28 @@ abstract class AbstractController
      */
     protected function render(string $view, array $viewVariables = [], ?string $layout = null): void
     {
-        $this->renderer->render($view, $viewVariables, $layout);
+        $renderer = new Renderer($this->request, $this->auth, $this->__getNotification());
+        $renderer->setBody($view, $viewVariables, $layout);
+        $this->response->body($renderer->getBody());
+        $this->response->send();
     }
 
     /**
      * Echo a json response.
-     * @param mixed $response The result to be returned to js.
+     * @param mixed $response The controller's response.
      * @param array $errors
      * @return void
      */
     protected function newJsonResponse($response, array $errors = []): void
     {
-        $json['response'] = $response;
+        $result['response'] = $response;
         if (!empty($errors)) {
-            $json['errors'] = $errors;
+            $result['errors'] = $errors;
         }
-        $this->response->json($json);
+        $result = json_encode($result, JSON_PRETTY_PRINT);
+        $this->response->contentType('json');
+        $this->response->body($result);
+        $this->response->send();
     }
 
     /**
@@ -88,12 +91,12 @@ abstract class AbstractController
     /**
      * Redirect to a location.
      * @param array $url Url options.
-     * @param bool $full (optional) True if the link should be full(including hostname), false otherwise.
      * @return void
      */
-    protected function redirect(array $url, $full = false): void
+    protected function redirect(array $url): void
     {
-        $this->response->redirect($url, $full);
+        $this->response->location(Router::url($url, true));
+        $this->response->send();
     }
 
     /**

@@ -17,7 +17,7 @@ $dark: #1d2126;
 $backgroundColor: #292e33;
 $grayish: #333940;
 $text: #B2B6BB;
-$tag: #a7adb2;
+$tag: #687078;
 $blue: #528BFF;
 $green: #1abb9c;
 $orange: #FF8121;
@@ -395,26 +395,24 @@ ul {
       }
     }
   }
-  &--bookmark {
-    &.bookmarked {
-      background-color: #444F5B;
-      box-shadow: unset;
-    }
-    &--mini {
-      width: 50px;
-      cursor: pointer;
-      background-color: unset!important;
-      border-radius: 0.25rem;
-      border: none;
-      padding: 0;
-      margin-top: 1rem;
-      i {
-        margin: 0 auto;
-        font: {
-          size: 2rem;
-        }
-      }
-    }
+  &--bookmarked {
+    background-color: #444F5B;
+    box-shadow: unset;
+    // &--mini {
+    //   width: 50px;
+    //   cursor: pointer;
+    //   background-color: unset!important;
+    //   border-radius: 0.25rem;
+    //   border: none;
+    //   padding: 0;
+    //   margin-top: 1rem;
+    //   i {
+    //     margin: 0 auto;
+    //     font: {
+    //       size: 2rem;
+    //     }
+    //   }
+    // }
   }
   &--top {
     display: inline-flex;
@@ -531,8 +529,7 @@ a {
 
 .notification {
   position: fixed;
-  display: flex;
-  align-items: center;
+  display: none;
   background-color: $backgroundColor;
   z-index: 999;
   bottom: -10%;
@@ -541,6 +538,8 @@ a {
   border-radius: 0.25rem;
   box-shadow: 0 0 17px 0 rgba(0,0,0,0.75);
   &--show {
+    display: flex;
+    align-items: center;
     bottom: 1rem;
     animation: notificationUp 1s ease-in-out;
   }
@@ -646,16 +645,33 @@ a {
 }
 
 .avatar {
-  background-color: unset;
-  border: none;
-  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
   cursor: pointer;
   img {
-    width: 2rem;
+    width: 100%;
     height: auto;
-    border-radius: 50%;
     object-fit: cover;
     overflow: hidden;
+  }
+}
+
+a.avatar {
+  display: block;
+}
+
+.tag {
+  font-weight: normal;
+  color: $text;
+  span {
+    color: $tag;
+  }
+  &:hover {
+    color: $blue;
+    span {
+      color: $tag;
+    }
   }
 }
 

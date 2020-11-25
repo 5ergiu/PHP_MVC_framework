@@ -11,7 +11,6 @@ use Throwable;
  * @property string|null  $method     The method that will be called.
  * @property array        $params     The array of params that will be sent to the called method.
  * @property Request      $request
- * @property Response     $response
  * @property ErrorHandler $errorHandler
  */
 class Router
@@ -20,36 +19,33 @@ class Router
     private string $method;
     private array $params = [];
     public Request $request;
-    public Response $response;
     public ErrorHandler $errorHandler;
 
     /**
-     * @param Request $request   The Request instance.
-     * @param Response $response The Response instance.
+     * @param Request $request
      */
-    public function __construct(Request $request, Response $response)
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->response = $response;
         $this->errorHandler = new ErrorHandler;
         try {
             $this->__resolve();
         } catch (Throwable $e) {
-            $this->errorHandler->handleError($e, $this->response);
+            $this->errorHandler->handleError($e);
         }
     }
 
     /**
      * Creates a string from the url options to be used in redirects or as a link.
      * $url positions format:
-     * 'path' => controller and method(must correspond to the path in routes)
-     * 'params' => parameters sent to the controller's method
-     * '?' => query parameters
+     * - 'path' => controller and method(must correspond to the path in routes)
+     * - 'params' => parameters sent to the controller's method
+     * - '?' => query parameters
      * @param array $url Url options.
      * @param bool $full True if the link should be full(including hostname), false otherwise.
      * @return string
      */
-    public static function url(array $url, bool $full): string
+    public static function url(array $url, bool $full = false): string
     {
         if ($url['path'] === Request::ROOT) {
             return Request::ROOT;
@@ -92,8 +88,8 @@ class Router
      */
     private function __resolve(): void
     {
-        if ($this->request->url !== Request::ROOT) {
-            $url = explode(Request::ROOT, $this->request->url);
+        if (is_array($this->request->url)) {
+            $url = $this->request->url;
             $url[0] = str_replace('_', '', ucwords($url[0], '_'));
             $controller = '\App\Controller\\' . ucwords($url[0]) . 'Controller';
             if ($this->__setController($controller)) {
@@ -125,6 +121,7 @@ class Router
     {
         if (class_exists($controller)) {
             $this->controller = new $controller;
+            $this->controller->request = $this->request;
             return true;
         }
         return false;

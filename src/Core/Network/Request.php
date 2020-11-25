@@ -4,8 +4,8 @@ namespace App\Core\Network;
 /**
  * Formats the Request URL to be passed to the Router.
  * Sets the request data and checks the request type.
- * @property string $url Formatted Request URL.
- * @property array $data Request data.
+ * @property array|string $url Formatted Request URL.
+ * @property array $data       Request data.
  * @property string $method
  */
 class Request
@@ -17,7 +17,7 @@ class Request
     public const DELETE = 'DELETE';
     public const ROOT = '/';
 
-    public string $url;
+    public $url;
     public array $data;
     public string $method;
 
@@ -55,18 +55,31 @@ class Request
     /**
      * Method used to set the Request URL.
      * Removes any query parameters in order to leave just the controller, action and params.
+     * Extensions such as '.json' will be placed after the method parameter, but BEFORE
+     * the query parameters, so if there is an extension, check for it after removing the query parameters.
+     * The extension will be paced to the router as an element of the $url array.
      * @return void
      */
     private function __setUrl(): void
     {
         $url = $_SERVER['REQUEST_URI'];
         if ($url !== self::ROOT) {
+            $ext = null;
             $url = ltrim($url, $url[0]);
-            $position = strpos($url, '?');
-            if ($position !== false) {
-                $url = substr($url, 0, $position);
+            $queryPosition = strpos($url, '?');
+            if ($queryPosition !== false) {
+                $url = substr($url, 0, $queryPosition);
+            }
+            $extPosition = strpos($url, '.');
+            if ($extPosition) {
+                $ext = substr($url, $extPosition + 1);
+                $url = substr($url, 0, $extPosition);
             }
             $url = filter_var(rtrim($url, self::ROOT), FILTER_SANITIZE_URL);
+            $url = explode(self::ROOT, $url);
+            if (!empty($ext)) {
+                $url['ext'] = $ext;
+            }
         }
         $this->url = $url;
     }

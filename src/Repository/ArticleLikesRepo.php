@@ -16,7 +16,7 @@ class ArticleLikesRepo extends AbstractRepository
                 'al.article_id = a.id',
             ])
             ->getQuery()
-            ->subQuery()
+            ->toQueryString()
         ;
     }
 }

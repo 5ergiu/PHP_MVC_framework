@@ -13,10 +13,8 @@ use App\Entity\User;
     <title><?= $title ?? 'Blog'; ?></title>
     <link type="text/css" rel="stylesheet" href="<?= VENDOR . 'fontawesome/css/all.min.css'; ?>" />
     <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . 'main.css'; ?>" />
-    <?php if (!empty($this->customCss)) :
-        foreach ($this->customCss as $css) : ?>
-            <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . $css; ?>" />
-        <?php endforeach; ?>
+    <?php if (!empty($this->css)) : ?>
+        <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . $this->css; ?>" />
     <?php endif; ?>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 </head>
@@ -39,9 +37,9 @@ use App\Entity\User;
             </li>
             <li class="dropdown">
                 <?php if (!empty($this->user)) : ?>
-                    <button class="dropdown__toggler avatar">
+                    <div class="dropdown__toggler avatar">
                         <img src="<?= ASSETS_IMG . "{$this->user['image']}"; ?>" alt="profile" />
-                    </button>
+                    </div>
                     <div class="dropdown__content">
                         <ul id="js-navigation-user" class="navigation__user">
                             <div id="js-logout-loading-spinner" class="spinner hide"></div>
@@ -75,9 +73,15 @@ use App\Entity\User;
                                 <a href="/account/settings">🛠️ Account Settings</a>
                             </li>
                             <li>
-                                <button class="button button--secondary" id="js-logout">
-                                    Logout
-                                </button>
+                                <?php
+                                    $this->form->create(null, [
+                                        'action' => 'auth/logout',
+                                    ]);
+                                    $this->form->button('Logout', [
+                                        'class' => 'button button--secondary',
+                                        'type' => 'submit',
+                                    ]);
+                                ?>
                             </li>
                         </ul>
                     </div>
@@ -87,7 +91,7 @@ use App\Entity\User;
                     </button>
                     <div class="dropdown__content">
                         <?php
-                            echo $this->form->create(null, [
+                            $this->form->create(null, [
                                 'class' => 'login',
                                 'id' => 'js-login',
                                 'autocomplete' => 'off',
@@ -97,17 +101,17 @@ use App\Entity\User;
                         <div id="js-login-loading-spinner" class="spinner hide"></div>
                         <div id="js-login-message" class="login__message">Hello there! 👋</div>
                         <?php
-                            echo $this->form->input('username', [
+                            $this->form->input('username', [
                                 'placeholder' => 'Enter username',
                             ]);
-                            echo $this->form->input('password', [
+                            $this->form->input('password', [
                                 'type' => 'password',
                                 'placeholder' => 'Enter password',
                             ]);
                         ?>
                         <div class="login__buttons">
                         <?php
-                            echo $this->form->button('Login', [
+                            $this->form->button('Login', [
                                 'type' => 'submit',
                                 'class' => 'button',
                             ]);
@@ -117,7 +121,7 @@ use App\Entity\User;
                             </a>
                         </div>
                         <?php
-                            echo $this->form->end();
+                            $this->form->end();
                         ?>
                     </div>
                 <?php endif; ?>

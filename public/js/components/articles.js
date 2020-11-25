@@ -1,4 +1,4 @@
-import ROUTES from '../components/routes.js'
+import ROUTES from './routes.js'
 /**
  This class will deal with all 'articles' related stuff.
  OBSERVATIONS REGARDING prepareUpload and removeImage!!! :
