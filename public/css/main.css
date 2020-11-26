@@ -369,7 +369,7 @@ ul {
 }
 
 .button {
-  background: #528BFF;
+  background-color: #528BFF;
   color: #fff;
   padding: 10px 20px;
   font-family: 'Source Sans Pro', sans-serif;
@@ -473,6 +473,10 @@ ul {
   background-color: #444F5B;
   -webkit-box-shadow: unset;
           box-shadow: unset;
+}
+
+.button--bookmarked:focus {
+  background-color: #444F5B;
 }
 
 .button--top {

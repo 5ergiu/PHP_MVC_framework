@@ -110,6 +110,7 @@ abstract class AbstractController
         $repo = ucwords($repo) . 'Repo';
         $repoClass = 'App\Repository\\' . $repo;
         $this->{$repo} = new $repoClass;
+        $this->{$repo}->userId = $this->auth->user('id');
     }
 
     /**

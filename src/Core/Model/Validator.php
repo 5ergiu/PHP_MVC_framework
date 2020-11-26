@@ -10,7 +10,7 @@ use App\Entity\AbstractEntity as Entity;
  */
 class Validator
 {
-    private array $rules;
+    private array $rules = [];
     private Entity $entity;
 
     public function __construct(Entity $entity)
@@ -42,19 +42,21 @@ class Validator
      */
     public function validate()
     {
-        foreach ($this->rules as $field => $validations) {
-            $funcName = 'get' . ucwords($field);
-            foreach ($validations as $rule => $details) {
-                if (is_string($details)) {
-                    $this->{$rule}($this->entity->{$funcName}(), $field, $rule);
-                } else {
-                    if (array_key_first($details) !== 'method') {
-                        if (method_exists($this, $rule)) {
-                            $this->{$rule}($this->entity->{$funcName}(), $field, $rule, $details[$rule], $details['message']);
-                        }
+        if (!empty($this->rules)) {
+            foreach ($this->rules as $field => $validations) {
+                $funcName = 'get' . ucwords($field);
+                foreach ($validations as $rule => $details) {
+                    if (is_string($details)) {
+                        $this->{$rule}($this->entity->{$funcName}(), $field, $rule);
                     } else {
-                        if (method_exists($this->entity, $rule)) {
-                            $this->entity->{$rule}($this->entity->{$funcName}(), $field, $rule, $details['message']);
+                        if (array_key_first($details) !== 'method') {
+                            if (method_exists($this, $rule)) {
+                                $this->{$rule}($this->entity->{$funcName}(), $field, $rule, $details[$rule], $details['message']);
+                            }
+                        } else {
+                            if (method_exists($this->entity, $rule)) {
+                                $this->entity->{$rule}($this->entity->{$funcName}(), $field, $rule, $details['message']);
+                            }
                         }
                     }
                 }

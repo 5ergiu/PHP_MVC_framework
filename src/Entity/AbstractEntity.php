@@ -25,7 +25,7 @@ abstract class AbstractEntity
 
     /**
      * Binds the values to an entity.
-     * @param array $data The array of data. This should contain only the actual entity fields values,
+     * @param array $data The array of data. This should only contain the actual entity fields values,
      * so, all the logic should be built in the controller's method prior to 'patching' the entity.
      * @return bool
      */
@@ -34,6 +34,7 @@ abstract class AbstractEntity
         $entityName = $this->getEntityName();
         $entityData = $data['data'][$entityName];
         foreach ($entityData as $field => $input) {
+            $field = str_replace('_', '', lcfirst(ucwords($field, '_')));
             if (property_exists($this, $field)) {
                 $funcName = 'set' . ucwords($field);
                 if (method_exists($this, $funcName)) {

@@ -24,62 +24,68 @@ export default class Actions {
 
     addEventListener = (elements, callback) => {
         elements.forEach(element => {
-            element.addEventListener('click', event => {
-                event.stopPropagation()
+            element.addEventListener('click', () => {
                 callback(element)
             })
         })
     }
 
     bookmark = (element) => {
+        let spinner = element.parentNode.querySelector('.js-bookmark-spinner')
+        this.#Loading.show(spinner, element)
         let data = {
-            article: element.dataset.articleId,
+            article_id: element.dataset.articleId,
         }
+        element.disabled = true
         if (element.classList.contains('button--bookmarked')) {
-            this.#Utils.fetchJsonData(ROUTES.BOOKMARK, data)
+            this.#Utils.fetchJsonData(ROUTES.BOOKMARK_REMOVE, data)
                 .then(data => {
-                    if (data.result) {
-                        item.setAttribute('title', 'Bookmark article')
-                        item.classList.remove('bookmarked')
-                        let bookmarksCount = parseInt(this.bookmarksCount.innerHTML)
+                    if (data.response) {
+                        element.setAttribute('title', 'Bookmark article')
+                        element.classList.remove('button--bookmarked')
+                        element.innerHTML = 'SAVE'
+                        let bookmarksCount = parseInt(this.#bookmarksCount.innerHTML)
                         if (bookmarksCount > 0) {
-                            this.bookmarksCount.innerHTML = bookmarksCount - 1
+                            this.#bookmarksCount.innerHTML = bookmarksCount - 1
                         }
-                        this.disableButton(item)
-                        if (item.classList.contains('button--bookmark--mini')) {
-                            item.getElementsByTagName('i')[0].classList.replace('fas', 'far')
-                        } else {
-                            item.innerText = 'SAVE'
-                        }
+                        // if (element.classList.contains('button--bookmark--mini')) {
+                        //     element.getElementsByTagName('i')[0].classList.replace('fas', 'far')
+                        // } else {
+                        //     element.innerText = 'SAVE'
+                        // }
                     } else {
-                        this.Notification.show({
+                        this.#Notification.show({
                             isPrompt: true,
-                            message: data.message,
+                            message: data.errors,
                             imgPath: ROUTES.ERROR_IMAGE,
                         })
                     }
+                    element.disabled = false
+                    this.#Loading.hide()
                 })
         } else {
-            this.#Utils.fetchJsonData(ROUTES.BOOKMARK, data)
+            this.#Utils.fetchJsonData(ROUTES.BOOKMARK_ADD, data)
                 .then(data => {
-                    if (data.result) {
-                        console.log(data) ; debugger
-                        item.setAttribute('title', 'Remove bookmark')
-                        item.classList.add('button--bookmarked')
-                        let bookmarksCount = parseInt(this.bookmarksCount.innerHTML)
-                        this.bookmarksCount.innerHTML = bookmarksCount + 1
-                        if (item.classList.contains('button--bookmark--mini')) {
-                            item.getElementsByTagName('i')[0].classList.replace('far', 'fas')
-                        } else {
-                            item.innerText = 'SAVED'
-                        }
+                    if (data.response) {
+                        element.setAttribute('title', 'Remove bookmark')
+                        element.classList.add('button--bookmarked')
+                        element.innerHTML = 'UNSAVE'
+                        let bookmarksCount = parseInt(this.#bookmarksCount.innerHTML)
+                        this.#bookmarksCount.innerHTML = bookmarksCount + 1
+                        // if (element.classList.contains('button--bookmark--mini')) {
+                        //     element.getElementsByTagName('i')[0].classList.replace('far', 'fas')
+                        // } else {
+                        //     element.innerText = 'SAVED'
+                        // }
                     } else {
-                        this.Notification.show({
+                        this.#Notification.show({
                             isPrompt: true,
-                            message: data.message,
+                            message: data.errors,
                             imgPath: ROUTES.ERROR_IMAGE,
                         })
                     }
+                    element.disabled = false
+                    this.#Loading.hide()
                 })
         }
     }

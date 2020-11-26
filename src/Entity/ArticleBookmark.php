@@ -3,12 +3,12 @@ namespace App\Entity;
 
 /**
  * @property int $articleId
- * @property int $userId
+ * @property int $bookmarkedBy
  */
 class ArticleBookmark extends AbstractEntity
 {
     private int $articleId;
-    private int $userId;
+    private int $bookmarkedBy;
 
     public function validations(): void
     {
@@ -34,16 +34,16 @@ class ArticleBookmark extends AbstractEntity
     /**
      * @return int
      */
-    public function getUserId(): int
+    public function getBookmarkedBy(): int
     {
-        return $this->userId;
+        return $this->bookmarkedBy;
     }
 
     /**
      * @param int $userId
      */
-    public function setUserId(int $userId): void
+    public function setBookmarkedBy(int $userId): void
     {
-        $this->userId = $userId;
+        $this->bookmarkedBy = $userId;
     }
 }

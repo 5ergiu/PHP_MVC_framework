@@ -37,7 +37,7 @@ class QueryBuilder extends Query
     private ?string $groupBy = null;
     private ?int $limit = null;
     private string $query;
-    public ?PDOStatement $statement;
+    public PDOStatement $statement;
 
     public function __construct(string $table)
     {
@@ -87,11 +87,7 @@ class QueryBuilder extends Query
                 ':table_name' => $this->table,
             ]);
             $result = $query->fetchAll();
-            $result = array_map('array_pop', $result);
-            foreach ($result as &$column) {
-                $column = str_replace('_', '', lcfirst(ucwords($column, '_')));
-            }
-            $this->attributes = $result;
+            $this->attributes = array_map('array_pop', $result);
         } catch (PDOException $e) {
             throw new HaveToWorkOnTheseExceptions($e);
         }
@@ -269,7 +265,6 @@ class QueryBuilder extends Query
         $this->orderBy = null;
         $this->groupBy = null;
         $this->limit = null;
-        $this->statement = null;
     }
 
     /**
@@ -311,6 +306,7 @@ class QueryBuilder extends Query
     {
         $values = [];
         foreach ($this->attributes as $attribute) {
+            $attribute = str_replace('_', '', lcfirst(ucwords($attribute, '_')));
             // Default values set in entities are easy to access because of this.
             $funcName = 'get' . ucwords($attribute);
             if (property_exists($entity, $attribute)) {
@@ -330,7 +326,11 @@ class QueryBuilder extends Query
      */
     public function getLastInsertedId(Entity $entity): ?int
     {
-        $this->parameters = $this->__getValuesFromEntity($entity);
+        $parameters = $this->__getValuesFromEntity($entity);
+        foreach ($parameters as $attribute => $value) {
+            $formattedAttribute = strtolower(preg_replace('/(?<!^)[A-Z]/','_$0', $attribute));
+            $this->parameters[$formattedAttribute] = $value;
+        }
         $attributes = implode(', ', array_keys($this->parameters));
         $prepareAttributes = implode(', ', array_map(fn($attr) => ":$attr", array_keys($this->parameters)));
         $this->query = "INSERT INTO $this->table($attributes) VALUES ($prepareAttributes)";
@@ -376,30 +376,16 @@ class QueryBuilder extends Query
     }
 
     /**
-     * Returns the count of a specific query.
-     * @param array $conditions The conditions based on which record to be deleted.
+     * Deletes a record from the database.
+     * @param int $id The id based on which the record will be deleted.
      * @return bool
      * @throws Exception
      */
-    public function remove(array $conditions)
+    public function remove(int $id): bool
     {
-        $condition = null;
-        $preparedAttributes = null;
-        foreach ($conditions as $criteria => $value) {
-            $preparedAttributes[$criteria] = $value;
-            $criteria = substr($criteria, 0, strpos($criteria, ' '));
-            $this->parameters[$criteria] = $value;
-        }
-        foreach ($preparedAttributes as $key => $condition) {
-            if ($key !== array_key_last($preparedAttributes)) {
-                $condition .= "$condition AND";
-            } else {
-                $this->joins .= "$condition ";
-            }
-        }
-        $attributes = implode(', ', array_keys($this->parameters));
-        $prepareAttributes = implode(', ', array_map(fn($attr) => ":$attr", array_keys($this->parameters)));
-        $this->query = "DELETE FROM {$this->table} WHERE $prepareAttributes";
+        $this->setParameters(['id' => $id]);
+        $prepareAttributes = "{$this->table}.id = :id";
+        $this->query = "DELETE FROM {$this->table} WHERE $prepareAttributes LIMIT 1";
         $this->__prepareStatement();
         return $this->delete($this->statement);
     }

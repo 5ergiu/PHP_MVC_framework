@@ -20,4 +20,16 @@ class ArticleBookmarksRepo extends AbstractRepository
             ->toQueryString()
         ;
     }
+
+    /**
+     * Overwriting the default 'exists' method so that it will include the authenticated user's id.
+     * @inheritDoc
+     * @return bool
+     */
+    public function exists(array $conditions): ?int
+    {
+        $conditions['bookmarked_by'] = $this->userId;
+        $result = $this->findBy($conditions);
+        return !empty($result) ? $result['id'] : null;
+    }
 }

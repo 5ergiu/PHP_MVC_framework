@@ -283,7 +283,7 @@ ul {
 }
 
 .button {
-  background: $blue;
+  background-color: $blue;
   color: #fff;
   padding: 10px 20px;
   font: {
@@ -386,6 +386,9 @@ ul {
     //     }
     //   }
     // }
+    &:focus {
+      background-color: #444F5B;
+    }
   }
   &--top {
     display: inline-flex;

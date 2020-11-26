@@ -7,6 +7,7 @@ use Exception;
 /**
  * The framework's main repository which will be extended by all the app's repositories.
  * Used for entire table queries.
+ * @property int|null $userId  The authenticated user's id or null (this will make it a lot easier to use in queries).
  * @property string $table     The name of the table.
  * @property array $attributes The attributes/columns of a table.
  * @property QueryBuilder $QueryBuilder
@@ -41,14 +42,15 @@ abstract class AbstractRepository
     }
 
     /**
-     * Checks if a record exists in the database based on a criteria.
-     * @param array $condition
-     * @return bool
+     * Checks if a record exists in the database based on the provided conditions.
+     * @param array $conditions
+     * @return int|null
      * @throws Exception
      */
-    public function exists(array $condition): bool
+    public function exists(array $conditions): ?int
     {
-        return !empty($this->findBy($condition[0], $condition[1]));
+        $result = $this->findBy($conditions);
+        return !empty($result) ? $result['id'] : null;
     }
 
     /**
@@ -80,13 +82,13 @@ abstract class AbstractRepository
 
     /**
      * Deletes a record from the database.
-     * @param array $conditions The conditions based on which record to be deleted.
+     * @param int $id The id based on which the record will be deleted.
      * @return bool
      * @throws Exception
      */
-    public function delete(array $conditions): bool
+    public function delete(int $id): bool
     {
-        return $this->QueryBuilder->remove($conditions);
+        return $this->QueryBuilder->remove($id);
     }
 
     /**
@@ -102,20 +104,17 @@ abstract class AbstractRepository
 
     /**
      * Returns a row from the table.
-     * @param string $criteria
-     * @param mixed $value
+     * @param array $conditions
      * @return array|null
      * @throws Exception
      */
-    public function findBy(string $criteria, $value): ?array
+    public function findBy(array $conditions): ?array
     {
-        $conditions = "{$this->table}.$criteria :$value";
-        $criteria = substr($criteria, 0, strpos($criteria, ' '));
+        $parameters = $conditions;
+        $conditions = array_map(fn($attr) => "{$this->table}.$attr = :$attr", array_keys($parameters));
         return $this->createQueryBuilder($this->table)
-            ->where([$conditions])
-            ->setParameters([
-                "$criteria" => $value,
-            ])
+            ->where($conditions)
+            ->setParameters($parameters)
             ->getQuery()
             ->firstOrNull()
         ;

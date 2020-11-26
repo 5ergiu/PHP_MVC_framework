@@ -25,6 +25,7 @@
             >
                 <?= $data['bookmarked_by_logged_user'] ? 'UNSAVE' : 'SAVE'; ?>
             </button>
+            <div class="js-bookmark-spinner spinner hide"></div>
         </div>
         <div class="article__info">
             <a class="avatar js-clickable" href="/users/<?= $data['username']; ?>">
