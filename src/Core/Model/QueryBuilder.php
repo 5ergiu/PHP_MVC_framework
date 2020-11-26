@@ -9,19 +9,19 @@ use PDOException;
 use PDOStatement;
 /**
  * Builds queries.
- * @property string $table           The name of the table.
- * @property PDO $pdo                PDO instance.
- * @property array $attributes       The table's attributes.
- * @property string $alias           The table alias.
- * @property string|null $selections The selected fields('*' by default).
- * @property string|null $joins      Query joins.
- * @property array|null $parameters  Query parameters.
- * @property string|null $conditions Query conditions.
- * @property string|null $orderBy    Query order by conditions.
- * @property string|null $groupBy    Query group by conditions.
- * @property int|null $limit         Query limit.
- * @property string $query           Query to be executed on the database.
- * @property PDOStatement $statement PDO Statement to be executed.
+ * @property string $table                The name of the table.
+ * @property PDO $pdo                     PDO instance.
+ * @property array $attributes            The table's attributes.
+ * @property string $alias                The table alias.
+ * @property string|null $selections      The selected fields('*' by default).
+ * @property string|null $joins           Query joins.
+ * @property array|null $parameters       Query parameters.
+ * @property string|null $conditions      Query conditions.
+ * @property string|null $orderBy         Query order by conditions.
+ * @property string|null $groupBy         Query group by conditions.
+ * @property int|null $limit              Query limit.
+ * @property string $query                Query to be executed on the database.
+ * @property PDOStatement|null $statement PDO Statement to be executed.
  */
 class QueryBuilder extends Query
 {
@@ -37,6 +37,7 @@ class QueryBuilder extends Query
     private ?string $groupBy = null;
     private ?int $limit = null;
     private string $query;
+    public ?PDOStatement $statement;
 
     public function __construct(string $table)
     {
@@ -268,6 +269,7 @@ class QueryBuilder extends Query
         $this->orderBy = null;
         $this->groupBy = null;
         $this->limit = null;
+        $this->statement = null;
     }
 
     /**
@@ -297,6 +299,7 @@ class QueryBuilder extends Query
         } else {
             throw new HaveToWorkOnTheseExceptions;
         }
+        $this->__reset();
     }
 
     /**
@@ -380,12 +383,23 @@ class QueryBuilder extends Query
      */
     public function remove(array $conditions)
     {
-        $conditions = "{$this->table}.$criteria :$value";
-        $criteria = substr($criteria, 0, strpos($criteria, ' '));
-        $this->parameters = $this->__getValuesFromEntity($entity);
+        $condition = null;
+        $preparedAttributes = null;
+        foreach ($conditions as $criteria => $value) {
+            $preparedAttributes[$criteria] = $value;
+            $criteria = substr($criteria, 0, strpos($criteria, ' '));
+            $this->parameters[$criteria] = $value;
+        }
+        foreach ($preparedAttributes as $key => $condition) {
+            if ($key !== array_key_last($preparedAttributes)) {
+                $condition .= "$condition AND";
+            } else {
+                $this->joins .= "$condition ";
+            }
+        }
         $attributes = implode(', ', array_keys($this->parameters));
         $prepareAttributes = implode(', ', array_map(fn($attr) => ":$attr", array_keys($this->parameters)));
-        $this->query = "DELETE FROM $this->table($attributes) VALUES ($prepareAttributes)";
+        $this->query = "DELETE FROM {$this->table} WHERE $prepareAttributes";
         $this->__prepareStatement();
         return $this->delete($this->statement);
     }
