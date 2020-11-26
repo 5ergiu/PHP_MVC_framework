@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Model;
 
+use App\Component\Log;
 use Exception;
 use PDOException;
 use PDOStatement;
@@ -19,7 +20,8 @@ class Query
             $result = $statement->fetchAll();
             return $result ?: null;
         } catch (PDOException $e) {
-            throw new Exception($e);
+            $this->__logErrors($e->getMessage(), $statement->queryString);
+            return null;
         }
     }
 
@@ -36,7 +38,8 @@ class Query
             $result = $statement->fetch();
             return $result ?: null;
         } catch (PDOException $e) {
-            throw new Exception($e);
+            $this->__logErrors($e->getMessage(), $statement->queryString);
+            return null;
         }
     }
 
@@ -52,7 +55,8 @@ class Query
             $statement->execute();
             return $statement->fetchColumn();
         } catch (PDOException $e) {
-            throw new Exception($e);
+            $this->__logErrors($e->getMessage(), $statement->queryString);
+            return null;
         }
     }
 
@@ -67,7 +71,34 @@ class Query
         try {
             return $statement->execute();
         } catch (PDOException $e) {
-            throw new Exception($e);
+            $this->__logErrors($e->getMessage(), $statement->queryString);
+            return false;
         }
+    }
+
+    /**
+     * Deletes a record from the database.
+     * @param PDOStatement $statement PDO Statement to be executed.
+     * @return bool
+     * @throws Exception
+     */
+    protected function delete(PDOStatement $statement): bool
+    {
+        try {
+            return $statement->execute();
+        } catch (PDOException $e) {
+            $this->__logErrors($e->getMessage(), $statement->queryString);
+            return false;
+        }
+    }
+
+    /**
+     * @param string $error The error message.
+     * @param string $query The query ran on the database.
+     * @return void
+     */
+    private function __logErrors(string $error, string $query): void
+    {
+        Log::error("$error \n $query", LOG::MYSQL_ERRORS);
     }
 }

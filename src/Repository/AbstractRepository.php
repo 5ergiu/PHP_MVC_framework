@@ -7,16 +7,19 @@ use Exception;
 /**
  * The framework's main repository which will be extended by all the app's repositories.
  * Used for entire table queries.
+ * @property string $table     The name of the table.
  * @property array $attributes The attributes/columns of a table.
  * @property QueryBuilder $QueryBuilder
  */
 abstract class AbstractRepository
 {
+    public string $table;
     protected QueryBuilder $QueryBuilder;
 
     public function __construct()
     {
-        $this->QueryBuilder = new QueryBuilder($this->getTable());
+        $this->table = $this->getTable();
+        $this->QueryBuilder = new QueryBuilder($this->table);
     }
 
     /**
@@ -35,6 +38,17 @@ abstract class AbstractRepository
                 )
             )
         );
+    }
+
+    /**
+     * Checks if a record exists in the database based on a criteria.
+     * @param array $condition
+     * @return bool
+     * @throws Exception
+     */
+    public function exists(array $condition): bool
+    {
+        return !empty($this->findBy($condition[0], $condition[1]));
     }
 
     /**
@@ -65,6 +79,17 @@ abstract class AbstractRepository
     }
 
     /**
+     * Deletes a record from the database.
+     * @param array $conditions The conditions based on which record to be deleted.
+     * @return bool
+     * @throws Exception
+     */
+    public function delete(array $conditions): bool
+    {
+        return $this->QueryBuilder->remove($conditions);
+    }
+
+    /**
      * Adds the alias for the table in the query builder and returns it back
      * to be able to add more properties.
      * @param string $alias
@@ -84,11 +109,10 @@ abstract class AbstractRepository
      */
     public function findBy(string $criteria, $value): ?array
     {
-        $table = $this->getTable();
-        return $this->createQueryBuilder($table)
-            ->where([
-                "$table.$criteria = :$criteria"
-            ])
+        $conditions = "{$this->table}.$criteria :$value";
+        $criteria = substr($criteria, 0, strpos($criteria, ' '));
+        return $this->createQueryBuilder($this->table)
+            ->where([$conditions])
             ->setParameters([
                 "$criteria" => $value,
             ])
@@ -105,10 +129,9 @@ abstract class AbstractRepository
      */
     public function findById(int $id): ?array
     {
-        $table = $this->getTable();
-        return $this->createQueryBuilder($table)
+        return $this->createQueryBuilder($this->table)
             ->where([
-                "$table.id = :id"
+                "{$this->table}.id = :id"
             ])
             ->setParameters([
                 'id' => $id,
@@ -120,13 +143,13 @@ abstract class AbstractRepository
 
     /**
      * Returns everything from the table.
-     * @param int|null $limit (optional) A limit, if it's necessary.
+     * @param int|null $limit (optional) Query limit.
      * @return array|null
      * @throws Exception
      */
     public function findAll(?int $limit = null): ?array
     {
-        return $this->createQueryBuilder($this->getTable())
+        return $this->createQueryBuilder($this->table)
             ->setMaxResults($limit)
             ->getQuery()
             ->getResults()

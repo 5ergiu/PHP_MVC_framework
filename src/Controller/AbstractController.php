@@ -1,39 +1,38 @@
 <?php
 namespace App\Controller;
 
-use App\Component\AuthComponent;
-use App\Component\SessionComponent;
+use App\Component\Auth;
+use App\Component\Session;
 use App\Core\Exception\MethodNotAllowedException;
 use App\Core\Network\Router;
 use App\Core\View;
-use App\Helper\LoggerHelper;
+use App\Component\Log;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
 /**
- * @property SessionComponent $session
+ * @property Session $session
  * @property Request $request
  * @property array $referer
  * @property Response $response
- * @property AuthComponent $auth
- * @property LoggerHelper $log
+ * @property Auth $auth
+ * @property Log $log
  * The framework's main controller which will be extended by all the app's controllers.
  */
 abstract class AbstractController
 {
-    protected SessionComponent $session;
-    public ?Request $request;
+    protected Session $session;
+    public Request $request;
     protected array $referer;
-    protected AuthComponent $auth;
-    protected LoggerHelper $log;
+    protected Auth $auth;
+    protected Log $log;
 
 
     public function __construct()
     {
-        $this->session = new SessionComponent;
-        $this->request = null;
+        $this->session = new Session;
         $this->referer = $this->__buildReferer();
-        $this->auth = new AuthComponent($this->session);
-        $this->log = new LoggerHelper;
+        $this->auth = new Auth($this->session);
+        $this->log = new Log;
         $this->response = new Response;
     }
 

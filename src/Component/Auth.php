@@ -3,15 +3,15 @@ namespace App\Component;
 
 use Exception;
 /**
- * @property SessionComponent $session
+ * @property Session $session
  * @property array|null $user Authenticated user or null.
  */
-class AuthComponent
+class Auth
 {
     public static string $sessionKey = 'Auth';
-    private ?array $user;
+    public ?array $user;
 
-    public function __construct(SessionComponent $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
         $this->__setAuthenticatedUser();

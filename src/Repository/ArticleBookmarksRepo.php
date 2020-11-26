@@ -1,8 +1,6 @@
 <?php
 namespace App\Repository;
 
-use Exception;
-
 class ArticleBookmarksRepo extends AbstractRepository
 {
     /**

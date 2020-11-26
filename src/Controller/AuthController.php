@@ -78,6 +78,7 @@ class AuthController extends AbstractController
     public function register(): void
     {
         if (!empty($this->auth->user)) {
+            $this->notify('error', 'You\'re already logged in');
             $this->redirect($this->referer);
         }
         $User = new User;

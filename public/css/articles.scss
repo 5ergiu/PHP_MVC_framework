@@ -1,4 +1,4 @@
-@import './main.scss';
+@import './globals';
 
 /* Articles */
 
@@ -10,18 +10,32 @@
   border-radius: 0.25rem;
   border: 2px solid $borderGray;
   box-shadow: 0 0 17px 0 rgba(0,0,0,0.75);
+  &:hover &__cover_image {
+    transform: scale(1.1);
+  }
+  &--mini {
+    cursor: pointer;
+    &:hover {
+      border-color: $blue;
+    }
+  }
   &__container {
     position: relative;
     padding: 1rem;
   }
   &__cover {
     height: 350px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    overflow: hidden;
     border-top-left-radius: 0.25rem;
     border-top-right-radius: 0.25rem;
     border-bottom: 2px solid $borderGray;
+    &_image {
+      height: inherit;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      transition: transform .4s;
+    }
   }
   &__likes {
     position: absolute;

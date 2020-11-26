@@ -6,6 +6,7 @@ import Loading from './components/loading.js'
 import Dropdown from './components/dropdown.js'
 import Actions from './components/actions.js'
 import Articles from './components/articles.js'
+import Clickable from './components/clickable.js'
 
 export default class App {
 
@@ -20,9 +21,9 @@ export default class App {
         this.Utils = new Utils
         this.initializeAuth()
         new Dropdown
+        new Clickable
+        new Articles
         new Actions(this.Loading, this.Utils, this.Notification)
-        // new Articles(this.Loading, this.Notification)
-        // new Actions(this.Utils, this.Notification)
     }
 
     initializeAuth = () => {

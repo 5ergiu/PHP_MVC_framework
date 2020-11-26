@@ -23,16 +23,13 @@ class Router
 
     /**
      * @param Request $request
+     * @throws NotFoundException
      */
     public function __construct(Request $request)
     {
         $this->request = $request;
         $this->errorHandler = new ErrorHandler;
-        try {
-            $this->__resolve();
-        } catch (Throwable $e) {
-            $this->errorHandler->handleError($e);
-        }
+        $this->__resolve();
     }
 
     /**
@@ -108,7 +105,11 @@ class Router
         if (!isset($this->controller) || !isset($this->method)) {
             throw new NotFoundException;
         } else {
-            call_user_func_array([$this->controller, $this->method], $this->params);
+            try {
+                call_user_func_array([$this->controller, $this->method], $this->params);
+            } catch (Throwable $e) {
+                $this->errorHandler->handleError($e);
+            }
         }
     }
 

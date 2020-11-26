@@ -24,11 +24,6 @@ use App\Entity\User;
         <a class="logo" href="/">
             <img class="logo__img" src="<?= ASSETS_IMG . 'logo.png'; ?>" alt="Logo" />
         </a>
-        <!--    ADD SEARCH!! -->
-        <!--    <form class="d-flex mb-0">-->
-        <!--        <input class="form-control mr-2" type="search" placeholder="Search" aria-label="Search">-->
-        <!--        <button class="btn btn-success" type="submit">Search</button>-->
-        <!--    </form>-->
         <ul class="navigation__menu">
             <li>
                 <a class="button button--gradient" href="/articles/write">
@@ -56,7 +51,7 @@ use App\Entity\User;
                                     <a href="/account/drafts">
                                         📋 Drafts
                                         <span class="navigation__user_counter" id="draftsCount" >
-                                            <?= isset($data['user']['drafts_count']) ? $data['user']['drafts_count'] : 0; ?>
+                                            <?= $this->user['drafts']; ?>
                                         </span>
                                     </a>
                                 </li>
@@ -64,8 +59,8 @@ use App\Entity\User;
                             <li class="dropdown__item">
                                 <a href="/account/reading-list">
                                     📚 Reading list
-                                    <span class="navigation__user_counter" id="bookmarksCount">
-                                        <?= isset($data['user']['bookmarks_count']) ? $data['user']['bookmarks_count'] : 0; ?>
+                                    <span class="navigation__user_counter" id="js-bookmarks-count">
+                                        <?= $this->user['bookmarks']; ?>
                                     </span>
                                 </a>
                             </li>

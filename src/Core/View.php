@@ -1,7 +1,7 @@
 <?php
 namespace App\Core;
 
-use App\Component\AuthComponent;
+use App\Component\Auth;
 use App\Core\Network\Request;
 use App\Helper\FormHelper;
 /**

@@ -4,9 +4,9 @@
  */
 export default class Dropdown {
     constructor() {
-        this.dropdownTogglers = document.querySelectorAll('.dropdown__toggler')
-        this.dropdownTogglers.forEach(item => {
-            item.addEventListener('click', event => {
+        const dropdownTogglers = document.querySelectorAll('.dropdown__toggler')
+        dropdownTogglers.forEach(element => {
+            element.addEventListener('click', event => {
                 this.open(event)
             })
         })
@@ -21,7 +21,7 @@ export default class Dropdown {
      * check when the user clicks outside the dropdown so it can be closed.
      */
     open = event => {
-        // https://www.blustemy.io/detecting-a-click-outside-an-element-in-javascript/
+        /** @link https://www.blustemy.io/detecting-a-click-outside-an-element-in-javascript/ */
         let dropdownContent = event.currentTarget.nextElementSibling
         let dropdown = dropdownContent.closest('.dropdown')
         dropdownContent.classList.toggle('show')

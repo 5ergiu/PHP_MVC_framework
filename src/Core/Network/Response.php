@@ -133,8 +133,10 @@ class Response
         if (headers_sent($filename, $linenum)) {
             return;
         }
-        foreach ($this->headers as $name => $value) {
-            header("{$name}: {$value}");
+        if (!empty($this->headers)) {
+            foreach ($this->headers as $name => $value) {
+                header("{$name}: {$value}");
+            }
         }
     }
 

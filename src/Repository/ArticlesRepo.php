@@ -98,4 +98,40 @@ class ArticlesRepo extends AbstractRepository
         }
         return $articles;
     }
+
+//    /**
+//     * Returns a count of the user's bookmarks and drafts.
+//     * @param int $userId
+//     * @return array|null
+//     * @throws Exception
+//     */
+//    public function getDraftsAndBookmarksCount(int $userId): ?array
+//    {
+//        return $this->createQueryBuilder('a')
+//            ->select([
+//                'COUNT(DISTINCT a.id)' => 'drafts',
+//                'COUNT(ab.id)' => 'bookmarks',
+//            ])
+//            ->where([
+//                'a.author_id = :user_id',
+//                'a.status = :status',
+//            ])
+//            ->setParameters([
+//                'user_id' => $userId,
+//                'status' => 'draft',
+//            ])
+//            ->joins([
+//                [
+//                    'table' => 'article_bookmarks',
+//                    'alias' => 'ab',
+//                    'type' => 'LEFT',
+//                    'conditions' => [
+//                        'ab.bookmarked_by = :user_id',
+//                    ],
+//                ],
+//            ])
+//            ->getQuery()
+//            ->firstOrNull()
+//        ;
+//    }
 }

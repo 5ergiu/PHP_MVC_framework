@@ -1,31 +1,4 @@
-/*
-|--------------------------------------------------------------------------
-| Main scss variables
-|--------------------------------------------------------------------------
-|
-| When importing main, the underscore is left out to prevents the SCSS
-| compiler from generating a CSS file from it, so that's why this was named
-| '_main'.
-|
-| Mentions:
-|   - Here will be added all the variables used throughout the project and
-|   any sass functions.
-|
-*/
-
-$dark: #1d2126;
-$backgroundColor: #292e33;
-$grayish: #333940;
-$text: #B2B6BB;
-$tag: #687078;
-$blue: #528BFF;
-$green: #1abb9c;
-$orange: #FF8121;
-$purple: #7B78FF;
-$borderGray: #303840;
-$boxShadow: 0 4px 8px rgba(0,0,0,0.38);
-$navShadow: 16px 4px 12px -14px rgba(0,0,0,0.75);
-$borderRadius: .25rem;
+@import './globals';
 
 /*
 |--------------------------------------------------------------------------

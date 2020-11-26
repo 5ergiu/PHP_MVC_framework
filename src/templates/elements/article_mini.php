@@ -1,9 +1,10 @@
 <article class="article article--mini">
-<!--    <a class="article__link" href="--><?//= "/articles/read/{$data['slug']}" ;?><!--"></a>-->
     <?php if (!empty($data['cover'])) : ?>
-        <div class="article__cover"
-             style="background-image: url(<?= ASSETS_UPLOADS . "{$data['cover']}" ;?>)"
-        >
+        <div class="article__cover">
+            <div class="article__cover_image"
+                 style="background-image: url(<?= ASSETS_UPLOADS . "{$data['cover']}" ;?>)"
+            >
+            </div>
         </div>
     <?php endif; ?>
     <div class="article__container">
@@ -17,7 +18,7 @@
         <?php endif; ?>
         <div class="article__bookmark">
             <button
-                class="button js-button-bookmark <?= $data['bookmarked_by_logged_user'] ? 'button--bookmarked' : null; ?>"
+                class="js-clickable button js-button-bookmark <?= $data['bookmarked_by_logged_user'] ? 'button--bookmarked' : null; ?>"
                 type="button"
                 data-article-id="<?=$data['id'];?>"
                 title="<?= $data['bookmarked_by_logged_user'] ? 'Remove bookmark' : 'Bookmark article'; ?>"
@@ -26,11 +27,11 @@
             </button>
         </div>
         <div class="article__info">
-            <a class="avatar" href="/users/<?= $data['username']; ?>">
+            <a class="avatar js-clickable" href="/users/<?= $data['username']; ?>">
                 <img src="<?= ASSETS_IMG . "{$data['avatar']}"; ?>" alt="profile" />
             </a>
             <div>
-                <a href="/users/<?= $data['username']; ?>">
+                <a class="js-clickable" href="/users/<?= $data['username']; ?>">
                     <?= $data['username']; ?>
                 </a>
                 <time class="muted">
@@ -39,12 +40,12 @@
             </div>
         </div>
         <div class="article__title">
-            <a href="<?="/articles/read/{$data['slug']}";?>"><?= $data['title']; ?></a>
+            <a class="js-clickable js-main-article-link" href="<?="/articles/read/{$data['slug']}";?>"><?= $data['title']; ?></a>
         </div>
         <?php if (!empty($data['tags'])) : ?>
             <div class="article__tags">
                 <?php foreach($data['tags'] as $tag) : ?>
-                    <a class="tag" href="/tags/<?= $tag; ?>">
+                    <a class="tag js-clickable" href="/tags/<?= $tag; ?>">
                         <span>#</span><?= $tag; ?>
                     </a>
                 <?php endforeach; ?>

@@ -15,7 +15,7 @@ use PDOStatement;
  * @property string $alias           The table alias.
  * @property string|null $selections The selected fields('*' by default).
  * @property string|null $joins      Query joins.
- * @property array $parameters       Query parameters.
+ * @property array|null $parameters  Query parameters.
  * @property string|null $conditions Query conditions.
  * @property string|null $orderBy    Query order by conditions.
  * @property string|null $groupBy    Query group by conditions.
@@ -31,11 +31,11 @@ class QueryBuilder extends Query
     private string $alias;
     private ?string $selections = null;
     private ?string $joins = null;
-    private array $parameters = [];
+    private ?array $parameters = null;
     private ?string $conditions = null;
     private ?string $orderBy = null;
     private ?string $groupBy = null;
-    private ?int $limit;
+    private ?int $limit = null;
     private string $query;
 
     public function __construct(string $table)
@@ -252,7 +252,22 @@ class QueryBuilder extends Query
         }
         $this->query = rtrim($this->query);
         $this->query .= ';';
+        $this->__reset();
         return $this;
+    }
+
+    /**
+     * Reset everything in case we create another query from another method right after using the previous query.
+     * @return void
+     */
+    private function __reset(): void
+    {
+        $this->selections = null;
+        $this->joins = null;
+        $this->conditions = null;
+        $this->orderBy = null;
+        $this->groupBy = null;
+        $this->limit = null;
     }
 
     /**
@@ -355,5 +370,23 @@ class QueryBuilder extends Query
     {
         $this->__prepareStatement();
         return $this->fetchColumn($this->statement);
+    }
+
+    /**
+     * Returns the count of a specific query.
+     * @param array $conditions The conditions based on which record to be deleted.
+     * @return bool
+     * @throws Exception
+     */
+    public function remove(array $conditions)
+    {
+        $conditions = "{$this->table}.$criteria :$value";
+        $criteria = substr($criteria, 0, strpos($criteria, ' '));
+        $this->parameters = $this->__getValuesFromEntity($entity);
+        $attributes = implode(', ', array_keys($this->parameters));
+        $prepareAttributes = implode(', ', array_map(fn($attr) => ":$attr", array_keys($this->parameters)));
+        $this->query = "DELETE FROM $this->table($attributes) VALUES ($prepareAttributes)";
+        $this->__prepareStatement();
+        return $this->delete($this->statement);
     }
 }

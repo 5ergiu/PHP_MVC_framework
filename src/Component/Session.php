@@ -1,7 +1,7 @@
 <?php
 namespace App\Component;
 
-class SessionComponent
+class Session
 {
     /**
      *  Writes value to given session variable name.

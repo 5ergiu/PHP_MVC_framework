@@ -15,7 +15,7 @@ class User extends AbstractEntity
     private string $email;
     private string $role = self::ROLE_USER;
     private string $password;
-    private string $image;
+    private string $image = 'guest.svg';
     private string $summary;
 
     public const ROLE_ADMIN = 'Admin';

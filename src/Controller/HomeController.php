@@ -5,6 +5,7 @@ use App\Repository\ArticleBookmarksRepo;
 use App\Repository\ArticleLikesRepo;
 use App\Repository\ArticlesRepo;
 use App\Repository\ArticleTagsRepo;
+use App\Repository\UsersRepo;
 use Exception;
 /**
  * @property ArticlesRepo $ArticlesRepo
