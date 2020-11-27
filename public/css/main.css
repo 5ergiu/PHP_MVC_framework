@@ -405,26 +405,17 @@ ul {
   border: none;
 }
 
-.button--like {
-  cursor: pointer;
-  height: 50px;
-  width: 50px;
+.button--like, .button--bookmark {
+  font-size: 2.5rem;
+  padding: 0;
+  border: none;
   background-color: unset;
-  border: 2px solid #303840;
-  border-radius: 0.25rem;
-  background-image: url("../images/web_heart_animation.png");
-  background-position: left;
-  background-repeat: no-repeat;
-  background-size: 2900%;
+  -webkit-box-shadow: none;
+          box-shadow: none;
 }
 
-.button--like.liked {
-  background-position: right;
-}
-
-.button--like.animate {
-  -webkit-animation: heart-burst 1s steps(28) 1;
-          animation: heart-burst 1s steps(28) 1;
+.button--like:focus, .button--bookmark:focus {
+  background-color: unset;
 }
 
 .button--outline {
@@ -467,16 +458,6 @@ ul {
 
 .button--outline--active:focus {
   background-color: unset;
-}
-
-.button--bookmarked {
-  background-color: #444F5B;
-  -webkit-box-shadow: unset;
-          box-shadow: unset;
-}
-
-.button--bookmarked:focus {
-  background-color: #444F5B;
 }
 
 .button--top {
@@ -619,7 +600,7 @@ a.button:hover {
 .sticky {
   position: -webkit-sticky;
   position: sticky;
-  top: 6rem;
+  top: 4rem;
 }
 
 .notification {

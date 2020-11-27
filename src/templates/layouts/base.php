@@ -59,7 +59,7 @@ use App\Entity\User;
                             <li class="dropdown__item">
                                 <a href="/account/reading-list">
                                     📚 Reading list
-                                    <span class="navigation__user_counter" id="js-bookmarks-count">
+                                    <span class="navigation__user_counter" id="js-user-bookmarks-count">
                                         <?= $this->user['bookmarks']; ?>
                                     </span>
                                 </a>

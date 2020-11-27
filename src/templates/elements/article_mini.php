@@ -18,12 +18,12 @@
         <?php endif; ?>
         <div class="article__bookmark">
             <button
-                class="js-clickable button js-button-bookmark <?= $data['bookmarked_by_logged_user'] ? 'button--bookmarked' : null; ?>"
+                class="button button--bookmark js-clickable js-button-bookmark <?= $data['bookmarked_by_logged_user'] ? 'button--bookmarked' : null; ?>"
                 type="button"
                 data-article-id="<?=$data['id'];?>"
                 title="<?= $data['bookmarked_by_logged_user'] ? 'Remove bookmark' : 'Bookmark article'; ?>"
             >
-                <?= $data['bookmarked_by_logged_user'] ? 'UNSAVE' : 'SAVE'; ?>
+                <?= $data['bookmarked_by_logged_user'] ? '📚' : '<i class="far fa-bookmark"></i>'; ?>
             </button>
             <div class="js-bookmark-spinner spinner hide"></div>
         </div>

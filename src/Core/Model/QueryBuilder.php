@@ -163,7 +163,7 @@ class QueryBuilder extends Query
                 if ($type !== array_key_last($conditions)) {
                     $this->conditions .= "$condition $type ";
                 } else {
-                    $type->conditions .= "$condition ";
+                    $this->conditions .= "$condition ";
                 }
             } else {
                 foreach ($condition as $key => $value) {

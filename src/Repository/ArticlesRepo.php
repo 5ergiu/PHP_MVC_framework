@@ -37,6 +37,7 @@ class ArticlesRepo extends AbstractRepository
                 'a.created_at',
                 'a.description',
                 'count(DISTINCT l.liked_by)' => 'likes',
+                'count(DISTINCT b.bookmarked_by)' => 'bookmarks',
                 $this->likedByLoggedUserSubQuery => 'liked_by_logged_user',
                 $this->bookmarkedByLoggedUserSubQuery => 'bookmarked_by_logged_user',
                 'GROUP_CONCAT(DISTINCT t.name)' => 'tags',
@@ -54,6 +55,14 @@ class ArticlesRepo extends AbstractRepository
                     'type' => 'LEFT',
                     'conditions' => [
                         'l.article_id = a.id',
+                    ],
+                ],
+                [
+                    'table' => 'article_bookmarks',
+                    'alias' => 'b',
+                    'type' => 'LEFT',
+                    'conditions' => [
+                        'b.article_id = a.id',
                     ],
                 ],
                 [

@@ -18,6 +18,18 @@
     &:hover {
       border-color: $blue;
     }
+    &__bookmark {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1rem;
+    }
+    &__link {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
   }
   &__container {
     position: relative;
@@ -56,13 +68,6 @@
     bottom: 1.5rem;
     right: 1rem;
   }
-  &__link {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-  }
   &__info {
     display: flex;
     align-items: center;
@@ -83,184 +88,82 @@
   &__tags {
     margin-bottom: 0.5rem;
   }
-  &__label {
-    &--tag {
-      color: #fff;
-      font-weight: bold;
-      border-radius: 0.25rem;
-      padding: 0.2rem 0.5rem;
-    }
-  }
-  &__input {
+}
+
+.read {
+  flex-direction: column;
+  .article {
     width: 100%;
-    background-color: unset;
-    border: none;
-    margin: 2rem 0;
-    line-height: 2rem;
-    font: {
-      family: "Nunito", sans-serif;
-      weight: bold;
-    }
-    color: $text;
-    &::placeholder {
-      font: {
-        size: 2rem;
-      }
-      color: $text;
-    }
-    &--title {
-      color: #fff;
-      font: {
-        size: 2rem;
-      }
-    }
-    &--content {
-      font: {
-        size: 1rem;
-      }
-    }
-    &--tags {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-      &:first-of-type {
-        margin-top: 2rem;
-      }
-    }
-    &--tag {
-      width: 20px;
-      height: 20px;
-      margin-right: 0.5rem;
-    }
   }
-  /* Write page */
-  &-write {
-    &__edit, &__preview {
+  &__author {
+    > div {
       background-color: $backgroundColor;
-      padding: 2rem;
-      border-radius: 0.25rem;
-      box-shadow: 0 0 17px 0 rgba(0,0,0,0.75);
-    }
-    &__actions {
-      text-align: right;
-      margin-bottom: 1rem;
-    }
-    &__cover {
-      display: flex;
-      align-items: center;
-      input {
-        display: none;
-      }
-      &--mini-preview {
-        width: 200px;
-        height: 150px;
-        margin-right: 3rem;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-      }
-      &__buttons {
-        text-align: center;
-        button {
-          display: block;
-          width: 100%;
-          margin: 1rem 0;
+      border: 2px solid $borderGray;
+      border-radius: 0.25rem;  
+      &:first-child {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        p {
+        margin-bottom: 0.5rem;  
         }
-        #articleRemoveCoverButton {
-          color: #F25757;
-          background-color: #444F5B;
-          box-shadow: unset;
-        }
-      }
-    }
-    &__login {
-      background-color: $backgroundColor;
-      border-radius: 0.25rem;
-      padding: 2rem;
-      &__message {
-        text-align: center;
-        margin-bottom: 3rem;
-        img {
-          margin-bottom: 3rem;
-          width: 50%;
-        }
-        div h1 {
+        > div {
+          display: flex;
+          align-items: center;  
           margin-bottom: 1rem;
+          .avatar {
+            margin-right: 0.5rem;  
+          }
         }
       }
-      &__form {
-        max-width: 50%;
-        margin: 0 auto;
-        padding-bottom: 3rem;
+      &:nth-child(2) {
+        h3 {
+          padding: 1rem;
+           margin-bottom: 0;
+          border-bottom: 2px solid $borderGray;
+        }
+        > div {
+          padding: 1rem;
+        }
       }
-    }
+    }  
   }
-  /* Read page */
-  &-read {
+}
+
+@media only screen and (min-width: 992px) {
+  .read {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    .article {
-      // to create the gap between the asides and article
-      width: 65%;
-    }
-    &__actions {
-      div {
-        display: flex;
-        flex-direction: column;
-        span {
-          margin-top: 0.3rem;
-          align-self: center;
-        }
-      }
-    }
     aside {
       display: flex;
       flex-direction: column;
-      height: max-content;
+      align-self: flex-start;
     }
-    &__user {
+    .article {
+      // to create the gap between the asides and article
+      width: 65%;
+      margin: 0 1rem 0 0;
+      &__bookmark {
+        position: relative;
+        margin-bottom: 2rem;
+        bottom: unset;
+        right: unset;
+      }
+    }
+    &__actions {
+      width: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 3rem;
+      .article__like, .article__bookmark {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    &__author {
       width: 25%;
-      .profile-image {
-        margin-bottom: 1rem;
-        a {
-          display: flex;
-          align-items: center;
-          img {
-            margin-right: 0.5rem;
-          }
-        }
-      }
-      > div {
-        background-color: $backgroundColor;
-        border-radius: 0.25rem;
-        border: 2px solid $borderGray;
-        &:nth-child(1) {
-          padding: 1rem;
-          margin-bottom: 1rem;
-          p {
-            &:nth-child(3) {
-              text-transform: uppercase;
-              color: #fff;
-              margin-top: 1rem;
-            }
-          }
-        }
-        &:nth-child(2) {
-          h3 {
-            padding: 1rem;
-            border-bottom: 2px solid $borderGray;
-          }
-          > div {
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-            border-bottom: 2px solid $borderGray;
-            &:last-child {
-              border-bottom: unset;
-            }
-          }
-        }
-      }
     }
   }
 }

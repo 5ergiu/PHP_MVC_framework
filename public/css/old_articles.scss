@@ -1,0 +1,290 @@
+@import './globals';
+
+/* Articles */
+
+.article {
+  /* Everything related to the article element itself(mini or not) */
+  position: relative;
+  background-color: $backgroundColor;
+  margin-bottom: 1rem;
+  border-radius: 0.25rem;
+  border: 2px solid $borderGray;
+  box-shadow: 0 0 17px 0 rgba(0,0,0,0.75);
+  &:hover &__cover_image {
+    transform: scale(1.1);
+  }
+  &--mini {
+    cursor: pointer;
+    &:hover {
+      border-color: $blue;
+    }
+    &__bookmark {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1rem;
+    }
+    &__link {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  }
+  &__container {
+    position: relative;
+    padding: 1rem;
+  }
+  &__cover {
+    height: 350px;
+    overflow: hidden;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    border-bottom: 2px solid $borderGray;
+    &_image {
+      height: inherit;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      transition: transform .4s;
+    }
+  }
+  &__likes {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    p {
+      font-size: 1rem;
+    }
+    span {
+      font-size: 1.5rem;
+      margin-left: 0.5rem;
+    }
+  }
+  &__info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    time {
+      display: block;
+    }
+    .avatar {
+      margin-right: 0.5rem;
+    }
+  }
+  &__title {
+    margin-bottom: 0.5rem;
+    font: {
+      size: 2.5rem;
+    }
+  }
+  &__tags {
+    margin-bottom: 0.5rem;
+  }
+  &__label {
+    &--tag {
+      color: #fff;
+      font-weight: bold;
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+    }
+  }
+  &__input {
+    width: 100%;
+    background-color: unset;
+    border: none;
+    margin: 2rem 0;
+    line-height: 2rem;
+    font: {
+      family: "Nunito", sans-serif;
+      weight: bold;
+    }
+    color: $text;
+    &::placeholder {
+      font: {
+        size: 2rem;
+      }
+      color: $text;
+    }
+    &--title {
+      color: #fff;
+      font: {
+        size: 2rem;
+      }
+    }
+    &--content {
+      font: {
+        size: 1rem;
+      }
+    }
+    &--tags {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      &:first-of-type {
+        margin-top: 2rem;
+      }
+    }
+    &--tag {
+      width: 20px;
+      height: 20px;
+      margin-right: 0.5rem;
+    }
+  }
+  /* Write page */
+  &-write {
+    &__edit, &__preview {
+      background-color: $backgroundColor;
+      padding: 2rem;
+      border-radius: 0.25rem;
+      box-shadow: 0 0 17px 0 rgba(0,0,0,0.75);
+    }
+    &__actions {
+      text-align: right;
+      margin-bottom: 1rem;
+    }
+    &__cover {
+      display: flex;
+      align-items: center;
+      input {
+        display: none;
+      }
+      &--mini-preview {
+        width: 200px;
+        height: 150px;
+        margin-right: 3rem;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+      &__buttons {
+        text-align: center;
+        button {
+          display: block;
+          width: 100%;
+          margin: 1rem 0;
+        }
+        #articleRemoveCoverButton {
+          color: #F25757;
+          background-color: #444F5B;
+          box-shadow: unset;
+        }
+      }
+    }
+    &__login {
+      background-color: $backgroundColor;
+      border-radius: 0.25rem;
+      padding: 2rem;
+      &__message {
+        text-align: center;
+        margin-bottom: 3rem;
+        img {
+          margin-bottom: 3rem;
+          width: 50%;
+        }
+        div h1 {
+          margin-bottom: 1rem;
+        }
+      }
+      &__form {
+        max-width: 50%;
+        margin: 0 auto;
+        padding-bottom: 3rem;
+      }
+    }
+  }
+  /* Read page */
+  &-read {
+    display: flex;
+    justify-content: space-between;
+    .article {
+      // to create the gap between the asides and article
+      width: 65%;
+    }
+    &__actions {
+      div {
+        display: flex;
+        flex-direction: column;
+        span {
+          margin-top: 0.3rem;
+          align-self: center;
+        }
+      }
+    }
+    aside {
+      display: flex;
+      flex-direction: column;
+      height: max-content;
+    }
+    &__user {
+      width: 25%;
+      .profile-image {
+        margin-bottom: 1rem;
+        a {
+          display: flex;
+          align-items: center;
+          img {
+            margin-right: 0.5rem;
+          }
+        }
+      }
+      > div {
+        background-color: $backgroundColor;
+        border-radius: 0.25rem;
+        border: 2px solid $borderGray;
+        &:nth-child(1) {
+          padding: 1rem;
+          margin-bottom: 1rem;
+          p {
+            &:nth-child(3) {
+              text-transform: uppercase;
+              color: #fff;
+              margin-top: 1rem;
+            }
+          }
+        }
+        &:nth-child(2) {
+          h3 {
+            padding: 1rem;
+            border-bottom: 2px solid $borderGray;
+          }
+          > div {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            border-bottom: 2px solid $borderGray;
+            &:last-child {
+              border-bottom: unset;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.read {
+  flex-direction: column;
+  .article {
+    width: 100%;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .read {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .article {
+      // to create the gap between the asides and article
+      width: 65%;
+    }
+    aside {
+      display: flex;
+      flex-direction: column;
+      height: max-content;
+    }
+  }
+}

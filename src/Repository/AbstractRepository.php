@@ -110,11 +110,10 @@ abstract class AbstractRepository
      */
     public function findBy(array $conditions): ?array
     {
-        $parameters = $conditions;
-        $conditions = array_map(fn($attr) => "{$this->table}.$attr = :$attr", array_keys($parameters));
+        $formattedParameters['AND'] = array_map(fn($attr) => "{$this->table}.$attr = :$attr", array_keys($conditions));
         return $this->createQueryBuilder($this->table)
-            ->where($conditions)
-            ->setParameters($parameters)
+            ->where($formattedParameters)
+            ->setParameters($conditions)
             ->getQuery()
             ->firstOrNull()
         ;
