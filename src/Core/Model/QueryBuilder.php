@@ -17,9 +17,9 @@ use PDOStatement;
  * @property string|null $joins           Query joins.
  * @property array|null $parameters       Query parameters.
  * @property string|null $conditions      Query conditions.
- * @property string|null $orderBy         Query order by conditions.
  * @property string|null $groupBy         Query group by conditions.
- * @property int|null $limit              Query limit.
+ * @property string|null $orderBy         Query order by conditions.
+ * @property string|null $limit           Query limit.
  * @property string $query                Query to be executed on the database.
  * @property PDOStatement|null $statement PDO Statement to be executed.
  */
@@ -33,9 +33,9 @@ class QueryBuilder extends Query
     private ?string $joins = null;
     private ?array $parameters = null;
     private ?string $conditions = null;
-    private ?string $orderBy = null;
     private ?string $groupBy = null;
-    private ?int $limit = null;
+    private ?string $orderBy = null;
+    private ?string $limit = null;
     private string $query;
     public PDOStatement $statement;
 
@@ -130,11 +130,21 @@ class QueryBuilder extends Query
     {
         foreach ($joins as $join) {
             $this->joins .= "{$join['type']} JOIN {$join['table']} as {$join['alias']} ON ";
-            foreach ($join['conditions'] as $key => $condition) {
-                if ($key !== array_key_last($join['conditions'])) {
-                    $this->joins .= "$condition AND";
+            foreach ($join['conditions'] as $type => $condition) {
+                if (!is_array($condition)) {
+                    if ($type !== array_key_last($join['conditions'])) {
+                        $this->joins .= "$condition AND";
+                    } else {
+                        $this->joins .= "$condition ";
+                    }
                 } else {
-                    $this->joins .= "$condition ";
+                    foreach ($condition as $key => $value) {
+                        if ($key !== array_key_last($condition)) {
+                            $this->joins .= "$value $type";
+                        } else {
+                            $this->conditions .= "$value ";
+                        }
+                    }
                 }
             }
         }
@@ -148,11 +158,21 @@ class QueryBuilder extends Query
     public function where(array $conditions): QueryBuilder
     {
         $this->conditions .= 'WHERE ';
-        foreach ($conditions as $key => $condition) {
-            if ($key !== array_key_last($conditions)) {
-                $this->conditions .= "$condition AND ";
+        foreach ($conditions as $type => $condition) {
+            if (!is_array($condition)) {
+                if ($type !== array_key_last($conditions)) {
+                    $this->conditions .= "$condition $type ";
+                } else {
+                    $type->conditions .= "$condition ";
+                }
             } else {
-                $this->conditions .= "$condition ";
+                foreach ($condition as $key => $value) {
+                    if ($key !== array_key_last($condition)) {
+                        $this->conditions .= "$value $type ";
+                    } else {
+                        $this->conditions .= "$value ";
+                    }
+                }
             }
         }
         return $this;
@@ -165,31 +185,6 @@ class QueryBuilder extends Query
     public function setParameters(array $parameters): QueryBuilder
     {
         $this->parameters = $parameters;
-        return $this;
-    }
-
-    /**
-     * @param array $orderBy
-     * @return $this
-     */
-    public function orderBy(array $orderBy): QueryBuilder
-    {
-        $this->orderBy .= 'ORDER BY ';
-        foreach ($orderBy as $sort => $order) {
-            if (is_int($sort)) {
-                if ($sort !== array_key_last($orderBy)) {
-                    $this->orderBy .= "$sort, ";
-                } else {
-                    $this->orderBy .= "$sort ";
-                }
-            } else {
-                if ($sort !== array_key_last($orderBy)) {
-                    $this->orderBy .= "$sort $order, ";
-                } else {
-                    $this->orderBy .= "$sort $order ";
-                }
-            }
-        }
         return $this;
     }
 
@@ -211,7 +206,32 @@ class QueryBuilder extends Query
     }
 
     /**
-     * @param int $limit
+     * @param array $orderBy
+     * @return $this
+     */
+    public function orderBy(array $orderBy): QueryBuilder
+    {
+        $this->orderBy .= 'ORDER BY ';
+        foreach ($orderBy as $sort => $order) {
+            if (is_int($sort)) {
+                if ($sort !== array_key_last($orderBy)) {
+                    $this->orderBy .= "$order, ";
+                } else {
+                    $this->orderBy .= "$order ";
+                }
+            } else {
+                if ($sort !== array_key_last($orderBy)) {
+                    $this->orderBy .= "$sort $order, ";
+                } else {
+                    $this->orderBy .= "$sort $order ";
+                }
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @param int|null $limit
      * @return $this
      */
     public function setMaxResults(int $limit): QueryBuilder
@@ -238,11 +258,11 @@ class QueryBuilder extends Query
         if (!empty($this->conditions)) {
             $this->query .= $this->conditions;
         }
-        if (!empty($this->orderBy)) {
-            $this->query .= $this->orderBy;
-        }
         if (!empty($this->groupBy)) {
             $this->query .= $this->groupBy;
+        }
+        if (!empty($this->orderBy)) {
+            $this->query .= $this->orderBy;
         }
         if (!empty($this->limit)) {
             $this->query .= $this->limit;
@@ -262,8 +282,8 @@ class QueryBuilder extends Query
         $this->selections = null;
         $this->joins = null;
         $this->conditions = null;
-        $this->orderBy = null;
         $this->groupBy = null;
+        $this->orderBy = null;
         $this->limit = null;
     }
 

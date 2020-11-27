@@ -9,26 +9,27 @@ use Exception;
 class ArticlesRepo extends AbstractRepository
 {
     /**
-     * Returns all articles.
-     * @param string|null $slug The article's slug. (optional - used if we need a specific article)
+     * Returns all approved articles based on user.
+     * @param string|null $slug The article's slug. (optional - used if we need to have a specific article)
+     * @param int|null $limit   The query limit (optional)
      * @return array
      * @throws Exception
      */
-    public function getArticlesFull(?string $slug = null): array
+    public function getApprovedArticlesByUser(?string $slug = null, int $limit = null): array
     {
-        $conditions = ['a.status = :status'];
+        $conditions['AND'] = ["a.status = 'approved'"];
         $parameters = [
-            'status' => 'approved',
             'liked_by' => $this->userId,
             'bookmarked_by' => $this->userId,
         ];
         if (!empty($slug)) {
-            $conditions[] = ['a.slug = :slug'];
+            $conditions['AND'][] = 'a.slug = :slug';
             $parameters['slug'] = $slug;
         }
         $articles = $this->createQueryBuilder('a')
             ->select([
                 'a.id',
+                'a.author_id',
                 'a.title',
                 'a.content',
                 'a.cover',
@@ -96,5 +97,66 @@ class ArticlesRepo extends AbstractRepository
             return $articles[0];
         }
         return $articles;
+    }
+
+    /**
+     * Returns a limited number of random articles based on the author.
+     * @param int $authorId     The article's author id.
+     * @param string $slug      Article that will be ignored.
+     * @return array
+     * @throws Exception
+     */
+    public function getRandomArticlesByAuthor(int $authorId, string $slug): array
+    {
+        $conditions['AND'] = [
+            "a.status = 'approved'",
+            'a.author_id = :author_id',
+        ];
+        $parameters = [
+            'author_id' => $authorId,
+        ];
+        if (!empty($slug)) {
+            $conditions['AND'][] = 'a.slug != :slug';
+            $parameters['slug'] = $slug;
+        }
+        $article = $this->createQueryBuilder('a')
+            ->select([
+                'a.id',
+                'a.title',
+                'a.slug',
+                'GROUP_CONCAT(DISTINCT t.name)' => 'tags',
+            ])
+            ->setParameters($parameters)
+            ->where($conditions)
+            ->joins([
+                [
+                    'table' => 'article_tags',
+                    'alias' => 'atg',
+                    'type' => 'LEFT',
+                    'conditions' => [
+                        'atg.article_id = a.id',
+                    ],
+                ],
+                [
+                    'table' => 'tags',
+                    'alias' => 't',
+                    'type' => 'left',
+                    'conditions' => [
+                        't.id = atg.tag_id',
+                    ],
+                ]
+            ])
+            ->groupBy(['a.id'])
+            ->orderBy(['RAND()'])
+            ->setMaxResults(3)
+            ->getQuery()
+            ->getResults()
+        ;
+        foreach ($article as &$values) {
+            if (!empty($values['tags'])) {
+                $values['tags'] = explode(',', $values['tags']);
+            }
+        }
+        return $article;
     }
 }

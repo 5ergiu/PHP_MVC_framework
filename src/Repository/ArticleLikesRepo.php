@@ -12,8 +12,10 @@ class ArticleLikesRepo extends AbstractRepository
         return $this->createQueryBuilder('al')
             ->select(['COUNT(*) > 0'])
             ->where([
-                'al.liked_by = :liked_by',
-                'al.article_id = a.id',
+                'AND' => [
+                    'al.liked_by = :liked_by',
+                    'al.article_id = a.id',
+                ],
             ])
             ->getQuery()
             ->toQueryString()

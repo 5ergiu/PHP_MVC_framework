@@ -13,8 +13,10 @@ class ArticleBookmarksRepo extends AbstractRepository
         return $this->createQueryBuilder('ab')
             ->select(['COUNT(*) > 0'])
             ->where([
-                'ab.bookmarked_by = :bookmarked_by',
-                'ab.article_id = a.id',
+                'AND' => [
+                    'ab.bookmarked_by = :bookmarked_by',
+                    'ab.article_id = a.id',
+                ],
             ])
             ->getQuery()
             ->toQueryString()

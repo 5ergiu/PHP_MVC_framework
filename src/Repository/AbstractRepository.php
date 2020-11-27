@@ -130,7 +130,7 @@ abstract class AbstractRepository
     {
         return $this->createQueryBuilder($this->table)
             ->where([
-                "{$this->table}.id = :id"
+                'AND' => "{$this->table}.id = :id",
             ])
             ->setParameters([
                 'id' => $id,

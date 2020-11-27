@@ -27,7 +27,7 @@ class HomeController extends AbstractController
         $this->loadRepo('articleBookmarks');
         $this->ArticlesRepo->setSubQuery('likedByLoggedUserSubQuery', $this->ArticleLikesRepo->getLikedByLoggedUserSubQuery());
         $this->ArticlesRepo->setSubQuery('bookmarkedByLoggedUserSubQuery', $this->ArticleBookmarksRepo->getBookmarkedByLoggedUserSubQuery());
-        $articles = $this->ArticlesRepo->getArticlesFull();
+        $articles = $this->ArticlesRepo->getApprovedArticlesByUser();
         $this->render('home/index', [
             'articles' => $articles,
         ]);
