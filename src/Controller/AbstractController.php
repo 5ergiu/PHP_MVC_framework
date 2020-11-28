@@ -9,21 +9,25 @@ use App\Core\View;
 use App\Component\Log;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
+use App\Helper\MarkdownHelper;
+
 /**
  * @property Session $session
  * @property Request $request
  * @property array $referer
  * @property Response $response
  * @property Auth $auth
+ * @property MarkdownHelper $markdown
  * @property Log $log
  * The framework's main controller which will be extended by all the app's controllers.
  */
 abstract class AbstractController
 {
-    protected Session $session;
     public Request $request;
+    protected Session $session;
     protected array $referer;
     protected Auth $auth;
+    protected MarkdownHelper $markdown;
     protected Log $log;
 
 
@@ -32,6 +36,7 @@ abstract class AbstractController
         $this->session = new Session;
         $this->referer = $this->__buildReferer();
         $this->auth = new Auth($this->session);
+        $this->markdown = new MarkdownHelper;
         $this->log = new Log;
         $this->response = new Response;
     }
