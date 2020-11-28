@@ -132,6 +132,7 @@ abstract class AbstractController
 
     /**
      * TODO: add more security to this
+     * TODO: ERROR - when on register, if you log in, the referer isn't properly built, resulting in: 'auth/auth/register'
      * Returns a formatted array of the referer.
      * @return array
      */

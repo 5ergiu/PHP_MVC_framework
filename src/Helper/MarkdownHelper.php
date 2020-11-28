@@ -1,19 +1,19 @@
 <?php
 namespace App\Helper;
 
-use Parsedown;
+
 /**
- * @property Parsedown $parsedown
+// * @property Parsedown $parsedown
  */
 class MarkdownHelper
 {
-    private Parsedown $parsedown;
+//    private Parsedown $parsedown;
 
     public function __construct()
     {
-        $this->parsedown = new Parsedown;
-        $this->parsedown->setSafeMode(true);
-        $this->parsedown->setMarkupEscaped(true);
+//        $this->parsedown = new Parsedown;
+//        $this->parsedown->setSafeMode(true);
+//        $this->parsedown->setMarkupEscaped(true);
     }
 
     /**
@@ -21,8 +21,8 @@ class MarkdownHelper
      * @param string $text The text that will be transformed to markdown.
      * @return string
      */
-    public function transfrom(string $text): string
+    public function transform(string $text): string
     {
-        return $this->parsedown->text($text);
+//        return $this->parsedown->text($text);
     }
 }

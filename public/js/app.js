@@ -32,7 +32,7 @@ export default class App {
                 if (this.isLoggedIn) {
                     localStorage.setItem('isLoggedIn', 'yes');
                 }
-                new Auth(this.Loading, this.Notification, this.Utils, this.isLoggedIn)
+                new Auth(this.Notification, this.Utils, this.isLoggedIn)
             })
     }
 }

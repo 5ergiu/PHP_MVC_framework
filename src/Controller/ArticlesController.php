@@ -28,7 +28,7 @@ class ArticlesController extends AbstractController
         $article = $this->ArticlesRepo->getApprovedArticlesByUser($slug);
         $suggestions = $this->ArticlesRepo->getRandomArticlesByAuthor($article['author_id'], $slug);
         $article['suggestions'] = $suggestions;
-        $article['content'] = $this->markdown->transfrom($article['content']);
+//        $article['content'] = $this->markdown->transfrom($article['content']);
         $this->render('articles/read', [
             'article' => $article,
             'css' => ['articles'],

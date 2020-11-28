@@ -92,7 +92,6 @@ use App\Entity\User;
                                 'class' => 'login',
                                 'id' => 'js-login',
                                 'autocomplete' => 'off',
-                                'action' => 'auth/login',
                             ]);
                         ?>
                         <div id="js-login-loading-spinner" class="spinner hide"></div>
