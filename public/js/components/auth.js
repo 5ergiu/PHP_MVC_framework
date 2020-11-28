@@ -6,7 +6,7 @@ export default class Auth {
     #Loading
     #Notification
     #Utils
-    isLoggedIn = false
+    isLoggedIn
 
     constructor(Notification, Utils, isLoggedIn) {
         this.#Loading = new Loading

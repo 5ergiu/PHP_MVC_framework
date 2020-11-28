@@ -53,7 +53,7 @@ class QueryBuilder extends Query
      */
     private static function __connect(): PDO
     {
-        $dsn = "mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']}";
+        $dsn = "mysql:host={$_ENV['DB_HOST']};port={$_ENV['DB_PORT']};dbname={$_ENV['DB_NAME']}";
         try {
             $pdo = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS']);
             // set the PDO error mode to exception
@@ -86,8 +86,12 @@ class QueryBuilder extends Query
                 ':db_name' => $_ENV['DB_NAME'],
                 ':table_name' => $this->table,
             ]);
-            $result = $query->fetchAll();
-            $this->attributes = array_map('array_pop', $result);
+            $columns = $query->fetchAll();
+            foreach ($columns as $column) {
+                foreach ($column as $key => $value) {
+                    $this->attributes[] = $value;
+                }
+            }
         } catch (PDOException $e) {
             throw new HaveToWorkOnTheseExceptions($e);
         }

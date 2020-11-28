@@ -27,6 +27,7 @@ export default class App {
     initializeAuth = () => {
         this.Utils.fetchJsonData(ROUTES.IS_LOGGED_IN)
             .then(data => {
+                console.log(data)
                 this.isLoggedIn = data.response
                 if (this.isLoggedIn) {
                     localStorage.setItem('isLoggedIn', 'yes');
