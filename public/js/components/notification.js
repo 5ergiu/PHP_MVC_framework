@@ -1,3 +1,7 @@
+/**
+ * No matter how many actions the user would do, we should only show a single notification, so
+ * the instance for this class will be passed from the main 'app.js' to whatever class needs it.
+ */
 export default class Notification {
 
     #notification

@@ -30,6 +30,7 @@ class ArticlesController extends AbstractController
         $article['suggestions'] = $suggestions;
         $this->render('articles/read', [
             'article' => $article,
+            'css' => ['articles'],
         ]);
     }
 

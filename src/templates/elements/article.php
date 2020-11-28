@@ -9,7 +9,7 @@
     <?php endif; ?>
     <div class="article__container">
         <div class="article__title">
-            <a href="<?="/articles/read/{$data['slug']}";?>"><?= $data['title']; ?></a>
+            <?= $data['title']; ?>
         </div>
         <?php if (!empty($data['tags'])) : ?>
             <div class="article__tags">

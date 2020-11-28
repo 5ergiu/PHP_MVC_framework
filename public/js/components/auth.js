@@ -1,4 +1,5 @@
 import ROUTES from './routes.js'
+import Loading from './loading.js'
 
 export default class Auth {
 
@@ -7,8 +8,8 @@ export default class Auth {
     #Utils
     isLoggedIn = false
 
-    constructor(Loading, Notification, Utils, isLoggedIn) {
-        this.#Loading = Loading
+    constructor(Notification, Utils, isLoggedIn) {
+        this.#Loading = new Loading
         this.#Notification = Notification
         this.#Utils = Utils
         this.isLoggedIn = isLoggedIn

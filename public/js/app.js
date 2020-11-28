@@ -2,7 +2,6 @@ import ROUTES from './components/routes.js'
 import Utils from './components/utils.js'
 import Auth from './components/auth.js'
 import Notification from './components/notification.js'
-import Loading from './components/loading.js'
 import Dropdown from './components/dropdown.js'
 import Actions from './components/actions.js'
 import Articles from './components/articles.js'
@@ -16,14 +15,13 @@ export default class App {
     isLoggedIn = false
 
     constructor() {
-        this.Loading = new Loading
         this.Notification = new Notification
         this.Utils = new Utils
         this.initializeAuth()
         new Dropdown
         new Clickable
         new Articles
-        new Actions(this.Loading, this.Utils, this.Notification)
+        new Actions(this.Utils, this.Notification)
     }
 
     initializeAuth = () => {

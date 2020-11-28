@@ -13,7 +13,7 @@ use App\Helper\FormHelper;
  * @property array $variables    The variables that will be used in the view.
  * @property string|null $layout Layout file.
  * @property string $body        Response body.
- * @property string|null $css    Custom css files to include in the head.
+ * @property array $css          Custom css files to include in the head.
  * Renders a complete view with data from the controllers and all required helpers for the view.
  */
 class View
@@ -26,7 +26,7 @@ class View
     private array $variables;
     private ?string $layout;
     private string $body;
-    public ?string $css = null;
+    public array $css = [];
 
     public function __construct(array $requestData, ?array $authenticatedUser, array $notification, string $viewPath, array $variables, ?string $layout)
     {
@@ -37,6 +37,7 @@ class View
         $this->file = substr($viewPath, strpos($viewPath, '/') + 1);
         $this->variables = $variables;
         $this->layout = $layout;
+        $this->__addCss($variables);
         $this->__setBody();
     }
 
@@ -94,6 +95,20 @@ class View
     }
 
     /**
+     * Sets the css files.
+     * @param array|null $css
+     * @return void
+     */
+    private function __addCss(array $css): void
+    {
+        if (!empty($css['css'])) {
+            foreach ($css['css'] as $style) {
+                $this->css[] = "$style.css";
+            }
+        }
+    }
+
+    /**
      * Renders an element.
      * Will NOT use reference variable here so they don't interfere with the ones from the actual view.
      * All data will be accessed from the '$data' array inside any element.
@@ -105,7 +120,7 @@ class View
     public function element(string $element, array $data = [], string $css = null): void
     {
         if (!empty($css)) {
-            $this->css = "$css.css";
+            $this->css[] = "$css.css";
         }
         require ELEMENTS . "$element.php";
     }

@@ -1,16 +1,16 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\ArticleBookmark;
-use App\Repository\ArticleBookmarksRepo;
+use App\Entity\ArticleLike;
+use App\Repository\ArticleLikesRepo;
 use Exception;
 /**
- * @property ArticleBookmarksRepo $ArticleBookmarksRepo
+ * @property ArticleLikesRepo $ArticleLikesRepo
  */
-class BookmarksController extends AbstractController
+class LikesController extends AbstractController
 {
     /**
-     * Adds a bookmark.
+     * Adds a like.
      * @return void
      * @throws Exception
      */
@@ -21,18 +21,18 @@ class BookmarksController extends AbstractController
         $errors[] = 'Something went wrong';
         if (!empty($this->auth->user)) {
             $articleId = (int)$this->request->data['article_id'];
-            $data['data']['ArticleBookmark']['article_id'] = $articleId;
-            $data['data']['ArticleBookmark']['bookmarked_by'] = (int)$this->auth->user('id');
-            $this->loadRepo('articleBookmarks');
-            if (!$this->ArticleBookmarksRepo->exists(['article_id' => $articleId])) {
-                $ArticleBookmark = new ArticleBookmark;
-                if ($this->ArticleBookmarksRepo->save($ArticleBookmark, $data)) {
+            $data['data']['ArticleLike']['article_id'] = $articleId;
+            $data['data']['ArticleLike']['liked_by'] = (int)$this->auth->user('id');
+            $this->loadRepo('articleLikes');
+            if (!$this->ArticleLikesRepo->exists(['article_id' => $articleId])) {
+                $ArticleLike = new ArticleLike;
+                if ($this->ArticleLikesRepo->save($ArticleLike, $data)) {
                     $response = true;
                     $errors = [];
                 }
             }
         } else {
-            $errors[] = 'You must be authenticated to bookmark articles';
+            $errors[] = 'You must be authenticated to like articles';
         }
         $this->newJsonResponse($response, $errors);
     }
@@ -49,10 +49,10 @@ class BookmarksController extends AbstractController
         $errors[] = 'Something went wrong';
         if (!empty($this->auth->user)) {
             $articleId = (int)$this->request->data['article_id'];
-            $this->loadRepo('articleBookmarks');
-            $articleBookmarkId = $this->ArticleBookmarksRepo->exists(['article_id' => $articleId]);
-            if ($articleBookmarkId) {
-                if ($this->ArticleBookmarksRepo->delete($articleBookmarkId)) {
+            $this->loadRepo('articleLikes');
+            $articleLikeId = $this->ArticleLikesRepo->exists(['article_id' => $articleId]);
+            if ($articleLikeId) {
+                if ($this->ArticleLikesRepo->delete($articleLikeId)) {
                     $response = true;
                     $errors = [];
                 }

@@ -11,12 +11,14 @@ use App\Entity\User;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'Blog'; ?></title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link type="text/css" rel="stylesheet" href="<?= VENDOR . 'fontawesome/css/all.min.css'; ?>" />
     <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . 'main.css'; ?>" />
-    <?php if (!empty($this->css)) : ?>
-        <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . $this->css; ?>" />
+    <?php if (!empty($this->css)) :
+        foreach ($this->css as $style): ?>
+            <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . $style; ?>" />
+        <?php endforeach; ?>
     <?php endif; ?>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 </head>
 <body>
 <nav class="navigation">

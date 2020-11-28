@@ -1,6 +1,6 @@
 <section class="read">
-    <aside class="read__actions sticky">
-        <div class="article__bookmark">
+    <aside class="read__actions">
+        <div class="read__actions_bookmark">
             <button
                 class="button button--bookmark js-button-bookmark <?= $article['bookmarked_by_logged_user'] ? 'button--bookmarked' : null; ?>"
                 type="button"
@@ -14,9 +14,9 @@
             </p>
             <div class="js-bookmark-spinner spinner hide"></div>
         </div>
-        <div class="article__like">
+        <div class="read__actions_like">
             <button
-                class="button button--like <?= $article['liked_by_logged_user'] ? 'button--liked' : null; ?>"
+                class="button button--like js-button-like <?= $article['liked_by_logged_user'] ? 'button--liked' : null; ?>"
                 type="button"
                 data-article-id="<?=$article['id'];?>"
                 title="<?= $article['liked_by_logged_user'] ? 'Unlike article' : 'Like article'; ?>"
@@ -29,7 +29,7 @@
             <div class="js-like-spinner spinner hide"></div>
         </div>
     </aside>
-    <?php $this->element('article', $article, 'articles'); ?>
+    <?php $this->element('article', $article); ?>
     <aside class="read__author sticky">
         <div>
             <div>
@@ -51,7 +51,7 @@
             <div>
                 <?php foreach ($article['suggestions'] as $suggestion) : ?>
                     <div class="article__tags">
-                        <a href="<?= $suggestion['title'] ;?>"><?= $suggestion['title'] ;?></a>
+                        <a href="<?= $suggestion['title'] ;?>">📰 <?= $suggestion['title'] ;?></a>
                         <div>
                             <?php if (!empty($suggestion['tags'])) :
                                 foreach ($suggestion['tags'] as $tag) : ?>
