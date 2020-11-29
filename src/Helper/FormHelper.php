@@ -3,20 +3,18 @@ namespace App\Helper;
 
 use App\Entity\AbstractEntity as Entity;
 use App\Core\Network\Request;
+
 /**
  * Generates HTML forms from given data.
  * @property array $data
- * @property Entity $entity
+ * @property Entity|null $entity
  */
 class FormHelper
 {
-    private ?Entity $entity = null;
-    public array $data;
-
-    public function __construct(array $data)
-    {
-        $this->data = $data;
-    }
+    public function __construct(
+        public array $data,
+        private ?Entity $entity = null
+    ) {}
 
     /**
      * Creates the <form> tag.
@@ -159,14 +157,10 @@ class FormHelper
                 }
             }
         }
-        switch ($type) {
-            case 'textarea' :
-                $input .= '</textarea>';
-                break;
-            default :
-                $input .= ' />';
-                break;
-        }
+        $input .= match ($type) {
+            'textarea' => '</textarea>',
+            default => ' />',
+        };
         $input .= $displayErrors ?? null;
         $input .= '</div>';
         return $input;
@@ -174,8 +168,8 @@ class FormHelper
 
     /**
      * Creates <input> tags.
-     * @param string $fieldName The input's 'name' attribute.
-     * @param array $options         The input's attributes.
+     * @param string $fieldName The input name attribute.
+     * @param array $options    The input's attributes.
      * @return void
      */
     public function input(string $fieldName, array $options = []): void
@@ -185,8 +179,8 @@ class FormHelper
 
     /**
      * Creates <textarea> tags.
-     * @param string $fieldName The textarea's 'name' attribute.
-     * @param array $options         The textarea's attributes.
+     * @param string $fieldName The textarea 'name' attribute.
+     * @param array $options    The textarea attributes.
      * @return void
      */
     public function text(string $fieldName, array $options = []): void
@@ -197,7 +191,7 @@ class FormHelper
     /**
      * Creates <button> tag.
      * @param string $text   The inner text of the button.
-     * @param array $options The button's attributes.
+     * @param array $options The button attributes.
      * @return void
      */
     public function button(string $text, array $options = []): void

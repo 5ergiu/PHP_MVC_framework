@@ -3,6 +3,8 @@ namespace App\Entity;
 
 use App\Core\Network\Request;
 use App\Core\Model\Validator;
+use JetBrains\PhpStorm\Pure;
+
 /**
  * The framework's main entity which will be extended by all the app's entities.
  * Used for binding values to entities, saving or editing entities.
@@ -13,11 +15,11 @@ use App\Core\Model\Validator;
 abstract class AbstractEntity
 {
     protected Validator $validator;
-    public array $context;
-    public array $errors = [];
 
-    public function __construct()
-    {
+    public function __construct(
+        public array $context,
+        public array $errors = [],
+    ) {
         $this->__setContext();
         $this->validator = new Validator($this);
         $this->validations();
@@ -93,15 +95,6 @@ abstract class AbstractEntity
         $request = new Request;
         $this->context = $request->data;
         unset($request);
-    }
-
-    /**
-     * Returns the errors.
-     * @return array
-     */
-    public function getErrors(): array
-    {
-        return $this->errors;
     }
 
     /**

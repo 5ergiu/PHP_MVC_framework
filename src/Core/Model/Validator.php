@@ -2,6 +2,7 @@
 namespace App\Core\Model;
 
 use App\Entity\AbstractEntity as Entity;
+
 /**
  * Builds custom validations based on the rules sent by an entity,
  * checks them and sets the errors on the entity if needed.
@@ -11,20 +12,19 @@ use App\Entity\AbstractEntity as Entity;
 class Validator
 {
     private array $rules = [];
-    private Entity $entity;
 
-    public function __construct(Entity $entity)
-    {
-        $this->entity = $entity;
-    }
+    public function __construct(
+        private Entity $entity
+    ) {}
 
     /**
      * Adds validations to the rules.
      * @param string $field      The field's name.
      * @param array $validations Array of validations.
-     * @return self
+     * @return $this
      */
-    public function add(string $field, array $validations) {
+    public function add(string $field, array $validations): static
+    {
 
         foreach ($validations as $rule => $details) {
             if (is_string($details)) {
@@ -71,7 +71,7 @@ class Validator
      * @param string $rule  The rule's name.
      * @return void
      */
-    private function required($input, string $field, string $rule): void
+    private function required(mixed $input, string $field, string $rule): void
     {
         if (empty($input)) {
             $message = "$field cannot be empty.";

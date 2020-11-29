@@ -15,7 +15,7 @@ class ArticlesRepo extends AbstractRepository
      * @return array
      * @throws Exception
      */
-    public function getApprovedArticlesByUser(?string $slug = null, int $limit = null): array
+    public function getApprovedArticlesByUser(?string $slug = null, ?int $limit = null): array
     {
         $conditions['AND'] = ["a.status = 'approved'"];
         $parameters = [

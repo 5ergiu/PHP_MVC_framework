@@ -7,6 +7,7 @@ use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
+
 /**
  * Builds queries.
  * @property string $table                The name of the table.
@@ -101,7 +102,7 @@ class QueryBuilder extends Query
      * @param string $alias
      * @return $this
      */
-    public function setAlias(string $alias): QueryBuilder
+    public function setAlias(string $alias): static
     {
         $this->alias = $alias;
         return $this;
@@ -111,7 +112,7 @@ class QueryBuilder extends Query
      * @param array $selections
      * @return $this
      */
-    public function select(array $selections): QueryBuilder
+    public function select(array $selections): static
     {
         $tempSelections = [];
         foreach ($selections as $selection => $alias) {
@@ -130,7 +131,7 @@ class QueryBuilder extends Query
      * @param array $joins
      * @return $this
      */
-    public function joins(array $joins): QueryBuilder
+    public function joins(array $joins): static
     {
         foreach ($joins as $join) {
             $this->joins .= "{$join['type']} JOIN {$join['table']} as {$join['alias']} ON ";
@@ -159,7 +160,7 @@ class QueryBuilder extends Query
      * @param array $conditions
      * @return $this
      */
-    public function where(array $conditions): QueryBuilder
+    public function where(array $conditions): static
     {
         $this->conditions .= 'WHERE ';
         foreach ($conditions as $type => $condition) {
@@ -186,7 +187,7 @@ class QueryBuilder extends Query
      * @param array $parameters
      * @return $this
      */
-    public function setParameters(array $parameters): QueryBuilder
+    public function setParameters(array $parameters): static
     {
         $this->parameters = $parameters;
         return $this;
@@ -196,7 +197,7 @@ class QueryBuilder extends Query
      * @param array $group
      * @return $this
      */
-    public function groupBy(array $group): QueryBuilder
+    public function groupBy(array $group): static
     {
         $this->groupBy .= 'GROUP BY ';
         foreach ($group as $key => $groupBy) {
@@ -213,7 +214,7 @@ class QueryBuilder extends Query
      * @param array $orderBy
      * @return $this
      */
-    public function orderBy(array $orderBy): QueryBuilder
+    public function orderBy(array $orderBy): static
     {
         $this->orderBy .= 'ORDER BY ';
         foreach ($orderBy as $sort => $order) {
@@ -235,10 +236,10 @@ class QueryBuilder extends Query
     }
 
     /**
-     * @param int|null $limit
+     * @param int $limit
      * @return $this
      */
-    public function setMaxResults(int $limit): QueryBuilder
+    public function setMaxResults(int $limit): static
     {
         $this->limit .= "LIMIT $limit";
         return $this;
@@ -248,7 +249,7 @@ class QueryBuilder extends Query
      * Builds the final query string to ensure the correct order is followed.
      * @return $this
      */
-    public function getQuery(): QueryBuilder
+    public function getQuery(): static
     {
         $this->query = 'SELECT ';
         if (!empty($this->selections)) {
@@ -345,10 +346,10 @@ class QueryBuilder extends Query
     /**
      * Saves a new record to the database.
      * @param Entity $entity
-     * @return int|null
+     * @return int|false
      * @throws Exception
      */
-    public function getLastInsertedId(Entity $entity): ?int
+    public function getLastInsertedId(Entity $entity): int|false
     {
         $parameters = $this->__getValuesFromEntity($entity);
         foreach ($parameters as $attribute => $value) {
@@ -362,7 +363,7 @@ class QueryBuilder extends Query
         if ($this->insert($this->statement)) {
             return $this->pdo->lastInsertId();
         } else {
-            return null;
+            return false;
         }
     }
 

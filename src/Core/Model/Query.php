@@ -5,6 +5,7 @@ use App\Component\Log;
 use Exception;
 use PDOException;
 use PDOStatement;
+
 class Query
 {
     /**

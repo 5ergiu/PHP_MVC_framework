@@ -5,6 +5,8 @@ use App\Core\Network\Request;
 use App\Entity\User;
 use App\Repository\UsersRepo;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * @property User $User
  * @property UsersRepo $UsersRepo
@@ -16,6 +18,7 @@ class AuthController extends AbstractController
      * @return void
      * @throws Exception
      */
+    #[NoReturn]
     public function login(): void
     {
         $this->methodsAllowed(['post']);
@@ -47,6 +50,7 @@ class AuthController extends AbstractController
      * @return void
      * @throws Exception
      */
+    #[NoReturn]
     public function logout(): void
     {
         $this->methodsAllowed(['post']);
@@ -64,6 +68,7 @@ class AuthController extends AbstractController
      * @api Checks if a user is logged in or not.
      * @return void
      */
+    #[NoReturn]
     public function isLoggedIn(): void
     {
         $response = !empty($this->auth->user);
@@ -75,6 +80,7 @@ class AuthController extends AbstractController
      * @return void
      * @throws Exception
      */
+    #[NoReturn]
     public function register(): void
     {
         if (!empty($this->auth->user)) {

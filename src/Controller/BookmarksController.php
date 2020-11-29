@@ -4,6 +4,8 @@ namespace App\Controller;
 use App\Entity\ArticleBookmark;
 use App\Repository\ArticleBookmarksRepo;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * @property ArticleBookmarksRepo $ArticleBookmarksRepo
  */
@@ -14,6 +16,7 @@ class BookmarksController extends AbstractController
      * @return void
      * @throws Exception
      */
+    #[NoReturn]
     public function add()
     {
         $this->methodsAllowed(['post']);
@@ -42,6 +45,7 @@ class BookmarksController extends AbstractController
      * @return void
      * @throws Exception
      */
+    #[NoReturn]
     public function remove()
     {
         $this->methodsAllowed(['post']);

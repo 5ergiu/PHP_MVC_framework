@@ -5,6 +5,8 @@ use App\Repository\ArticleBookmarksRepo;
 use App\Repository\ArticleLikesRepo;
 use App\Repository\ArticlesRepo;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * @property ArticlesRepo $ArticlesRepo
  * @property ArticleLikesRepo $ArticleLikesRepo
@@ -18,6 +20,7 @@ class ArticlesController extends AbstractController
      * @return void
      * @throws Exception
      */
+    #[NoReturn]
     public function read(string $slug): void
     {
         $this->loadRepo('articles');

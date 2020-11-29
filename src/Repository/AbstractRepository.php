@@ -4,6 +4,8 @@ namespace App\Repository;
 use App\Core\Model\QueryBuilder;
 use App\Entity\AbstractEntity as Entity;
 use Exception;
+use JetBrains\PhpStorm\Pure;
+
 /**
  * The framework's main repository which will be extended by all the app's repositories.
  * Used for entire table queries.
@@ -69,13 +71,13 @@ abstract class AbstractRepository
      * Saves a new record to the database.
      * @param Entity $entity The entity to be saved.
      * @param array $data    The data that will be bound to the entity.
-     * @return int|null
+     * @return int|false
      * @throws Exception
      */
-    public function save(Entity $entity, array $data): ?int
+    public function save(Entity $entity, array $data): int|false
     {
         if (!$entity->bindValues($data)) {
-            return null;
+            return false;
         }
         return $this->QueryBuilder->getLastInsertedId($entity);
     }

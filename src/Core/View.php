@@ -19,24 +19,22 @@ use App\Helper\FormHelper;
 class View
 {
     private FormHelper $form;
-    public ?array $user;
-    public array $notification;
     private string $folder;
     private string $file;
-    private array $variables;
-    private ?string $layout;
     private string $body;
     public array $css = [];
 
-    public function __construct(array $requestData, ?array $authenticatedUser, array $notification, string $viewPath, array $variables, ?string $layout)
-    {
+    public function __construct(
+        private array $requestData,
+        private ?array $user,
+        private array $notification,
+        private string $viewPath,
+        private array $variables,
+        private ?string $layout
+    ) {
         $this->form = new FormHelper($requestData);
-        $this->user = $authenticatedUser;
-        $this->notification = $notification;
         $this->folder = substr($viewPath, 0, strpos($viewPath, '/'));
         $this->file = substr($viewPath, strpos($viewPath, '/') + 1);
-        $this->variables = $variables;
-        $this->layout = $layout;
         $this->__addCss($variables);
         $this->__setBody();
     }
@@ -67,7 +65,7 @@ class View
      * Sets the layout.
      * @return false|string
      */
-    private function __setLayout()
+    private function __setLayout(): bool|string
     {
         $fullPath = LAYOUTS;
         $fullPath .= $this->layout !== null ? "{$this->layout}.php" : DEFAULT_LAYOUT;
@@ -80,7 +78,7 @@ class View
      * Sets the view and view variables.
      * @return false|string
      */
-    private function __setView()
+    private function __setView(): bool|string
     {
         $fullPath = TEMPLATES;
         if (!empty($this->variables)) {
@@ -96,7 +94,7 @@ class View
 
     /**
      * Sets the css files.
-     * @param array|null $css
+     * @param array $css
      * @return void
      */
     private function __addCss(array $css): void

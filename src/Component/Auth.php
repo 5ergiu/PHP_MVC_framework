@@ -2,6 +2,7 @@
 namespace App\Component;
 
 use Exception;
+
 /**
  * @property Session $session
  * @property array|null $user Authenticated user or null.
@@ -11,6 +12,9 @@ class Auth
     public static string $sessionKey = 'Auth';
     public ?array $user;
 
+    /**
+     * @param Session $session
+     */
     public function __construct(
         public Session $session,
     ) {

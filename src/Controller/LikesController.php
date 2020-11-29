@@ -4,6 +4,8 @@ namespace App\Controller;
 use App\Entity\ArticleLike;
 use App\Repository\ArticleLikesRepo;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * @property ArticleLikesRepo $ArticleLikesRepo
  */
@@ -14,6 +16,7 @@ class LikesController extends AbstractController
      * @return void
      * @throws Exception
      */
+    #[NoReturn]
     public function add()
     {
         $this->methodsAllowed(['post']);
@@ -42,6 +45,7 @@ class LikesController extends AbstractController
      * @return void
      * @throws Exception
      */
+    #[NoReturn]
     public function remove()
     {
         $this->methodsAllowed(['post']);

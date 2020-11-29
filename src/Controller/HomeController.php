@@ -7,6 +7,8 @@ use App\Repository\ArticlesRepo;
 use App\Repository\ArticleTagsRepo;
 use App\Repository\UsersRepo;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * @property ArticlesRepo $ArticlesRepo
  * @property ArticleLikesRepo $ArticleLikesRepo
@@ -20,6 +22,7 @@ class HomeController extends AbstractController
      * @return void
      * @throws Exception
      */
+    #[NoReturn]
     public function index(): void
     {
         $this->loadRepo('articles');

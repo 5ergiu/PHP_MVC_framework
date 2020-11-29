@@ -65,6 +65,7 @@ abstract class AbstractController
      * @param array $errors
      * @return void
      */
+    #[NoReturn]
     protected function newJsonResponse(mixed $response, array $errors = []): void
     {
         $result['response'] = $response;
@@ -100,6 +101,7 @@ abstract class AbstractController
      * @param array $url Url options.
      * @return void
      */
+    #[NoReturn]
     protected function redirect(array $url): void
     {
         $this->response->location(Router::url($url, true));
