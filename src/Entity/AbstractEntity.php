@@ -15,13 +15,12 @@ use JetBrains\PhpStorm\Pure;
 abstract class AbstractEntity
 {
     protected Validator $validator;
+    public array $context = [];
+    public array $errors = [];
 
-    public function __construct(
-        public array $context,
-        public array $errors = [],
-    ) {
-        $this->__setContext();
+    public function __construct() {
         $this->validator = new Validator($this);
+        $this->__setContext();
         $this->validations();
     }
 

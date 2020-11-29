@@ -38,6 +38,7 @@ abstract class AbstractController
         $this->auth = new Auth($this->session);
         $this->markdown = new MarkdownHelper;
         $this->log = new Log;
+        $this->referer = $this->__buildReferer();
         $this->response = new Response;
     }
 
@@ -137,11 +138,10 @@ abstract class AbstractController
      * TODO: add more security to this
      * TODO: ERROR - when on register, if you log in, the referer isn't properly built, resulting in: 'auth/auth/register'
      * Builds the referer.
-     * @return void
+     * @return array
      */
-    private function __buildReferer(): void
+    private function __buildReferer(): array
     {
-        $url = [];
         if (isset($_SERVER['HTTP_REFERER'])) {
             $path = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH);
             if ($path !== Request::ROOT) {
@@ -162,7 +162,7 @@ abstract class AbstractController
         } else {
             $url['path'] = Request::ROOT;
         }
-        $this->referer = $url;
+        return $url;
     }
 
     /**

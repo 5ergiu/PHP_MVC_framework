@@ -32,7 +32,7 @@ class AuthController extends AbstractController
                 if ($authenticatedUser) {
                     $user = $authenticatedUser;
                     $this->notify('check', 'Successfully logged in');
-                    $user['redirect'] = $this->referer;
+                    $user['redirect'] = $this->referer !== 'auth/register' ? $this->referer : Request::ROOT;
                 } else {
                     $errors['credentials'] = 'Wrong credentials';
                 }
