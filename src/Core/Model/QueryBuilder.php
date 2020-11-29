@@ -379,10 +379,10 @@ class QueryBuilder extends Query
 
     /**
      * Returns a row from the table.
-     * @return array|null
+     * @return mixed
      * @throws Exception
      */
-    public function firstOrNull(): ?array
+    public function firstOrNull(): mixed
     {
         $this->__prepareStatement();
         return $this->fetch($this->statement);
@@ -393,7 +393,7 @@ class QueryBuilder extends Query
      * @return mixed
      * @throws Exception
      */
-    public function count()
+    public function count(): mixed
     {
         $this->__prepareStatement();
         return $this->fetchColumn($this->statement);

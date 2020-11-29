@@ -28,10 +28,10 @@ class Query
     /**
      * Returns a row from the table.
      * @param PDOStatement $statement PDO Statement to be executed.
-     * @return array|null
+     * @return mixed
      * @throws Exception
      */
-    protected function fetch(PDOStatement $statement): ?array
+    protected function fetch(PDOStatement $statement): mixed
     {
         try {
             $statement->execute();
@@ -49,7 +49,7 @@ class Query
      * @return mixed
      * @throws Exception
      */
-    protected function fetchColumn(PDOStatement $statement)
+    protected function fetchColumn(PDOStatement $statement): mixed
     {
         try {
             $statement->execute();

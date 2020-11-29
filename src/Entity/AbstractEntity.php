@@ -61,7 +61,7 @@ abstract class AbstractEntity
      */
     public function getEntityName(): string
     {
-        $className = get_class($this);
+        $className = $this::class;
         return substr($className, strrpos($className, '\\') + 1);
     }
 

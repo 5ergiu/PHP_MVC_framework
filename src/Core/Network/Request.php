@@ -1,10 +1,13 @@
 <?php
 namespace App\Core\Network;
 
+use JetBrains\PhpStorm\ExpectedValues;
+use JetBrains\PhpStorm\Pure;
+
 /**
  * Formats the Request URL to be passed to the Router.
  * Sets the request data and checks the request type.
- * @property array|string $url Formatted Request URL.
+ * @property string|array $url Formatted Request URL.
  * @property array $data       Request data.
  * @property string $method
  */
@@ -17,7 +20,7 @@ class Request
     public const DELETE = 'DELETE';
     public const ROOT = '/';
 
-    public $url;
+    public string|array $url;
     public array $data;
     public string $method;
 
@@ -33,6 +36,7 @@ class Request
      * @param string $type The given request type.
      * @return bool
      */
+    #[Pure]
     public function is(string $type): bool
     {
         $type = strtoupper($type);

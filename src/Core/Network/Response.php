@@ -1,6 +1,8 @@
 <?php
 namespace App\Core\Network;
 
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * Responsible for managing the response text, status and headers of a HTTP response.
  * Controllers will use this class to render their response.
@@ -82,7 +84,7 @@ class Response
      * @param string $name The name of the header.
      * @param mixed $value The value of the header.
      */
-    public function header(string $name, $value): void
+    public function header(string $name, mixed $value): void
     {
         $this->headers[$name] = $value;
     }
@@ -166,8 +168,10 @@ class Response
     /**
      * Sends the complete response to the client including headers and message body.
      * Will echo out the content in the response body.
+     * @return void
      */
-    public function send()
+    #[NoReturn]
+    public function send(): void
     {
         if (isset($this->headers['Location']) && $this->statusCode === 200) {
             $this->statusCode(302);

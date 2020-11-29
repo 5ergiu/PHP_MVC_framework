@@ -11,9 +11,9 @@ class Auth
     public static string $sessionKey = 'Auth';
     public ?array $user;
 
-    public function __construct(Session $session)
-    {
-        $this->session = $session;
+    public function __construct(
+        public Session $session,
+    ) {
         $this->__setAuthenticatedUser();
     }
 
@@ -29,9 +29,9 @@ class Auth
     /**
      * Returns user related info.
      * @param string|null $key
-     * @return mixed
+     * @return array|null|string
      */
-    public function user(string $key = null)
+    public function user(string $key = null): array|string|null
     {
         if (!empty($this->user)) {
             if (!empty($key)) {
@@ -50,9 +50,9 @@ class Auth
      * @param string|null $password
      * @param bool $skipVerification Used in case suer registers to log in automatically.
      * @throws Exception
-     * @return array|null
+     * @return array|bool
      */
-    public function login(array $user, ?string $password, bool $skipVerification = false): ?array
+    public function login(array $user, ?string $password = null, bool $skipVerification = false): array|false
     {
         if ($password === null && $skipVerification) {
             $checkPassword = true;
@@ -64,7 +64,7 @@ class Auth
             $this->session->write(self::$sessionKey, $user);
             return $user;
         } else {
-            return null;
+            return false;
         }
     }
 

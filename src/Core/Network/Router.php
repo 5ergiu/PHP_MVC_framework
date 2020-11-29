@@ -18,16 +18,15 @@ class Router
     private Controller $controller;
     private string $method;
     private array $params = [];
-    public Request $request;
     public ErrorHandler $errorHandler;
 
     /**
      * @param Request $request
      * @throws NotFoundException
      */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
+    public function __construct(
+        public Request $request
+    ) {
         $this->errorHandler = new ErrorHandler;
         $this->__resolve();
     }

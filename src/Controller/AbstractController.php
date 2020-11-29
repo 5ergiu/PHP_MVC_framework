@@ -10,6 +10,7 @@ use App\Component\Log;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
 use App\Helper\MarkdownHelper;
+use JetBrains\PhpStorm\NoReturn;
 
 /**
  * @property Session $session
@@ -34,7 +35,6 @@ abstract class AbstractController
     public function __construct()
     {
         $this->session = new Session;
-        $this->referer = $this->__buildReferer();
         $this->auth = new Auth($this->session);
         $this->markdown = new MarkdownHelper;
         $this->log = new Log;
@@ -48,6 +48,7 @@ abstract class AbstractController
      * @param string|null $layout The name of the layout.
      * @return void
      */
+    #[NoReturn]
     protected function render(string $viewPath, array $variables = [], ?string $layout = null): void
     {
         $requestData = $this->request->data;
@@ -64,7 +65,7 @@ abstract class AbstractController
      * @param array $errors
      * @return void
      */
-    protected function newJsonResponse($response, array $errors = []): void
+    protected function newJsonResponse(mixed $response, array $errors = []): void
     {
         $result['response'] = $response;
         if (!empty($errors)) {
@@ -133,10 +134,10 @@ abstract class AbstractController
     /**
      * TODO: add more security to this
      * TODO: ERROR - when on register, if you log in, the referer isn't properly built, resulting in: 'auth/auth/register'
-     * Returns a formatted array of the referer.
-     * @return array
+     * Builds the referer.
+     * @return void
      */
-    private function __buildReferer(): array
+    private function __buildReferer(): void
     {
         $url = [];
         if (isset($_SERVER['HTTP_REFERER'])) {
@@ -159,7 +160,7 @@ abstract class AbstractController
         } else {
             $url['path'] = Request::ROOT;
         }
-        return $url;
+        $this->referer = $url;
     }
 
     /**

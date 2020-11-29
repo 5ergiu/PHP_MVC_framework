@@ -26,7 +26,7 @@ class AuthController extends AbstractController
             $user = $this->UsersRepo->findBy(['username' => $this->request->data['username']]);
             if (!empty($user)) {
                 $authenticatedUser = $this->auth->login($user, $this->request->data['password']);
-                if (!empty($authenticatedUser)) {
+                if ($authenticatedUser) {
                     $user = $authenticatedUser;
                     $this->notify('check', 'Successfully logged in');
                     $user['redirect'] = $this->referer;
@@ -87,8 +87,8 @@ class AuthController extends AbstractController
             $userId = $this->UsersRepo->save($User, $this->request->data);
             if ($userId) {
                 $user = $this->UsersRepo->findById($userId);
-                if (!empty($user)) {
-                    $this->auth->login($user, null, true);
+                if ($user) {
+                    $this->auth->login($user, skipVerification: true);
                     $this->redirect(['path' => Request::ROOT]);
                 }
             }

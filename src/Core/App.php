@@ -7,8 +7,8 @@ use App\Core\Network\Router;
 /**
  * @author Sergiu Bugeac <sergiu.a.bugeac@gmail.com>
  * Main app class, the start point of the application.
- * @property Request  $request
- * @property Router   $router
+ * @property Request $request
+ * @property Router  $router
  */
 class App
 {

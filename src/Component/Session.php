@@ -9,7 +9,7 @@ class Session
      * @param mixed $data Data to be stored in the given session key.
      * @return void
      */
-    public function write(string $key, $data): void
+    public function write(string $key, mixed $data): void
     {
         $_SESSION[$key] = $data;
     }
@@ -19,7 +19,7 @@ class Session
      * @param string|null $key The session's key.
      * @return mixed
      */
-    public function get(?string $key = null)
+    public function get(?string $key = null): mixed
     {
         if ($key !== null) {
             return $_SESSION[$key] ?? null;

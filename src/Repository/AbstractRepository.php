@@ -29,7 +29,7 @@ abstract class AbstractRepository
      */
     public function getTable(): string
     {
-        $className = get_class($this);
+        $className = $this::class;
         return strtolower(
             preg_replace(
                 '/(?<!^)[A-Z]/',
