@@ -236,12 +236,14 @@ class QueryBuilder extends Query
     }
 
     /**
-     * @param int $limit
+     * @param int|null $limit
      * @return $this
      */
-    public function setMaxResults(int $limit): static
+    public function setMaxResults(?int $limit): static
     {
-        $this->limit .= "LIMIT $limit";
+        if ($limit !== null) {
+            $this->limit .= "LIMIT $limit";
+        }
         return $this;
     }
 

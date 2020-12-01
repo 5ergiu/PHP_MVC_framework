@@ -20,8 +20,8 @@ class MarkdownHelper
     /**
      * TODO: implement something here(a private method perhaps) that will check for XSS or any other attacks before
      * rendering the html. TODO: same goes for when you save the content to the database, HTML purifier or something
-     * Transforms a given text to markdown.
-     * @param string $text The text that will be transformed to markdown.
+     * Transforms a given markdown text to HTML.
+     * @param string $text The markdown text that will be transformed into HTML.
      * @return string
      */
     public function parse(string $text): string

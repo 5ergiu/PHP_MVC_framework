@@ -470,7 +470,8 @@ a {
 
 .notification {
   position: fixed;
-  display: none;
+  display: flex;
+  align-items: center;
   background-color: $backgroundColor;
   z-index: 999;
   bottom: -10%;
@@ -479,9 +480,8 @@ a {
   border-radius: 0.25rem;
   box-shadow: 0 0 17px 0 rgba(0,0,0,0.75);
   &--show {
-    display: flex;
-    align-items: center;
     bottom: 1rem;
+    box-shadow: 0 0 17px 0 rgba(0, 0, 0, 0.75);
     animation: notificationUp 1s ease-in-out;
   }
   &--hide {

@@ -31,7 +31,7 @@ class AuthController extends AbstractController
                 $authenticatedUser = $this->auth->login($user, $this->request->data['password']);
                 if ($authenticatedUser) {
                     $user = $authenticatedUser;
-                    $this->notify('✔️', 'Successfully logged in');
+                    $this->notifySuccess('Successfully logged in');
                     $user['redirect'] = $this->referer !== 'auth/register' ? $this->referer : Request::ROOT;
                 } else {
                     $errors['credentials'] = 'Wrong credentials';
@@ -56,10 +56,10 @@ class AuthController extends AbstractController
         $this->methodsAllowed(['post']);
         if (!empty($this->auth->user())) {
             $this->auth->logout();
-            $this->notify('✔️', 'Successfully logged out');
+            $this->notifySuccess('Successfully logged out');
             $this->redirect(['path' => Request::ROOT]);
         } else {
-            $this->notify('❌', 'You\'re not logged in');
+            $this->notifyError('You\'re not logged in');
             $this->redirect(['path' => Request::ROOT]);
         }
     }
@@ -84,7 +84,7 @@ class AuthController extends AbstractController
     public function register(): void
     {
         if (!empty($this->auth->user)) {
-            $this->notify('❌', 'You\'re already logged in');
+            $this->notifyError('You\'re already logged in');
             $this->redirect($this->referer);
         }
         $User = new User;
@@ -98,7 +98,7 @@ class AuthController extends AbstractController
                     $this->redirect(['path' => Request::ROOT]);
                 }
             }
-            $this->notify('❌', 'Something went wrong, please try again');
+            $this->notifyError('Something went wrong, please try again');
         }
         $this->render('auth/register', [
             'User' => $User,

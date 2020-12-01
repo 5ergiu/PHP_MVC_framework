@@ -1,9 +1,11 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Article;
 use App\Repository\ArticleBookmarksRepo;
 use App\Repository\ArticleLikesRepo;
 use App\Repository\ArticlesRepo;
+use App\Repository\TagsRepo;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 
@@ -11,6 +13,7 @@ use JetBrains\PhpStorm\NoReturn;
  * @property ArticlesRepo $ArticlesRepo
  * @property ArticleLikesRepo $ArticleLikesRepo
  * @property ArticleBookmarksRepo $ArticleBookmarksRepo
+ * @property TagsRepo $TagsRepo
  */
 class ArticlesController extends AbstractController
 {
@@ -40,18 +43,30 @@ class ArticlesController extends AbstractController
     /**
      * Writes a new article.
      * @return void
+     * @throws Exception
      */
+    #[NoReturn]
     public function write(): void
     {
-
+        $this->loadRepo('articles');
+        $this->loadRepo('tags');
+        $this->loadRepo('articleTags');
+        $Article = new Article;
+        $tags = $this->TagsRepo->findAll();
+        $this->render('articles/write', [
+            'Article' => $Article,
+            'tags' => $tags,
+        ]);
     }
 
     /**
-     * Used to preview a markdown content.
+     * Used to preview markdown content.
      * @api
+     * @param string $text The markdown text that will be transformed into HTML.
      * @return void
      */
-    public function preview()
+    #[NoReturn]
+    public function preview(string $text)
     {
 
     }

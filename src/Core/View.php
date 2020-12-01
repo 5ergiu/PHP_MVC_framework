@@ -118,7 +118,6 @@ class View
      * @param string|null $css Custom css files to include in the head.
      * @return void
      */
-    #[NoReturn]
     public function element(string $element, array $data = [], string $css = null): void
     {
         if (!empty($css)) {
@@ -132,7 +131,6 @@ class View
      * @param array $styles Css files to be included.
      * @return void
      */
-    #[NoReturn]
     public function includeCss(array $styles): void
     {
         foreach ($styles as $css) {
@@ -145,7 +143,6 @@ class View
      * @param array $scripts Javascript files to be included.
      * @return void
      */
-    #[NoReturn]
     public function includeJs(array $scripts): void
     {
         foreach ($scripts as $script) {

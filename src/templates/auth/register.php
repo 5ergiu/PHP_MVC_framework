@@ -7,6 +7,7 @@ use App\Entity\User;
 $this->form->create($User);
 
 $this->form->input('username', [
+    'type' => 'text',
     'placeholder' => 'Enter username',
 ]);
 
@@ -21,10 +22,12 @@ $this->form->input('password', [
 ]);
 
 $this->form->input('image', [
+    'type' => 'text',
     'placeholder' => 'Enter image',
 ]);
 
 $this->form->input('summary', [
+    'type' => 'text',
     'placeholder' => 'Enter summary',
 ]);
 

@@ -29,7 +29,8 @@ export default class App {
                 if (this.isLoggedIn) {
                     localStorage.setItem('isLoggedIn', 'yes');
                 }
-                new Auth(this.Notification, this.Utils, this.isLoggedIn)
+                console.log('intra')
+                new Auth(this.isLoggedIn, this.Notification, this.Utils)
                 new Actions(this.isLoggedIn, this.Utils, this.Notification)
             })
     }

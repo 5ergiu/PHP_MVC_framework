@@ -28,18 +28,19 @@ use App\Entity\User;
             <img class="logo__img" src="<?= ASSETS_IMG . 'logo.png'; ?>" alt="Logo" />
         </a>
         <?php
-            $this->form->create(null, [
+            echo $this->form->create(null, [
                 'action' => '/articles/search',
                 'method' => 'get',
                 'class' => 'navigation__search',
             ]);
-            $this->form->input('search', [
+            echo $this->form->input('search', [
+                'type' => 'text',
                 'placeholder' => 'Search articles',
             ]);
-            $this->form->button('<i class="fas fa-search"></i>', [
+            echo $this->form->button('<i class="fas fa-search"></i>', [
                 'type' => 'submit',
             ]);
-            $this->form->end();
+            echo $this->form->end();
         ?>
         <ul class="navigation__menu">
             <?php if (!empty($this->user)) : ?>
@@ -64,7 +65,7 @@ use App\Entity\User;
                                     </a>
                                 </li>
                                 <?php if ($this->user['role'] === User::ROLE_ADMIN) : ?>
-                                    <li class="dropdown__item navigation__user__admin">
+                                    <li class="dropdown__item">
                                         <a href="/admin">💪 Admin</a>
                                     </li>
                                 <?php endif; ?>
@@ -95,10 +96,10 @@ use App\Entity\User;
                             </li>
                             <li>
                                 <?php
-                                    $this->form->create(null, [
+                                    echo $this->form->create(null, [
                                         'action' => 'auth/logout',
                                     ]);
-                                    $this->form->button('Logout', [
+                                    echo $this->form->button('Logout', [
                                         'class' => 'button button--secondary',
                                         'type' => 'submit',
                                     ]);
@@ -112,7 +113,7 @@ use App\Entity\User;
                     </button>
                     <div class="dropdown__content">
                         <?php
-                            $this->form->create(null, [
+                            echo $this->form->create(null, [
                                 'class' => 'login',
                                 'id' => 'js-login',
                                 'autocomplete' => 'off',
@@ -121,17 +122,18 @@ use App\Entity\User;
                         <div id="js-login-loading-spinner" class="spinner hide"></div>
                         <div id="js-login-message" class="login__message">Hello there! 👋</div>
                         <?php
-                            $this->form->input('username', [
+                            echo $this->form->input('username', [
+                                'type' => 'text',
                                 'placeholder' => 'Enter username',
                             ]);
-                            $this->form->input('password', [
+                            echo $this->form->input('password', [
                                 'type' => 'password',
                                 'placeholder' => 'Enter password',
                             ]);
                         ?>
                         <div class="login__buttons">
                         <?php
-                            $this->form->button('Login', [
+                            echo $this->form->button('Login', [
                                 'type' => 'submit',
                                 'class' => 'button',
                             ]);
@@ -141,7 +143,7 @@ use App\Entity\User;
                             </a>
                         </div>
                         <?php
-                            $this->form->end();
+                            echo $this->form->end();
                         ?>
                     </div>
                 <?php endif; ?>
@@ -159,14 +161,19 @@ use App\Entity\User;
 </footer>
 <div id="js-notification"  class="notification">
     <p id="js-notification-icon" class="notification__icon">
-     <?= $this->notification['icon'] ?? null; ?>
+        <?= $this->notification['icon'] ?? null; ?>
     </p>
     <p id="js-notification-message" class="notification__message">
         <?= $this->notification['message'] ?? null; ?>
     </p>
 </div>
+<script type="module" src="<?= ASSETS_JS . 'app.js'; ?>"></script>
 <script src="<?= VENDOR . 'highlight/highlight.pack.js'; ?>"></script>
 <script>hljs.initHighlightingOnLoad();</script>
-<script type="module" src="<?= ASSETS_JS . 'app.js'; ?>"></script>
+<?php if (!empty($this->javascript)) :
+    foreach ($this->javascript as $script): ?>
+        <script src="<?= ASSETS_JS . $script; ?>"> </script>
+    <?php endforeach; ?>
+<?php endif; ?>
 </body>
 </html>

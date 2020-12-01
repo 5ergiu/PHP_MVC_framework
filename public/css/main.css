@@ -601,7 +601,12 @@ a.button:hover {
 
 .notification {
   position: fixed;
-  display: none;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   background-color: #282828;
   z-index: 999;
   bottom: -10%;
@@ -613,13 +618,9 @@ a.button:hover {
 }
 
 .notification--show {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
   bottom: 1rem;
+  -webkit-box-shadow: 0 0 17px 0 rgba(0, 0, 0, 0.75);
+          box-shadow: 0 0 17px 0 rgba(0, 0, 0, 0.75);
   -webkit-animation: notificationUp 1s ease-in-out;
           animation: notificationUp 1s ease-in-out;
 }

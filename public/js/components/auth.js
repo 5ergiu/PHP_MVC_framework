@@ -8,12 +8,13 @@ export default class Auth {
     #Utils
     isLoggedIn
 
-    constructor(Notification, Utils, isLoggedIn) {
+    constructor(isLoggedIn, Notification, Utils) {
+        this.isLoggedIn = isLoggedIn
         this.#Loading = new Loading
         this.#Notification = Notification
         this.#Utils = Utils
-        this.isLoggedIn = isLoggedIn
         this.authListener(this.isLoggedIn)
+        console.log('intra', this.isLoggedIn)
     }
 
     authListener = isLoggedIn => {

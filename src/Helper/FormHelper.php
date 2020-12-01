@@ -11,33 +11,34 @@ use App\Core\Network\Request;
  */
 class FormHelper
 {
+    private ?Entity $entity = null;
+
     public function __construct(
-        public array $data,
-        private ?Entity $entity = null
+        private array $data,
     ) {}
 
     /**
      * Creates the <form> tag.
      * @param Entity|null $entity The Entity that will deal with the input.
      * @param array $options      The form's attributes.
-     * @return void
+     * @return string
      */
-    public function create(?Entity $entity, array $options = []): void
+    public function create(?Entity $entity, array $options = []): string
     {
         $form = '<form ';
         if (!empty($entity)) {
             $this->entity = $entity;
         }
         if (!empty($options['id'])) {
-            $form .= "id={$options['id']} ";
+            $form .= "id='{$options['id']}' ";
             unset($options['id']);
         } else {
             if (!empty($entity)) {
-                $form .= "id={$this->entity->getEntityName()} ";
+                $form .= "id='{$this->entity->getEntityName()}' ";
             }
         }
         if (!empty($options['method'])) {
-            $form .= "method={$options['method']} ";
+            $form .= "method='{$options['method']}' ";
             unset($options['method']);
         } else {
             $form .= "method='POST' ";
@@ -48,7 +49,7 @@ class FormHelper
             }
         }
         $form .= '>';
-        echo $form;
+        return $form;
     }
 
     /**
@@ -59,13 +60,6 @@ class FormHelper
      */
     private function __buildInput(string $type, string $fieldName, array $options = []): string
     {
-        $type = null;
-        if (!empty($options['type'])) {
-            $type = $options['type'];
-            unset($options['type']);
-        } else {
-            $type = 'text';
-        }
         $class = null;
         if (!empty($options['class'])) {
             $class = $options['class'];
@@ -130,13 +124,13 @@ class FormHelper
                 $label['class'], $id, $label['text']
             );
         }
-        switch ($type) {
-            case 'textarea' :
-                $input .= '<textarea autocomplete="off" ';
-                break;
-            default :
-                $input .= "<input type=$type autocomplete='off' ";
-                break;
+        $input .= match ($type) {
+            'textarea' => '<textarea autocomplete="off" ',
+            default => "<input autocomplete='off' ",
+        };
+        if (!empty($options['type'])) {
+            $input .= "type='{$options['type']}' ";
+            unset($options['type']);
         }
         if (!empty($id)) {
             $input .= "id='$id' ";
@@ -161,6 +155,7 @@ class FormHelper
             'textarea' => '</textarea>',
             default => ' />',
         };
+//        var_dump($input); die;
         $input .= $displayErrors ?? null;
         $input .= '</div>';
         return $input;
@@ -170,31 +165,31 @@ class FormHelper
      * Creates <input> tags.
      * @param string $fieldName The input name attribute.
      * @param array $options    The input's attributes.
-     * @return void
+     * @return string
      */
-    public function input(string $fieldName, array $options = []): void
+    public function input(string $fieldName, array $options = []): string
     {
-       echo $this->__buildInput('input', $fieldName, $options);
+       return $this->__buildInput('input', $fieldName, $options);
     }
 
     /**
      * Creates <textarea> tags.
      * @param string $fieldName The textarea 'name' attribute.
      * @param array $options    The textarea attributes.
-     * @return void
+     * @return string
      */
-    public function text(string $fieldName, array $options = []): void
+    public function textarea(string $fieldName, array $options = []): string
     {
-        echo $this->__buildInput('textarea', $fieldName, $options);
+        return $this->__buildInput('textarea', $fieldName, $options);
     }
 
     /**
      * Creates <button> tag.
      * @param string $text   The inner text of the button.
      * @param array $options The button attributes.
-     * @return void
+     * @return string
      */
-    public function button(string $text, array $options = []): void
+    public function button(string $text, array $options = []): string
     {
         $button = '<button ';
         if (!empty($options)) {
@@ -207,17 +202,16 @@ class FormHelper
             }
         }
         $button .= ">$text</button>";
-        echo $button;
+        return $button;
     }
 
     /**
      * Resets the entity.
      * Creates the end tag(</form>) for the form.
-     * @return void
+     * @return string
      */
-    public function end(): void
+    public function end(): string
     {
-        $this->entity = null;
-        echo '</form>';
+        return '</form>';
     }
 }

@@ -13,6 +13,7 @@ $this->form->input('email', [
 ]);
 
 $this->form->input('name', [
+    'type' => 'text',
     'label' => [
         'class' => 'test',
         'text' => 'name',

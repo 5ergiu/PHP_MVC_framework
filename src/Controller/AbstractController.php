@@ -166,14 +166,24 @@ abstract class AbstractController
     }
 
     /**
-     * Sets the notification message in the session to be used in the view.
-     * @param string $icon
+     * Sets the success notification message in the session to be used in the view.
      * @param string $message
      * @return void
      */
-    protected function notify(string $icon, string $message): void
+    protected function notifySuccess(string $message): void
     {
-        $this->session->write('icon', $icon);
+        $this->session->write('icon', '✔️');
+        $this->session->write('message', $message);
+    }
+
+    /**
+     * Sets the error notification message in the session to be used in the view.
+     * @param string $message
+     * @return void
+     */
+    protected function notifyError(string $message): void
+    {
+        $this->session->write('icon', '❌');
         $this->session->write('message', $message);
     }
 

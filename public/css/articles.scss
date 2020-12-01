@@ -195,6 +195,44 @@
   }
 }
 
+.write {
+  &__edit, &__preview {
+    background-color: $backgroundColor;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    box-shadow: $boxShadow;
+  }
+  &__actions {
+    text-align: right;
+    margin-bottom: 1rem;
+  }
+  &__tags {
+    margin: 1rem 0;
+    p {
+      margin-bottom: 1rem;
+    }
+    > div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+    &_input {
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-right: 0.5rem;
+    }
+    &_label {
+      color: #fff;
+      font-weight: bold;
+      border-radius: 0.25rem;
+      padding: 0.2rem 0.5rem;
+    }
+  }
+}
+
 @media only screen and (min-width: 992px) {
   .read {
     display: flex;

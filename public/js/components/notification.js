@@ -42,7 +42,7 @@ export default class Notification {
             // we first check to see if the show class has already been added so we won't
             // have any weird animations
             if (!this.#notification.classList.contains('notification--show')) {
-                this.#notification.className  = 'notification notification--show'
+                this.#notification.className = 'notification notification--show'
                 setTimeout(() => {
                     this.#notification.className = 'notification notification--hide'
                 }, 3000)
