@@ -1,3 +1,6 @@
+<?php
+    $this->includeCss(['articles']);
+?>
 <section class="read">
     <aside class="read__actions">
         <div class="read__actions_bookmark">

@@ -16,10 +16,10 @@
 .article {
   /* Everything related to the article element itself(mini or not) */
   position: relative;
-  background-color: #292e33;
+  background-color: #282828;
   margin-bottom: 1rem;
   border-radius: 0.25rem;
-  border: 2px solid #303840;
+  border: 2px solid #fff;
   -webkit-box-shadow: 0 0 17px 0 rgba(0, 0, 0, 0.75);
           box-shadow: 0 0 17px 0 rgba(0, 0, 0, 0.75);
   /* Write page */
@@ -63,7 +63,7 @@
   overflow: hidden;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
-  border-bottom: 2px solid #303840;
+  border-bottom: 2px solid #fff;
 }
 
 .article__cover_image {
@@ -193,7 +193,7 @@
 }
 
 .article-write__edit, .article-write__preview {
-  background-color: #292e33;
+  background-color: #282828;
   padding: 2rem;
   border-radius: 0.25rem;
   -webkit-box-shadow: 0 0 17px 0 rgba(0, 0, 0, 0.75);
@@ -245,7 +245,7 @@
 }
 
 .article-write__login {
-  background-color: #292e33;
+  background-color: #282828;
   border-radius: 0.25rem;
   padding: 2rem;
 }
@@ -335,9 +335,9 @@
 }
 
 .article-read__user > div {
-  background-color: #292e33;
+  background-color: #282828;
   border-radius: 0.25rem;
-  border: 2px solid #303840;
+  border: 2px solid #fff;
 }
 
 .article-read__user > div:nth-child(1) {
@@ -353,7 +353,7 @@
 
 .article-read__user > div:nth-child(2) h3 {
   padding: 1rem;
-  border-bottom: 2px solid #303840;
+  border-bottom: 2px solid #fff;
 }
 
 .article-read__user > div:nth-child(2) > div {
@@ -365,7 +365,7 @@
       -ms-flex-direction: column;
           flex-direction: column;
   padding: 1rem;
-  border-bottom: 2px solid #303840;
+  border-bottom: 2px solid #fff;
 }
 
 .article-read__user > div:nth-child(2) > div:last-child {

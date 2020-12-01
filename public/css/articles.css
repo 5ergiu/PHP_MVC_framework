@@ -16,12 +16,11 @@
 .article {
   /* Everything related to the article element itself(mini or not) */
   position: relative;
-  background-color: #292e33;
+  background-color: #282828;
   margin-bottom: 1rem;
   border-radius: 0.25rem;
-  border: 2px solid #303840;
-  -webkit-box-shadow: 0 0 17px 0 rgba(0, 0, 0, 0.75);
-          box-shadow: 0 0 17px 0 rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 .article--mini {
@@ -61,7 +60,7 @@
   overflow: hidden;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
-  border-bottom: 2px solid #303840;
+  border-bottom: 1px solid #fff;
 }
 
 .article__cover_image {
@@ -162,6 +161,34 @@
   margin-bottom: 2rem;
 }
 
+.read .article__content img {
+  max-width: 250px;
+  max-height: 250px;
+  width: auto;
+  height: auto;
+}
+
+.read .article__content pre code {
+  max-height: 350px;
+  overflow-y: auto;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  border-radius: 0.25rem;
+}
+
+.read .article__content pre code::-webkit-scrollbar {
+  width: 1rem;
+}
+
+.read .article__content pre code::-webkit-scrollbar-track {
+  background: #1d2126;
+}
+
+.read .article__content pre code::-webkit-scrollbar-thumb {
+  background: #528BFF;
+  border-radius: 1rem;
+}
+
 .read__actions {
   position: absolute;
   top: 1rem;
@@ -199,8 +226,9 @@
 }
 
 .read__author > div {
-  background-color: #292e33;
-  border: 2px solid #303840;
+  background-color: #282828;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   border-radius: 0.25rem;
 }
 
@@ -227,18 +255,18 @@
   margin-right: 0.5rem;
 }
 
-.read__author > div:nth-child(2) h3 {
+.read__author > div:last-child h3 {
   padding: 1rem;
   margin-bottom: 0;
-  border-bottom: 2px solid #303840;
+  border-bottom: 1px solid #fff;
 }
 
-.read__author > div:nth-child(2) > div > div {
+.read__author > div:last-child > div > div {
   padding: 1rem;
-  border-bottom: 2px solid #303840;
+  border-bottom: 1px solid #fff;
 }
 
-.read__author > div:nth-child(2) > div > div:last-child {
+.read__author > div:last-child > div > div:last-child {
   border-bottom: none;
 }
 

@@ -4,6 +4,8 @@ namespace App\Core;
 use App\Component\Auth;
 use App\Core\Network\Request;
 use App\Helper\FormHelper;
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * @property FormHelper $form
  * @property array|null $user    Logged user or null.
@@ -13,7 +15,8 @@ use App\Helper\FormHelper;
  * @property array $variables    The variables that will be used in the view.
  * @property string|null $layout Layout file.
  * @property string $body        Response body.
- * @property array $css          Custom css files to include in the head.
+ * @property array $css          Css files to be included.
+ * @property array $javascript   Javascript files to be included.
  * Renders a complete view with data from the controllers and all required helpers for the view.
  */
 class View
@@ -23,6 +26,7 @@ class View
     private string $file;
     private string $body;
     public array $css = [];
+    public array $javascript = [];
 
     public function __construct(
         private array $requestData,
@@ -35,7 +39,6 @@ class View
         $this->form = new FormHelper($requestData);
         $this->folder = substr($viewPath, 0, strpos($viewPath, '/'));
         $this->file = substr($viewPath, strpos($viewPath, '/') + 1);
-        $this->__addCss($variables);
         $this->__setBody();
     }
 
@@ -115,11 +118,38 @@ class View
      * @param string|null $css Custom css files to include in the head.
      * @return void
      */
+    #[NoReturn]
     public function element(string $element, array $data = [], string $css = null): void
     {
         if (!empty($css)) {
             $this->css[] = "$css.css";
         }
         require ELEMENTS . "$element.php";
+    }
+
+    /**
+     * Adds css to the page.
+     * @param array $styles Css files to be included.
+     * @return void
+     */
+    #[NoReturn]
+    public function includeCss(array $styles): void
+    {
+        foreach ($styles as $css) {
+            $this->css[] = "$css.css";
+        }
+    }
+
+    /**
+     * Adds javascript to the page.
+     * @param array $scripts Javascript files to be included.
+     * @return void
+     */
+    #[NoReturn]
+    public function includeJs(array $scripts): void
+    {
+        foreach ($scripts as $script) {
+            $this->javascript[] = "$script.css";
+        }
     }
 }

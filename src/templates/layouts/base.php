@@ -13,6 +13,7 @@ use App\Entity\User;
     <title><?= $title ?? 'Blog'; ?></title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link type="text/css" rel="stylesheet" href="<?= VENDOR . 'fontawesome/css/all.min.css'; ?>" />
+    <link type="text/css" rel="stylesheet" href="<?= VENDOR . 'highlight/styles/atom-one-dark.css'; ?>" />
     <link type="text/css" rel="stylesheet" href="<?= ASSETS_CSS . 'main.css'; ?>" />
     <?php if (!empty($this->css)) :
         foreach ($this->css as $style): ?>
@@ -144,6 +145,8 @@ use App\Entity\User;
         <?= $this->notification['message'] ?? null; ?>
     </p>
 </div>
+<script src="<?= VENDOR . 'highlight/highlight.pack.js'; ?>"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 <script type="module" src="<?= ASSETS_JS . 'app.js'; ?>"></script>
 </body>
 </html>

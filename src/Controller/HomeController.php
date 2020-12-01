@@ -33,7 +33,6 @@ class HomeController extends AbstractController
         $articles = $this->ArticlesRepo->getApprovedArticlesByUser();
         $this->render('home/index', [
             'articles' => $articles,
-            'css' => ['articles'],
         ]);
     }
 }
