@@ -173,7 +173,7 @@ abstract class AbstractController
      */
     protected function notify(string $icon, string $message): void
     {
-        $this->session->write('icon', "$icon.png");
+        $this->session->write('icon', $icon);
         $this->session->write('message', $message);
     }
 

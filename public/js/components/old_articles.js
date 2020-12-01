@@ -77,7 +77,7 @@ export default class OldArticles {
                                 this.Notification.show({
                                     isPrompt: true,
                                     message: response.message,
-                                    imgPath: ROUTES.ERROR_IMAGE,
+                                    errors: true,
                                 })
                             }
                         })
@@ -101,7 +101,7 @@ export default class OldArticles {
                         this.Notification.show({
                             isPrompt: true,
                             message: response.message,
-                            imgPath: ROUTES.ERROR_IMAGE,
+                            errors: true,
                         })
                     }
                 })
@@ -141,7 +141,7 @@ export default class OldArticles {
                         this.Notification.show({
                             isPrompt: true,
                             message: response.message,
-                            imgPath: ROUTES.ERROR_IMAGE,
+                            errors: true,
                         })
                     }
                 })

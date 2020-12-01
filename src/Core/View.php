@@ -25,8 +25,8 @@ class View
     private string $folder;
     private string $file;
     private string $body;
-    public array $css = [];
-    public array $javascript = [];
+    private array $css = [];
+    private array $javascript = [];
 
     public function __construct(
         private array $requestData,

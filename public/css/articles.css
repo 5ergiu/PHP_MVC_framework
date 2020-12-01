@@ -21,6 +21,7 @@
   border-radius: 0.25rem;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(0, 0, 0, 0.15);
 }
 
 .article--mini {
@@ -28,10 +29,10 @@
 }
 
 .article--mini:hover {
-  border-color: #528BFF;
+  border: 2px solid #528BFF;
 }
 
-.article--mini:hover__cover_image {
+.article--mini:hover .article__cover_image {
   -webkit-transform: scale(1.1);
           transform: scale(1.1);
 }
@@ -60,7 +61,7 @@
   overflow: hidden;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
-  border-bottom: 1px solid #fff;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.15);
 }
 
 .article__cover_image {

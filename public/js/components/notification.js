@@ -32,7 +32,11 @@ export default class Notification {
     show = (options = null) => {
         if (options) {
             this.#notificationMessage.innerHTML = options.message
-            this.#notificationIcon.src = options.imgPath
+            if (options.errors) {
+                this.#notificationIcon.innerHTML = '❌'
+            } else {
+                this.#notificationIcon.innerHTML = '✔️'
+            }
         }
         if (this.#notificationMessage.innerHTML.trim().length !== 0) {
             // we first check to see if the show class has already been added so we won't

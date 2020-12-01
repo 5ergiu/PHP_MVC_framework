@@ -3,20 +3,22 @@ import Loading from './loading.js'
 
 export default class Actions {
 
+    #isLoggedIn
     #Notification
     #Utils
     #userBookmarksCounter
     #bookmarksCounter
     #likesCounter
 
-    constructor(Utils, Notification) {
+    constructor(isLoggedIn, Utils, Notification) {
+        this.#isLoggedIn = isLoggedIn
         this.#Utils = Utils
         this.#Notification = Notification
         this.#userBookmarksCounter = document.getElementById('js-user-bookmarks-count')
         this.#bookmarksCounter = document.getElementById('js-bookmarks-count')
         this.#likesCounter = document.getElementById('js-likes-count')
-        let bookmarkButtons = document.querySelectorAll('.js-button-bookmark')
-        let likeButtons = document.querySelectorAll('.js-button-like')
+        const bookmarkButtons = document.querySelectorAll('.js-button-bookmark')
+        const likeButtons = document.querySelectorAll('.js-button-like')
         if (bookmarkButtons) {
             this.addEventListener(bookmarkButtons, this.bookmark)
         }
@@ -28,7 +30,14 @@ export default class Actions {
     addEventListener = (elements, callback) => {
         elements.forEach(element => {
             element.addEventListener('click', () => {
-                callback(element)
+                if (!this.#isLoggedIn) {
+                    this.#Notification.show({
+                        message: 'Please login first',
+                        errors: true,
+                    })
+                } else {
+                    callback(element)
+                }
             })
         })
     }
@@ -65,9 +74,8 @@ export default class Actions {
                         this.updateCounter(this.#bookmarksCounter, 'subtract')
                     } else {
                         this.#Notification.show({
-                            isPrompt: true,
                             message: data.errors,
-                            imgPath: ROUTES.ERROR_IMAGE,
+                            errors: true,
                         })
                     }
                     element.disabled = false
@@ -84,9 +92,8 @@ export default class Actions {
                         this.updateCounter(this.#bookmarksCounter, 'add')
                     } else {
                         this.#Notification.show({
-                            isPrompt: true,
                             message: data.errors,
-                            imgPath: ROUTES.ERROR_IMAGE,
+                            errors: true,
                         })
                     }
                     element.disabled = false
@@ -113,9 +120,8 @@ export default class Actions {
                         this.updateCounter(this.#likesCounter, 'subtract')
                     } else {
                         this.#Notification.show({
-                            isPrompt: true,
                             message: data.errors,
-                            imgPath: ROUTES.ERROR_IMAGE,
+                            errors: true,
                         })
                     }
                     element.disabled = false
@@ -131,9 +137,8 @@ export default class Actions {
                         this.updateCounter(this.#likesCounter, 'add')
                     } else {
                         this.#Notification.show({
-                            isPrompt: true,
                             message: data.errors,
-                            imgPath: ROUTES.ERROR_IMAGE,
+                            errors: true,
                         })
                     }
                     element.disabled = false

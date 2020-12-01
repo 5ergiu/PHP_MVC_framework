@@ -232,7 +232,7 @@ body::-webkit-scrollbar {
   width: 1rem;
 }
 body::-webkit-scrollbar-track {
-  background: $dark;
+  background: $backgroundColor;
 }
 body::-webkit-scrollbar-thumb {
   background: $blue;
@@ -240,7 +240,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 main {
-  padding-top: 1rem;
+  padding-top: 4.5rem;
   padding-bottom: 1rem;
 }
 
@@ -475,7 +475,7 @@ a {
   z-index: 999;
   bottom: -10%;
   left: 1rem;
-  padding: 1rem 2rem;
+  padding: 0.5rem 1.5rem;
   border-radius: 0.25rem;
   box-shadow: 0 0 17px 0 rgba(0,0,0,0.75);
   &--show {
@@ -488,8 +488,7 @@ a {
     animation: notificationDown 1s ease-in-out;
   }
   &__icon {
-    width: 2rem;
-    height: 2rem;
+    font-size: 2rem;
     margin-right: 1rem;
   }
 }
@@ -535,6 +534,10 @@ button.overlay {
 }
 
 .navigation {
+  position: fixed;
+  top: 0;
+  z-index: 9999;
+  width: 100%;
   height: 3.5rem;
   padding: 0.5rem 0;
   background-color: $backgroundColor;
@@ -542,15 +545,58 @@ button.overlay {
   .wrapper {
     display: flex;
     align-items: center;
-  }  
+    justify-content: space-between;
+  }
+  &__search {
+    position: relative;
+    width: 300px;
+    .form__group {
+      width: inherit;
+      margin-bottom: 0;
+    }
+    .form__input {
+      padding: 0.5rem;
+      width: inherit;
+    }
+	  input {
+		  background-color: $dark;
+	  	color: $text;
+      font-family: "Source Sans Pro", sans-serif;
+      font-size: 1rem;
+      border-radius: 0.25rem;
+      border: 2px solid rgba(0,0,0,0.15);
+      box-shadow: $boxShadow;
+      &::placeholder {
+        color: $text;
+      }
+      &:focus {
+        background-color: $dark;
+		    border: 2px solid $blue;
+		    color: $text;
+		    box-shadow: 0 0 12px 0 rgba(0,0,0,0.1), 0 10px 30px 0 rgba(0,0,0,0.2);
+      }
+    }  
+	  button {
+      position: absolute;
+      top: .5rem;
+		  right: .3rem;
+		  background-color: unset;
+      border: none;
+      font-size: 1rem;
+		  color: $blue;
+	  }
+  }
   &__menu {
     display: flex;
     align-items: center;
-    margin: 0 0 0 auto;
+    margin: 0;
     list-style: none;
     padding: 0;
-    > li:first-child {
-      margin-right: 1rem;
+    .dropdown {
+      margin-left: 1rem;
+    }
+    > li:first-of-type {
+      display: none;
     }
     li + li ul li:last-child {
       text-align: center;
@@ -629,3 +675,15 @@ footer {
   padding: 0 1rem;  
 }
   
+@media only screen and (min-width: 992px) {
+  .navigation {
+    &__search {
+      width: 300px;
+    }
+    &__menu {
+      > li:first-of-type {
+        display: list-item;
+      }
+    }
+  }
+}

@@ -42,7 +42,7 @@ export default class Auth {
                             loginMessage.innerHTML = data.errors.credentials
                             this.#Notification.show({
                                 message: data.errors.credentials,
-                                imgPath: ROUTES.ERROR_IMAGE,
+                                errors: true,
                             })
                         }
                     })

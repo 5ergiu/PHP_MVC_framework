@@ -17,10 +17,9 @@ export default class App {
         this.Notification = new Notification
         this.Utils = new Utils
         this.initializeAuth()
-        new Dropdown
         new Clickable
+        new Dropdown
         new Articles
-        new Actions(this.Utils, this.Notification)
     }
 
     initializeAuth = () => {
@@ -31,6 +30,7 @@ export default class App {
                     localStorage.setItem('isLoggedIn', 'yes');
                 }
                 new Auth(this.Notification, this.Utils, this.isLoggedIn)
+                new Actions(this.isLoggedIn, this.Utils, this.Notification)
             })
     }
 }

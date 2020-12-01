@@ -11,8 +11,7 @@ const ROUTES = {
     // DELETE_IMAGE: '/upload/delete',
     // USER_ADD: '/users/add',
     // USER_REMOVE: '/users/remove',
-    CHECK_IMAGE: '/images/check.png',
-    ERROR_IMAGE: '/images/error.png',
+    // USER_REMOVE: '/users/remove',
 }
 
 export default ROUTES

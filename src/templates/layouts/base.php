@@ -27,12 +27,28 @@ use App\Entity\User;
         <a class="logo" href="/">
             <img class="logo__img" src="<?= ASSETS_IMG . 'logo.png'; ?>" alt="Logo" />
         </a>
+        <?php
+            $this->form->create(null, [
+                'action' => '/articles/search',
+                'method' => 'get',
+                'class' => 'navigation__search',
+            ]);
+            $this->form->input('search', [
+                'placeholder' => 'Search articles',
+            ]);
+            $this->form->button('<i class="fas fa-search"></i>', [
+                'type' => 'submit',
+            ]);
+            $this->form->end();
+        ?>
         <ul class="navigation__menu">
-            <li>
-                <a class="button button--gradient" href="/articles/write">
-                    Write an article
-                </a>
-            </li>
+            <?php if (!empty($this->user)) : ?>
+                <li>
+                    <a class="button button--gradient" href="/articles/write">
+                        Write an article
+                    </a>
+                </li>
+            <?php endif; ?>
             <li class="dropdown">
                 <?php if (!empty($this->user)) : ?>
                     <div class="dropdown__toggler avatar">
@@ -41,10 +57,17 @@ use App\Entity\User;
                     <div class="dropdown__content">
                         <ul id="js-navigation-user" class="navigation__user">
                             <div id="js-logout-loading-spinner" class="spinner hide"></div>
-                            <?php if ($this->user['role'] === User::ROLE_ADMIN) : ?>
-                                <li class="dropdown__item navigation__user__admin">
-                                    <a href="/admin">💪 Admin</a>
+                            <?php if ($this->user['role'] === User::ROLE_ADMIN || User::ROLE_AUTHOR) : ?>
+                                <li class="dropdown__item">
+                                    <a href="/articles/write">
+                                        ✍️ Write an article
+                                    </a>
                                 </li>
+                                <?php if ($this->user['role'] === User::ROLE_ADMIN) : ?>
+                                    <li class="dropdown__item navigation__user__admin">
+                                        <a href="/admin">💪 Admin</a>
+                                    </li>
+                                <?php endif; ?>
                             <?php endif; ?>
                             <li class="dropdown__item">
                                 <a href="/account/dashboard">🖥️ Dashboard</a>
@@ -84,7 +107,7 @@ use App\Entity\User;
                         </ul>
                     </div>
                 <?php else : ?>
-                    <button class="button dropdown__toggler">
+                    <button class="button dropdown__toggler" id="js-login-button">
                         Login
                     </button>
                     <div class="dropdown__content">
@@ -135,12 +158,9 @@ use App\Entity\User;
     </div>
 </footer>
 <div id="js-notification"  class="notification">
-    <img id="js-notification-icon" class="notification__icon"
-     <?php if (isset($this->notification['icon'])) : ?>
-         src="<?= ASSETS_IMG . "{$this->notification['icon']}"; ?>"
-     <?php endif; ?>
-         alt="Notice: "
-    />
+    <p id="js-notification-icon" class="notification__icon">
+     <?= $this->notification['icon'] ?? null; ?>
+    </p>
     <p id="js-notification-message" class="notification__message">
         <?= $this->notification['message'] ?? null; ?>
     </p>
