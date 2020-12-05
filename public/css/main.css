@@ -701,11 +701,11 @@ button.overlay {
 
 .navigation__search .form__group {
   width: inherit;
-  margin-bottom: 0;
 }
 
 .navigation__search .form__input {
   padding: 0.5rem;
+  margin-bottom: 0;
   width: inherit;
 }
 

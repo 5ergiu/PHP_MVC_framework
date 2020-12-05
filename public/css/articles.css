@@ -271,6 +271,25 @@
   border-bottom: none;
 }
 
+.write__edit {
+  margin-bottom: 1rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 15rem);
+}
+
+.write__edit::-webkit-scrollbar {
+  width: 1rem;
+}
+
+.write__edit::-webkit-scrollbar-track {
+  background: #1d2126;
+}
+
+.write__edit::-webkit-scrollbar-thumb {
+  background: #528BFF;
+  border-radius: 1rem;
+}
+
 .write__edit, .write__preview {
   background-color: #282828;
   padding: 1rem;
@@ -284,11 +303,52 @@
   margin-bottom: 1rem;
 }
 
+.write__input {
+  font-size: 2rem;
+}
+
+.write__textarea {
+  font-size: 1rem;
+  resize: none;
+}
+
+.write__input, .write__textarea {
+  width: 100%;
+  background-color: unset;
+  border: none;
+  margin: 2rem 0;
+  line-height: 2rem;
+  color: #B2B6BB;
+  font-family: "Nunito", sans-serif;
+  font-weight: bold;
+}
+
+.write__input::-webkit-input-placeholder, .write__textarea::-webkit-input-placeholder {
+  font-size: 2rem;
+  color: #B2B6BB;
+}
+
+.write__input:-ms-input-placeholder, .write__textarea:-ms-input-placeholder {
+  font-size: 2rem;
+  color: #B2B6BB;
+}
+
+.write__input::-ms-input-placeholder, .write__textarea::-ms-input-placeholder {
+  font-size: 2rem;
+  color: #B2B6BB;
+}
+
+.write__input::placeholder, .write__textarea::placeholder {
+  font-size: 2rem;
+  color: #B2B6BB;
+}
+
 .write__tags {
   margin: 1rem 0;
 }
 
 .write__tags p {
+  font-size: 2rem;
   margin-bottom: 1rem;
 }
 

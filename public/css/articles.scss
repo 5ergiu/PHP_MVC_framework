@@ -196,6 +196,21 @@
 }
 
 .write {
+  &__edit {
+    margin-bottom: 1rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 15rem);
+    &::-webkit-scrollbar {
+      width: 1rem;
+    }
+    &::-webkit-scrollbar-track {
+      background: #1d2126;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #528BFF;
+      border-radius: 1rem;
+    }
+  }
   &__edit, &__preview {
     background-color: $backgroundColor;
     padding: 1rem;
@@ -206,9 +221,35 @@
     text-align: right;
     margin-bottom: 1rem;
   }
+  &__input {
+    font-size: 2rem;
+  }
+  &__textarea {
+    font-size: 1rem;
+    resize: none;
+  }
+  &__input, &__textarea {
+    width: 100%;
+    background-color: unset;
+    border: none;
+    margin: 2rem 0;
+    line-height: 2rem;
+    color: $text;
+    font: {
+      family: "Nunito", sans-serif;
+      weight: bold;
+    }
+    &::placeholder {
+      font: {
+        size: 2rem;
+      }
+      color: $text;
+    }
+  }
   &__tags {
     margin: 1rem 0;
     p {
+      font-size: 2rem;
       margin-bottom: 1rem;
     }
     > div {
@@ -223,6 +264,7 @@
       width: 1.5rem;
       height: 1.5rem;
       margin-right: 0.5rem;
+      
     }
     &_label {
       color: #fff;

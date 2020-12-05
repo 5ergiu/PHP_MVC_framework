@@ -102,7 +102,8 @@ class FormHelper
      */
     public function end(): string
     {
-        // resetting the entity in case multiple forms will be created, because we're using the same FormHelper instance.
+        // resetting the entity in case multiple forms will be created,
+        // because there's a single View instance that's using the same FormHelper instance.
         $this->entity = null;
         return '</form>';
     }

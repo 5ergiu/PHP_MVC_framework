@@ -49,21 +49,17 @@ $this->includeCss(['articles']);
         </div>
         <?php
             echo $this->form->textarea('content', [
+                'id' => 'js-article-content',
                 'class' => 'write__textarea',
                 'rows' => '10',
                 'placeholder' => 'Write your article here...',
             ]);
-            echo $this->form->button('Submit for review', [
-                'class' => 'button',
-                'type' => 'submit',
-            ]);
-            echo $this->form->button('Save draft', [
-                'id' => 'js-button-draft',
-                'class' => 'button button--secondary',
-                'type' => 'submit',
-            ]);
             echo $this->form->end();
         ?>
+    </div>
+    <div class="write__buttons">
+        <button class="button" type="submit">Submit for review</button>
+        <button id="js-button-draft" class="button button--secondary" type="submit">Save draft</button>
     </div>
     <div class="write__preview hide">
         testing preview
