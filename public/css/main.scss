@@ -339,6 +339,7 @@ h3, h4, h5 {
       background-color: unset;
     }
     &--active {
+      cursor: auto;
       color: #fff;
       border-bottom: 3px solid $purple;
       border-top: unset;
@@ -652,20 +653,6 @@ button.overlay {
 
 a.avatar {
   display: block;
-}
-
-.tag {
-  font-weight: normal;
-  color: $text;
-  span {
-    color: $tag;
-  }
-  &:hover {
-    color: $blue;
-    span {
-      color: $tag;
-    }
-  }
 }
 
 footer {

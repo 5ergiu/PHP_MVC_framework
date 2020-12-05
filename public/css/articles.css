@@ -127,8 +127,36 @@
   color: #fff;
 }
 
-.article__description {
-  margin-top: 1rem;
+.article__tags {
+  margin-bottom: 1rem;
+}
+
+.article__content img {
+  max-width: 250px;
+  max-height: 250px;
+  width: auto;
+  height: auto;
+}
+
+.article__content pre code {
+  max-height: 350px;
+  overflow-y: auto;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  border-radius: 0.25rem;
+}
+
+.article__content pre code::-webkit-scrollbar {
+  width: 1rem;
+}
+
+.article__content pre code::-webkit-scrollbar-track {
+  background: #1d2126;
+}
+
+.article__content pre code::-webkit-scrollbar-thumb {
+  background: #528BFF;
+  border-radius: 1rem;
 }
 
 .read {
@@ -156,38 +184,6 @@
   bottom: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.5);
-}
-
-.read .article__container .article__tags {
-  margin-bottom: 2rem;
-}
-
-.read .article__content img {
-  max-width: 250px;
-  max-height: 250px;
-  width: auto;
-  height: auto;
-}
-
-.read .article__content pre code {
-  max-height: 350px;
-  overflow-y: auto;
-  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  border-radius: 0.25rem;
-}
-
-.read .article__content pre code::-webkit-scrollbar {
-  width: 1rem;
-}
-
-.read .article__content pre code::-webkit-scrollbar-track {
-  background: #1d2126;
-}
-
-.read .article__content pre code::-webkit-scrollbar-thumb {
-  background: #528BFF;
-  border-radius: 1rem;
 }
 
 .read__actions {
@@ -290,7 +286,7 @@
   border-radius: 1rem;
 }
 
-.write__edit, .write__preview {
+.write__edit {
   background-color: #282828;
   padding: 1rem;
   border-radius: 0.25rem;
@@ -308,6 +304,7 @@
 }
 
 .write__textarea {
+  height: auto;
   font-size: 1rem;
   resize: none;
 }
@@ -343,10 +340,6 @@
   color: #B2B6BB;
 }
 
-.write__tags {
-  margin: 1rem 0;
-}
-
 .write__tags p {
   font-size: 2rem;
   margin-bottom: 1rem;
@@ -372,11 +365,47 @@
   margin-right: 0.5rem;
 }
 
-.write__tags_label {
+.tag {
   color: #fff;
   font-weight: bold;
   border-radius: 0.25rem;
   padding: 0.2rem 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.tag--html {
+  background-color: #F53900;
+}
+
+.tag--css {
+  background-color: #2965F1;
+}
+
+.tag--javascript {
+  background-color: #F7E018;
+  color: #000;
+}
+
+.tag--php {
+  background-color: #8993BE;
+  color: #232531;
+}
+
+.tag--sql {
+  background-color: #ED1556;
+}
+
+.tag--beginner {
+  background-color: #2DB470;
+  color: #000;
+}
+
+.tag--advanced {
+  background-color: #100B00;
+}
+
+a.tag:hover {
+  color: currentColor;
 }
 
 @media only screen and (min-width: 992px) {

@@ -14,13 +14,13 @@
         <?php if (!empty($data['tags'])) : ?>
             <div class="article__tags">
                 <?php foreach($data['tags'] as $tag) : ?>
-                    <a class="tag" href="/tags/<?= $tag; ?>">
+                    <a class="tag <?= "tag--$tag" ;?> " href="/tags/<?= $tag; ?>">
                         <span>#</span><?= $tag; ?>
                     </a>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
-        <div class="article__content">
+        <div class="article__content" id="js-article-content">
             <?= $data['content']; ?>
         </div>
     </div>

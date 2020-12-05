@@ -46,7 +46,7 @@
         <?php if (!empty($data['tags'])) : ?>
             <div class="article__tags">
                 <?php foreach($data['tags'] as $tag) : ?>
-                    <a class="tag js-clickable" href="/tags/<?= $tag; ?>">
+                    <a class="tag <?= "tag--$tag" ;?> js-clickable" href="/tags/<?= $tag; ?>">
                         <span>#</span><?= $tag; ?>
                     </a>
                 <?php endforeach; ?>

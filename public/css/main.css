@@ -437,6 +437,7 @@ h3, h4, h5 {
 }
 
 .button--outline--active {
+  cursor: auto;
   color: #fff;
   border-bottom: 3px solid #7B78FF;
   border-top: unset;
@@ -839,23 +840,6 @@ button.overlay {
 
 a.avatar {
   display: block;
-}
-
-.tag {
-  font-weight: normal;
-  color: #B2B6BB;
-}
-
-.tag span {
-  color: #687078;
-}
-
-.tag:hover {
-  color: #528BFF;
-}
-
-.tag:hover span {
-  color: #687078;
 }
 
 footer {

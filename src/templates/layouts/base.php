@@ -57,7 +57,6 @@ use App\Entity\User;
                     </div>
                     <div class="dropdown__content">
                         <ul id="js-navigation-user" class="navigation__user">
-                            <div id="js-logout-loading-spinner" class="spinner hide"></div>
                             <?php if ($this->user['role'] === User::ROLE_ADMIN || User::ROLE_AUTHOR) : ?>
                                 <li class="dropdown__item">
                                     <a href="/articles/write">
@@ -120,7 +119,7 @@ use App\Entity\User;
                                 'autocomplete' => 'off',
                             ]);
                         ?>
-                        <div id="js-login-loading-spinner" class="spinner hide"></div>
+                        <div id="js-login-spinner" class="spinner hide"></div>
                         <div id="js-login-message" class="login__message">Hello there! 👋</div>
                         <?php
                             echo $this->form->input('username', [
@@ -168,9 +167,8 @@ use App\Entity\User;
         <?= $this->notification['message'] ?? null; ?>
     </p>
 </div>
-<script type="module" src="<?= ASSETS_JS . 'app.js'; ?>"></script>
 <script src="<?= VENDOR . 'highlight/highlight.pack.js'; ?>"></script>
-<script>hljs.initHighlightingOnLoad();</script>
+<script type="module" src="<?= ASSETS_JS . 'app.js'; ?>"></script>
 <?php if (!empty($this->javascript)) :
     foreach ($this->javascript as $script): ?>
         <script src="<?= ASSETS_JS . $script; ?>"> </script>

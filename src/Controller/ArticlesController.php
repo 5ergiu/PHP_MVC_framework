@@ -41,7 +41,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * Writes a new article.
+     * Saves a new article.
      * @return void
      * @throws Exception
      */
@@ -62,12 +62,11 @@ class ArticlesController extends AbstractController
     /**
      * Used to preview markdown content.
      * @api
-     * @param string $text The markdown text that will be transformed into HTML.
      * @return void
      */
     #[NoReturn]
-    public function preview(string $text)
+    public function preview()
     {
-
+        $this->newJsonResponse($this->markdown->parse($this->request->data['content']));
     }
 }

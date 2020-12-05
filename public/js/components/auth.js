@@ -14,7 +14,6 @@ export default class Auth {
         this.#Notification = Notification
         this.#Utils = Utils
         this.authListener(this.isLoggedIn)
-        console.log('intra', this.isLoggedIn)
     }
 
     authListener = isLoggedIn => {
@@ -31,7 +30,7 @@ export default class Auth {
             })
             login.addEventListener('submit', event => {
                 event.preventDefault()
-                this.#Loading.show(document.getElementById('js-login-loading-spinner'), login)
+                this.#Loading.show(document.getElementById('js-login-spinner'), login)
                 this.#Utils.serializeForm(login).fetchJsonData(ROUTES.LOGIN)
                     .then(data => {
                         if (data.response) {

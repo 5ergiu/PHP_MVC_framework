@@ -58,7 +58,7 @@
                         <div>
                             <?php if (!empty($suggestion['tags'])) :
                                 foreach ($suggestion['tags'] as $tag) : ?>
-                                    <a class="tag" href="/tags/<?= $tag ;?>">
+                                    <a class="tag <?= "tag--$tag" ;?>" href="/tags/<?= $tag ;?>">
                                         <span>#</span><?= $tag; ?>
                                     </a>
                                 <?php endforeach;

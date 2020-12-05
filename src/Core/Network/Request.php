@@ -96,7 +96,7 @@ class Request
     {
         $this->data = $_REQUEST;
         $jsonData = json_decode(file_get_contents('php://input'), true);
-        if ($jsonData !== null) {
+        if (!empty($jsonData)) {
             foreach ($jsonData as $key => $data) {
                 $this->data[$key] = $data;
             }
