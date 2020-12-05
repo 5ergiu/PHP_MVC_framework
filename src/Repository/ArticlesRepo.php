@@ -9,6 +9,15 @@ use Exception;
 class ArticlesRepo extends AbstractRepository
 {
     /**
+     * @inheritDoc
+     * @return void
+     */
+    protected function validations(): void
+    {
+        // TODO: Implement validations() method.
+    }
+
+    /**
      * Returns all approved articles based on user.
      * @param string|null $slug The article's slug. (optional - used if we need to have a specific article)
      * @param int|null $limit   The query limit (optional)

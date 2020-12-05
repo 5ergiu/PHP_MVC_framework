@@ -40,6 +40,11 @@ class QueryBuilder extends Query
     private string $query;
     public PDOStatement $statement;
 
+    /**
+     * QueryBuilder constructor.
+     * @param string $table
+     * @throws Exception
+     */
     public function __construct(string $table)
     {
         $this->table = $table;

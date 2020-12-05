@@ -3,6 +3,11 @@ namespace App\Repository;
 
 class ArticleBookmarksRepo extends AbstractRepository
 {
+    public function validations(): void
+    {
+        // TODO: Implement validations() method.
+    }
+
     /**
      * TODO: go through EVERY 'throws Exception' and decide whether or not it's needed: like, if you return an error after catching it, it's needed JUST in the method where you catch it.
      * Returns a sub query to find the bookmarked articles by the logged user.

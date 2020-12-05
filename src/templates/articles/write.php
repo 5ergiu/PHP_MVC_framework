@@ -1,7 +1,10 @@
 <?php
+
 use App\Core\View;
+use App\Entity\Article;
 /**
  * @var View $this
+ * @var Article $Article
  */
 $this->includeCss(['articles']);
 ?>

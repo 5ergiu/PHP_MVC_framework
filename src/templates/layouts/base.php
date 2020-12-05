@@ -103,6 +103,7 @@ use App\Entity\User;
                                         'class' => 'button button--secondary',
                                         'type' => 'submit',
                                     ]);
+                                    echo $this->form->end();
                                 ?>
                             </li>
                         </ul>

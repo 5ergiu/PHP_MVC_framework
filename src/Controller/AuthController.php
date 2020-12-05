@@ -90,7 +90,7 @@ class AuthController extends AbstractController
         $User = new User;
         if ($this->request->is('post')) {
             $this->loadRepo('users');
-            $userId = $this->UsersRepo->save($User, $this->request->data);
+            $userId = $this->UsersRepo->save($User);
             if ($userId) {
                 $user = $this->UsersRepo->findById($userId);
                 if ($user) {

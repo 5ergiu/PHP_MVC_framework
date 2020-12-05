@@ -12,10 +12,7 @@ use App\Entity\AbstractEntity as Entity;
 class Validator
 {
     private array $rules = [];
-
-    public function __construct(
-        private Entity $entity
-    ) {}
+    private Entity $entity;
 
     /**
      * Adds validations to the rules.
@@ -25,7 +22,6 @@ class Validator
      */
     public function add(string $field, array $validations): static
     {
-
         foreach ($validations as $rule => $details) {
             if (is_string($details)) {
                 $this->rules[$field][$details] = $details;
@@ -38,10 +34,12 @@ class Validator
 
     /**
      * Checks the validations provided, both general validations and custom made(created in the entity).
+     * @param Entity $entity
      * @return void
      */
-    public function validate()
+    public function validate(Entity $entity)
     {
+        $this->entity = $entity;
         if (!empty($this->rules)) {
             foreach ($this->rules as $field => $validations) {
                 $funcName = 'get' . ucwords($field);
@@ -75,7 +73,7 @@ class Validator
     {
         if (empty($input)) {
             $message = "$field cannot be empty.";
-            $this->entity->setErrors($field, $rule, $message);
+            $this->setErrors($field, $rule, $message);
         }
     }
 
@@ -92,7 +90,7 @@ class Validator
     {
         $input = (int)strlen($input);
         if ($input > (int)$validation) {
-            $this->entity->setErrors($field, $rule, $message);
+            $this->setErrors($field, $rule, $message);
         }
     }
 
@@ -109,7 +107,7 @@ class Validator
     {
         $input = (int)strlen($input);
         if ($input < (int)$validation) {
-            $this->entity->setErrors($field, $rule, $message);
+            $this->setErrors($field, $rule, $message);
         }
     }
 
@@ -124,7 +122,19 @@ class Validator
     {
         if (!filter_var($input, FILTER_VALIDATE_EMAIL)) {
             $message = "$field has to be a valid email address.";
-            $this->entity->setErrors($field, $rule, $message);
+            $this->setErrors($field, $rule, $message);
         }
+    }
+
+    /**
+     * Sets the errors.
+     * @param string $field   The field's name.
+     * @param string $rule    The rule's name.
+     * @param string $message The error message.
+     * @return void
+     */
+    public function setErrors(string $field, string $rule, string $message): void
+    {
+        $this->entity->errors[$field][$rule] = $message;
     }
 }

@@ -10,11 +10,6 @@ class ArticleBookmark extends AbstractEntity
     private int $articleId;
     private int $bookmarkedBy;
 
-    public function validations(): void
-    {
-        // TODO: Implement validations() method.
-    }
-
     /**
      * @return int
      */

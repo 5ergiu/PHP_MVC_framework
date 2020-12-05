@@ -28,6 +28,15 @@ class View
     private array $css = [];
     private array $javascript = [];
 
+    /**
+     * View constructor.
+     * @param array $requestData
+     * @param array|null $user
+     * @param array $notification
+     * @param string $viewPath
+     * @param array $variables
+     * @param string|null $layout
+     */
     public function __construct(
         private array $requestData,
         private ?array $user,
@@ -59,7 +68,7 @@ class View
      * Returns the formatted view.
      * @return string
      */
-    public function geView(): string
+    public function getView(): string
     {
         return $this->body;
     }

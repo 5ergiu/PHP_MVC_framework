@@ -31,7 +31,6 @@ abstract class AbstractController
     protected MarkdownHelper $markdown;
     protected Log $log;
 
-
     public function __construct()
     {
         $this->session = new Session;
@@ -52,11 +51,15 @@ abstract class AbstractController
     #[NoReturn]
     protected function render(string $viewPath, array $variables = [], ?string $layout = null): void
     {
-        $requestData = $this->request->data;
-        $authenticatedUser = $this->auth->user();
-        $notification = $this->__getNotification();
-        $View = new View($requestData, $authenticatedUser, $notification, $viewPath, $variables, $layout);
-        $this->response->body($View->geView());
+        $View = new View(
+            $this->request->data,
+            $this->auth->user(),
+            $this->__getNotification(),
+            $viewPath,
+            $variables,
+            $layout
+        );
+        $this->response->body($View->getView());
         $this->response->send();
     }
 
@@ -119,6 +122,7 @@ abstract class AbstractController
         $repo = ucwords($repo) . 'Repo';
         $repoClass = 'App\Repository\\' . $repo;
         $this->{$repo} = new $repoClass;
+        $this->{$repo}->context = $this->request->data;
         $this->{$repo}->userId = $this->auth->user('id');
     }
 

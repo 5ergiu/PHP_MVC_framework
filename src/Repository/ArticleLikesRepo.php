@@ -4,6 +4,15 @@ namespace App\Repository;
 class ArticleLikesRepo extends AbstractRepository
 {
     /**
+     * @inheritDoc
+     * @return void
+     */
+    protected function validations(): void
+    {
+        // TODO: Implement validations() method.
+    }
+
+    /**
      * Returns a sub query to find the liked articles by the logged user.
      * @return string
      */

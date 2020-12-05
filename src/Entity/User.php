@@ -23,49 +23,6 @@ class User extends AbstractEntity
     public const ROLE_AUTHOR = 'Author';
 
     /**
-     * @inheritDoc
-     * @return void
-     */
-    protected function validations(): void
-    {
-        $this->validator
-            ->add('email', [
-                'required',
-                'isEmail',
-            ])
-            ->add('password', [
-//                'maxLength' => [
-//                    'maxLength' => 8,
-//                    'message' => 'mai mult',
-//                ],
-                'minLength' => [
-                    'minLength' => 5,
-                    'message' => 'mai putin',
-                ],
-            ]);
-//            ->add('age', [
-//                'checkMoreThanWhateverFunction' => [
-//                    'method' => 'checkMoreThanWhateverFunction',
-//                    'message' => 'check more no mers'
-//                ],
-//            ]);
-    }
-
-    /**
-     * @param $input
-     * @param string $field
-     * @param string $rule
-     * @param string $message
-     * @return void
-     */
-    public function checkMoreThanWhateverFunction($input, string $field, string $rule, string $message): void
-    {
-        if ($input > 10) {
-            $this->setErrors($field, $rule, $message);
-        }
-    }
-
-    /**
      * @return string
      */
     public function getUsername(): string
@@ -76,7 +33,7 @@ class User extends AbstractEntity
     /**
      * @param string $username
      */
-    protected function setUsername(string $username): void
+    public function setUsername(string $username): void
     {
         $this->username = $username;
     }
@@ -92,7 +49,7 @@ class User extends AbstractEntity
     /**
      * @param string $email
      */
-    protected function setEmail(string $email): void
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
@@ -108,7 +65,7 @@ class User extends AbstractEntity
     /**
      * @param string $role
      */
-    protected function setRole(string $role): void
+    public function setRole(string $role): void
     {
         $this->role = $role;
     }
@@ -124,7 +81,7 @@ class User extends AbstractEntity
     /**
      * @param string $password
      */
-    protected function setPassword(string $password): void
+    public function setPassword(string $password): void
     {
         $this->password = password_hash($password, PASSWORD_BCRYPT);
     }

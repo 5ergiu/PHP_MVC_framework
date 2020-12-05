@@ -524,22 +524,18 @@ a.button:hover {
           flex-direction: column;
 }
 
-.form__group {
-  position: relative;
+.form__input {
+  padding: 0.7rem;
   margin-bottom: 1.5rem;
 }
 
-.form__input {
-  padding: 0.7rem;
-}
-
 .form__input_errors {
-  position: absolute;
+  margin-bottom: 0.5rem;
 }
 
 .form__input--error {
-  bottom: 0;
   border-color: #DC3545;
+  margin-bottom: 0;
 }
 
 .hide {

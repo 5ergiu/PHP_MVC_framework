@@ -402,18 +402,15 @@ a {
 .form {
   display: flex;
   flex-direction: column;
-  &__group {
-    position: relative;  
-    margin-bottom: 1.5rem;
-  }
   &__input {
     padding: 0.7rem;
+    margin-bottom: 1.5rem;
     &_errors {
-      position: absolute;
+      margin-bottom: 0.5rem;
     }
-    &--error {
-      bottom: 0;  
-      border-color: #DC3545;  
+    &--error { 
+      border-color: #DC3545;
+      margin-bottom: 0;
     }
   }
 }

@@ -13,6 +13,7 @@ class Auth
     public ?array $user;
 
     /**
+     * Auth constructor.
      * @param Session $session
      */
     public function __construct(

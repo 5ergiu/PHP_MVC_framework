@@ -1,38 +1,42 @@
 <?php
+
+use App\Core\View;
 use App\Entity\User;
 /**
  * @var User $User
+ * @var View $this
  */
 
-$this->form->create($User);
+echo $this->form->create($User);
 
-$this->form->input('username', [
+echo $this->form->input('username', [
     'type' => 'text',
     'placeholder' => 'Enter username',
 ]);
 
-$this->form->input('email', [
+echo $this->form->input('email', [
     'type' => 'email',
     'placeholder' => 'Enter email',
 ]);
 
-$this->form->input('password', [
+echo $this->form->input('password', [
     'type' => 'password',
     'placeholder' => 'Enter password',
 ]);
 
-$this->form->input('image', [
+echo $this->form->input('image', [
     'type' => 'text',
     'placeholder' => 'Enter image',
 ]);
 
-$this->form->input('summary', [
+echo $this->form->input('summary', [
     'type' => 'text',
     'placeholder' => 'Enter summary',
 ]);
 
-$this->form->button('Save', [
-    'class' => 'button'
+echo $this->form->button('Save', [
+    'class' => 'button',
+    'type' => 'submit',
 ]);
 
-$this->form->end();
+echo $this->form->end();

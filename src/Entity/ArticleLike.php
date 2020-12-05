@@ -11,15 +11,6 @@ class ArticleLike extends AbstractEntity
     private int $likedBy;
 
     /**
-     * @inheritDoc
-     * @return void
-     */
-    protected function validations(): void
-    {
-        // TODO: Implement validations() method.
-    }
-
-    /**
      * @return int
      */
     public function getArticleId(): int

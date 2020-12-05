@@ -2,6 +2,7 @@
 namespace App\Repository;
 
 use App\Core\Model\QueryBuilder;
+use App\Core\Model\Validator;
 use App\Entity\AbstractEntity as Entity;
 use Exception;
 use JetBrains\PhpStorm\Pure;
@@ -11,18 +12,25 @@ use JetBrains\PhpStorm\Pure;
  * Used for entire table queries.
  * @property int|null $userId  The authenticated user's id or null (this will make it a lot easier to use in queries).
  * @property string $table     The name of the table.
+ * @property array $context    The context(request data).
  * @property array $attributes The attributes/columns of a table.
+ * @property Validator $validator
  * @property QueryBuilder $QueryBuilder
  */
 abstract class AbstractRepository
 {
-    public string $table;
+    private string $table;
+    public array $context;
     protected QueryBuilder $QueryBuilder;
+    protected Validator $validator;
 
     public function __construct()
     {
         $this->table = $this->getTable();
-        $this->QueryBuilder = new QueryBuilder($this->table);
+        $this->validator = new Validator;
+        $this->QueryBuilder = new QueryBuilder($this->getTable());
+        $this->validator = new Validator;
+        $this->validations();
     }
 
     /**
@@ -42,6 +50,12 @@ abstract class AbstractRepository
             )
         );
     }
+
+    /**
+     * Adds validations in the Validator object.
+     * @return void;
+     */
+    abstract protected function validations(): void;
 
     /**
      * Checks if a record exists in the database based on the provided conditions.
@@ -68,18 +82,40 @@ abstract class AbstractRepository
     }
 
     /**
+     * Binds the values to an entity.
+     * @param Entity $entity The entity to be saved/updated.
+     * @return void
+     */
+    public function patchEntity(Entity $entity): void
+    {
+        $entityName = $entity->getEntityName();
+        $entityData = $this->context['data'][$entityName];
+        foreach ($entityData as $field => $input) {
+            $field = str_replace('_', '', lcfirst(ucwords($field, '_')));
+            if (property_exists($entity, $field)) {
+                $funcName = 'set' . ucwords($field);
+                if (method_exists($entity, $funcName)) {
+                    $entity->{$funcName}($input);
+                }
+            }
+        }
+    }
+
+    /**
      * Saves a new record to the database.
      * @param Entity $entity The entity to be saved.
-     * @param array $data    The data that will be bound to the entity.
      * @return int|false
      * @throws Exception
      */
-    public function save(Entity $entity, array $data): int|false
+    public function save(Entity $entity): int|false
     {
-        if (!$entity->bindValues($data)) {
+        $this->patchEntity($entity);
+        $this->validator->validate($entity);
+        if (empty($entity->errors)) {
+            return $this->QueryBuilder->getLastInsertedId($entity);
+        } else {
             return false;
         }
-        return $this->QueryBuilder->getLastInsertedId($entity);
     }
 
     /**

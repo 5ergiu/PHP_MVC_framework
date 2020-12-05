@@ -25,15 +25,6 @@ class Article extends AbstractEntity
     private string $status = 'draft';
 
     /**
-     * @inheritDoc
-     * @return void
-     */
-    protected function validations(): void
-    {
-        // TODO: Implement validations() method.
-    }
-
-    /**
      * @return int
      */
     public function getAuthorId(): int
