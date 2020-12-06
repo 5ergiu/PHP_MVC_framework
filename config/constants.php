@@ -8,6 +8,8 @@ define('ASSETS_JS', HOST . '/js/');
 define('ASSETS_IMG', HOST . '/images/');
 define('ASSETS_FONT', HOST . '/css/');
 define('ASSETS_UPLOADS', HOST . '/uploads/');
+// Uploads file system path
+define('UPLOADS', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/public/uploads/'));
 // Vendor directory path(public)
 define('VENDOR', HOST . '/vendor/');
 // Vendor directory path

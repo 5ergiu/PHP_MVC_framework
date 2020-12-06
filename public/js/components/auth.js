@@ -34,7 +34,7 @@ export default class Auth {
                 this.#Utils.serializeForm(login).fetchJsonData(ROUTES.LOGIN)
                     .then(data => {
                         if (data.response) {
-                            localStorage.setItem('isLoggedIn', 'yes');
+                            sessionStorage.setItem('isLoggedIn', 'yes')
                             window.location.replace(data.response.redirect.path)
                         } else {
                             this.#Loading.hide()

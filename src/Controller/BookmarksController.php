@@ -29,7 +29,7 @@ class BookmarksController extends AbstractController
             $this->loadRepo('articleBookmarks');
             if (!$this->ArticleBookmarksRepo->exists(['article_id' => $articleId])) {
                 $ArticleBookmark = new ArticleBookmark;
-                if ($this->ArticleBookmarksRepo->save($ArticleBookmark, $data)) {
+                if ($this->ArticleBookmarksRepo->save($ArticleBookmark)) {
                     $response = true;
                     $errors = [];
                 }

@@ -29,7 +29,7 @@ class LikesController extends AbstractController
             $this->loadRepo('articleLikes');
             if (!$this->ArticleLikesRepo->exists(['article_id' => $articleId])) {
                 $ArticleLike = new ArticleLike;
-                if ($this->ArticleLikesRepo->save($ArticleLike, $data)) {
+                if ($this->ArticleLikesRepo->save($ArticleLike)) {
                     $response = true;
                     $errors = [];
                 }

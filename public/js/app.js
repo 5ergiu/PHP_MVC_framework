@@ -19,7 +19,7 @@ export default class App {
         this.initializeAuth()
         new Clickable
         new Dropdown
-        new Articles(this.Utils)
+        new Articles(this.Utils, this.Notification)
     }
 
     initializeAuth = () => {
@@ -27,7 +27,7 @@ export default class App {
             .then(data => {
                 this.isLoggedIn = data.response
                 if (this.isLoggedIn) {
-                    localStorage.setItem('isLoggedIn', 'yes');
+                    sessionStorage.setItem('isLoggedIn', 'yes');
                 }
                 new Auth(this.isLoggedIn, this.Notification, this.Utils)
                 new Actions(this.isLoggedIn, this.Utils, this.Notification)

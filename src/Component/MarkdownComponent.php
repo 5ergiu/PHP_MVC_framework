@@ -1,12 +1,12 @@
 <?php
-namespace App\Helper;
+namespace App\Component;
 
 use cebe\markdown\GithubMarkdown;
 
 /**
  * @property GithubMarkdown $parser
  */
-class MarkdownHelper
+class MarkdownComponent
 {
     private GithubMarkdown $parser;
 

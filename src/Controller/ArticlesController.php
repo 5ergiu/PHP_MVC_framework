@@ -1,7 +1,9 @@
 <?php
 namespace App\Controller;
 
+use App\Core\Exception\MethodNotAllowedException;
 use App\Entity\Article;
+use App\Component\UploadComponent;
 use App\Repository\ArticleBookmarksRepo;
 use App\Repository\ArticleLikesRepo;
 use App\Repository\ArticlesRepo;
@@ -61,12 +63,58 @@ class ArticlesController extends AbstractController
 
     /**
      * Used to preview markdown content.
-     * @api
      * @return void
+     * @throws MethodNotAllowedException
+     * @api
      */
     #[NoReturn]
-    public function preview()
+    public function preview(): void
     {
+        $this->methodsAllowed(['post']);
         $this->newJsonResponse($this->markdown->parse($this->request->data['content']));
+
+    }
+
+    /**
+     * Uploads a cover image.
+     * @return void
+     * @throws MethodNotAllowedException
+     * @api
+     */
+    #[NoReturn]
+    public function uploadCover(): void
+    {
+        $this->methodsAllowed(['post']);
+        $response = false;
+        $errors = [];
+        if (isset($_FILES['cover'])) {
+            $file = $_FILES['cover'];
+            $uploadHelper = new UploadComponent($file);
+            if ($uploadHelper->getStatus()) {
+                $response = $uploadHelper->getFilename();
+            }
+        }
+        $this->newJsonResponse($response, $errors);
+    }
+
+    /**
+     * Deletes a cover image.
+     * @return void
+     * @throws MethodNotAllowedException
+     * @api
+     */
+    #[NoReturn]
+    public function deleteCover(): void
+    {
+        $this->methodsAllowed(['post']);
+        $response = false;
+        $errors = [];
+        $file = $this->request->data['cover'];
+        if (unlink(UPLOADS . $this->request->data['cover'])) {
+            $response = true;
+        } else {
+            $errors['message'] = "$file cannot be deleted due to an error";
+        }
+        $this->newJsonResponse($response, $errors);
     }
 }

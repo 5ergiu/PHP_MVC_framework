@@ -3,17 +3,40 @@ import ROUTES from './routes.js'
 
 export default class Articles {
 
-    Utils
+    #Utils
+    #Notification
     #Loading
+    #coverPreview
+    #coverButton
+    #removeCoverButton
+    #coverFile
+    #lastCoverFile = null
+    #coverInput
+    #title
+    tags
     #markdown
     #oldMarkdown = null
-    #content
+    #articleCover
+    #articleTitle
+    articleTags
+    #articleContent
 
-    constructor(Utils) {
-        this.Utils = Utils
+    constructor(Utils, Notification) {
+        this.#Utils = Utils
+        this.#Notification = Notification
         this.#Loading = new Loading
+        this.#coverPreview = document.getElementById('js-cover-preview')
+        this.#coverButton = document.getElementById('js-button-cover')
+        this.#removeCoverButton = document.getElementById('js-button-remove-cover')
+        this.#coverFile = document.getElementById('js-cover-file')
+        this.#coverInput = document.getElementById('js-cover-input')
+        this.#title = document.getElementById('js-title')
+        //tags
         this.#markdown = document.getElementById('js-markdown')
-        this.#content = document.getElementById('js-article-content')
+        this.#articleCover = document.getElementById('js-article-cover')
+        this.#articleTitle = document.getElementById('js-article-title')
+        //articletags
+        this.#articleContent = document.getElementById('js-article-content')
         const articles = document.querySelectorAll('.article--mini')
         articles.forEach(element => {
             element.addEventListener('click', event => {
@@ -21,7 +44,9 @@ export default class Articles {
             })
         })
         this.autoResize()
+        this.retainState()
         this.handleChange()
+        this.handleCoverChange()
         this.highlightCode()
     }
 
@@ -44,18 +69,19 @@ export default class Articles {
 
     // used to highlight the <code> tags.
     highlightCode = () => {
-        if (this.#content && this.#content.innerHTML.trim().length !== 0) {
-            this.#content.querySelectorAll('pre code').forEach(block => {
+        let elements = this.#articleContent.querySelectorAll('pre code')
+        if (elements !== null) {
+            elements.forEach(block => {
                 hljs.highlightBlock(block);
-            });
+            })
         }
     }
 
     // used to handle the change between 'edit' and 'preview' on articles/write
     handleChange = () => {
-        const articleEdit = document.getElementById('js-article-edit')
+        const articleEdit = document.getElementById('js-edit')
         const buttonEdit = document.getElementById('js-button-edit')
-        const articlePreview = document.getElementById('js-article-preview')
+        const articlePreview = document.getElementById('js-preview')
         const buttonPreview = document.getElementById('js-button-preview')
         if (buttonPreview && buttonEdit) {
             buttonPreview.addEventListener('click', () => {
@@ -71,10 +97,10 @@ export default class Articles {
                     let data = {
                         content: this.#markdown.value,
                     }
-                    this.Utils.fetchJsonData(ROUTES.PREVIEW, data)
+                    this.#Utils.fetchJsonData(ROUTES.PREVIEW, data)
                         .then(data => {
                             if (data.response) {
-                                this.#content.innerHTML += data.response
+                                this.#articleContent.innerHTML = data.response
                                 this.highlightCode()
                                 this.#Loading.hide()
                             }
@@ -87,6 +113,136 @@ export default class Articles {
                 articleEdit.classList.remove('hide')
                 articlePreview.classList.add('hide')
             })
+        }
+    }
+
+    handleCoverChange = () => {
+        if (this.#coverButton) {
+            this.#coverButton.addEventListener('click', () => {
+                this.#coverFile.click()
+            })
+            this.#coverFile.addEventListener('change', () => {
+                this.#Loading.show(
+                    document.getElementById('js-article-spinner'),
+                    document.getElementById('js-edit')
+                )
+                let file = this.#coverFile.files
+                if (file.length > 0) {
+                    let data = new FormData
+                    data.append('cover', file[0])
+                    this.deleteLastCover()
+                    this.upload(data)
+                        .then(data => {
+                            if (data.response) {
+                                this.updateCoverPreview(data.response)
+                                sessionStorage.setItem('cover', data.response);
+                                this.#lastCoverFile = data.response
+                            } else {
+                                this.#Notification.show({
+                                    message: 'Something went wrong, please try again',
+                                    errors: true,
+                                })
+                            }
+                        })
+                }
+                this.#Loading.hide()
+            })
+        }
+        if (this.#removeCoverButton) {
+            this.#removeCoverButton.addEventListener('click', this.deleteLastCover)
+        }
+    }
+
+    upload = async data => {
+        let response = await fetch(ROUTES.UPLOAD_COVER, {
+            method: 'POST',
+            body: data,
+        })
+        return await response.json()
+    }
+
+    updateCoverPreview = (filename) => {
+        this.#coverInput.value = filename
+        this.#coverPreview.classList.remove('hide')
+        this.#coverPreview.style.backgroundImage = `url(/uploads/${filename})`
+        this.#coverButton.innerText = 'Change cover'
+        this.#removeCoverButton.classList.remove('hide')
+        this.#articleCover.style.backgroundImage = `url(/uploads/${filename})`
+        this.#articleCover.innerHTML = null
+    }
+
+    deleteLastCover = () => {
+        if (this.#lastCoverFile !== null) {
+            let data = {
+                cover: this.#lastCoverFile
+            }
+            this.#Utils.fetchJsonData(ROUTES.DELETE_COVER, data)
+                .then(data => {
+                    if (data.response) {
+                        sessionStorage.setItem('cover', '')
+                        this.#lastCoverFile = null
+                        this.#coverInput.value = null
+                        this.#coverFile.value = null
+                        this.#coverPreview.classList.add('hide')
+                        this.#coverPreview.removeAttribute('style')
+                        this.#articleCover.removeAttribute('style')
+                        this.#articleCover.innerHTML = 'Your article\'s cover image'
+                        this.#coverButton.innerText = 'Add a cover image'
+                        this.#removeCoverButton.classList.add('hide')
+                    } else {
+                        this.#Notification.show({
+                            message: data.errors.message,
+                            errors: true,
+                        })
+                        return false
+                    }
+                })
+        }
+    }
+
+    retainState = () => {
+        let cover = sessionStorage.getItem('cover')
+        if (cover) {
+            this.updateCoverPreview(cover)
+            this.#lastCoverFile = cover
+        } else {
+            this.#articleCover.innerHTML = 'Your article\'s cover image'
+        }
+        let title = sessionStorage.getItem('title')
+        if (title) {
+            this.#title.value = title
+            this.#articleTitle.innerHTML = title
+        } else {
+            this.#articleTitle.innerHTML = 'Your article\'s title'
+        }
+        let markdown = sessionStorage.getItem('markdown')
+        if (markdown) {
+            this.#markdown.innerHTML = markdown
+        } else {
+            this.#articleContent.innerHTML = 'Your article\'s content'
+        }
+        this.#title.addEventListener('input', () => this.updateTitle())
+        this.#markdown.addEventListener('input', () => this.updateContent())
+    }
+
+    updateTitle = () => {
+        let title = this.#title.value.trim()
+        sessionStorage.setItem('title', title)
+        if (title) {
+            this.#title.value = title
+            this.#articleTitle.innerHTML = title
+        } else {
+            this.#articleTitle.innerHTML = 'Your article\'s title'
+        }
+    }
+
+    updateContent = () => {
+        let markdown = this.#markdown.value.trim()
+        sessionStorage.setItem('markdown', markdown)
+        if (markdown) {
+            this.#markdown.innerHTML = markdown
+        } else {
+            this.#articleContent.innerHTML = 'Your article\'s content'
         }
     }
 }

@@ -14,7 +14,15 @@ $this->includeCss(['articles']);
         <button class="button button--outline button--outline--active" id="js-button-edit">Edit</button>
         <button class="button button--outline" id="js-button-preview">Preview</button>
     </div>
-    <div class="write__edit" id="js-article-edit">
+    <div class="write__edit" id="js-edit">
+        <div class="write__cover">
+            <div class="write__cover_preview hide" id="js-cover-preview"></div>
+            <div class="write__cover_buttons">
+                <button class="button button--secondary" id="js-button-cover" type="button">Add a cover image</button>
+                <button class="button button--remove hide" id="js-button-remove-cover" type="button">Remove</button>
+            </div>
+            <input id="js-cover-file" type="file" name="image" accept="image/png, image/gif, image/jpeg, image/jpg" />
+        </div>
         <?php
             echo $this->form->create($Article, [
                 'class' => 'write__form',
@@ -22,20 +30,20 @@ $this->includeCss(['articles']);
             ]);
             echo $this->form->input('cover', [
                 'type' => 'hidden',
-                'id' => 'js-article-cover',
+                'id' => 'js-cover-input',
             ]);
             echo $this->form->input('title', [
                 'type' => 'text',
                 'class' => 'write__input',
+                'id' => 'js-title',
                 'placeholder' => 'New article title here...',
             ]);
         ?>
         <div class="write__tags">
             <p>Tag your article:</p>
             <?php foreach ($tags as $key => $tag) : ?>
-                <div>
+                <div class="write__tags_input">
                     <input
-                        class="write__tags_input"
                         type="checkbox"
                         value="<?= $tag['id']; ?>"
                         name="tags[<?= $key ;?>]"
@@ -57,13 +65,15 @@ $this->includeCss(['articles']);
             echo $this->form->end();
         ?>
     </div>
-    <div class="write__preview hide" id="js-article-preview">
+    <div class="write__preview hide" id="js-preview">
         <article class="article">
             <div class="article__cover">
-                <div class="article__cover_image"></div>
+                <div class="article__cover_image" id="js-article-cover">
+                    Your article's cover image
+                </div>
             </div>
             <div class="article__container">
-                <div class="article__title">
+                <div class="article__title" id="js-article-title">
                     Your article's title
                 </div>
                 <div class="article__tags">

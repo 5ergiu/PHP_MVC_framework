@@ -9,7 +9,7 @@ use App\Core\View;
 use App\Component\Log;
 use App\Core\Network\Request;
 use App\Core\Network\Response;
-use App\Helper\MarkdownHelper;
+use App\Component\MarkdownComponent;
 use JetBrains\PhpStorm\NoReturn;
 
 /**
@@ -18,7 +18,7 @@ use JetBrains\PhpStorm\NoReturn;
  * @property array $referer
  * @property Response $response
  * @property Auth $auth
- * @property MarkdownHelper $markdown
+ * @property MarkdownComponent $markdown
  * @property Log $log
  * The framework's main controller which will be extended by all the app's controllers.
  */
@@ -28,14 +28,14 @@ abstract class AbstractController
     protected Session $session;
     protected array $referer;
     protected Auth $auth;
-    protected MarkdownHelper $markdown;
+    protected MarkdownComponent $markdown;
     protected Log $log;
 
     public function __construct()
     {
         $this->session = new Session;
         $this->auth = new Auth($this->session);
-        $this->markdown = new MarkdownHelper;
+        $this->markdown = new MarkdownComponent;
         $this->log = new Log;
         $this->referer = $this->__buildReferer();
         $this->response = new Response;

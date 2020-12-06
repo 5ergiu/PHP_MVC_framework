@@ -273,7 +273,7 @@ h3, h4, h5 {
 }
 
 .errors {
-  color: #DC3545;  
+  color: #DC3545;
 }
 
 .button {
@@ -377,6 +377,12 @@ h3, h4, h5 {
     padding: 10px 20px;
     box-shadow: 0 0 12px 0 rgba(0,0,0,0.1), 0 10px 30px 0 rgba(0,0,0,0.2);
   }
+  &--remove {
+    color: #F25757;
+    background-color: #444F5B;
+    box-shadow: unset;
+    margin-top: 1rem;
+  }
 }
 
 a {
@@ -389,7 +395,7 @@ a {
     color: $blue;
   }
   &.button {
-    transition: none;  
+    transition: none;
     &:hover {
         color: #fff;
       }
@@ -398,7 +404,7 @@ a {
 
 .error {
     color: #DC3545;
-  }
+ }
 
 .form {
   display: flex;
@@ -409,7 +415,7 @@ a {
     &_errors {
       margin-bottom: 0.5rem;
     }
-    &--error { 
+    &--error {
       border-color: #DC3545;
       margin-bottom: 0;
     }
@@ -573,7 +579,7 @@ button.overlay {
 		    color: $text;
 		    box-shadow: 0 0 12px 0 rgba(0,0,0,0.1), 0 10px 30px 0 rgba(0,0,0,0.2);
       }
-    }  
+    }
 	  button {
       position: absolute;
       top: .5rem;
@@ -656,9 +662,9 @@ a.avatar {
 }
 
 footer {
-  padding: 0 1rem;  
+  padding: 0 1rem;
 }
-  
+
 @media only screen and (min-width: 992px) {
   .navigation {
     &__search {
