@@ -7,6 +7,7 @@ const ROUTES = {
     BOOKMARK_REMOVE: '/bookmarks/remove',
     LIKE_ADD: '/likes/add',
     LIKE_REMOVE: '/likes/remove',
+    WRITE: '/articles/write',
     PREVIEW: '/articles/preview',
     UPLOAD_COVER: '/articles/upload_cover',
     DELETE_COVER: '/articles/delete_cover',

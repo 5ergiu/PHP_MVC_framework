@@ -60,7 +60,11 @@ export default class Actions {
         let spinner = element.parentNode.querySelector('.js-bookmark-spinner')
         loading.show(spinner, element)
         let data = {
-            article_id: element.dataset.articleId,
+            data: {
+                ArticleBookmark: {
+                    article_id: element.dataset.articleId
+                }
+            }
         }
         element.disabled = true
         if (element.classList.contains('button--bookmarked')) {
@@ -107,7 +111,11 @@ export default class Actions {
         let spinner = element.parentNode.querySelector('.js-like-spinner')
         loading.show(spinner, element)
         let data = {
-            article_id: element.dataset.articleId,
+            data: {
+                ArticleLike: {
+                    article_id: element.dataset.articleId
+                }
+            }
         }
         element.disabled = true
         if (element.classList.contains('button--liked')) {

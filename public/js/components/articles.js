@@ -13,13 +13,15 @@ export default class Articles {
     #lastCoverFile = null
     #coverInput
     #title
-    tags
+    #tags
     #markdown
     #oldMarkdown = null
     #articleCover
     #articleTitle
-    articleTags
+    #articleTags
     #articleContent
+    #reviewButton
+    #draftButton
 
     constructor(Utils, Notification) {
         this.#Utils = Utils
@@ -31,12 +33,14 @@ export default class Articles {
         this.#coverFile = document.getElementById('js-cover-file')
         this.#coverInput = document.getElementById('js-cover-input')
         this.#title = document.getElementById('js-title')
-        //tags
+        this.#tags = document.getElementById('js-tags')?.querySelectorAll('.form__group')
         this.#markdown = document.getElementById('js-markdown')
         this.#articleCover = document.getElementById('js-article-cover')
         this.#articleTitle = document.getElementById('js-article-title')
-        //articletags
+        this.#articleTags = document.getElementById('js-article-tags')
         this.#articleContent = document.getElementById('js-article-content')
+        this.#reviewButton = document.getElementById('js-button-review')
+        this.#draftButton = document.getElementById('js-button-draft')
         const articles = document.querySelectorAll('.article--mini')
         articles.forEach(element => {
             element.addEventListener('click', event => {
@@ -48,6 +52,7 @@ export default class Articles {
         this.handleChange()
         this.handleCoverChange()
         this.highlightCode()
+        this.handleSubmit()
     }
 
     // used to mimic clicks on 'mini' articles
@@ -69,11 +74,13 @@ export default class Articles {
 
     // used to highlight the <code> tags.
     highlightCode = () => {
-        let elements = this.#articleContent.querySelectorAll('pre code')
-        if (elements !== null) {
-            elements.forEach(block => {
-                hljs.highlightBlock(block);
-            })
+        if (this.#articleContent) {
+            let elements = this.#articleContent.querySelectorAll('pre code')
+            if (elements !== null) {
+                elements.forEach(block => {
+                    hljs.highlightBlock(block);
+                })
+            }
         }
     }
 
@@ -201,32 +208,46 @@ export default class Articles {
     }
 
     retainState = () => {
-        let cover = sessionStorage.getItem('cover')
-        if (cover) {
-            this.updateCoverPreview(cover)
-            this.#lastCoverFile = cover
-        } else {
-            this.#articleCover.innerHTML = 'Your article\'s cover image'
+        if (document.getElementById('js-edit')) {
+            let cover = sessionStorage.getItem('cover')
+            if (cover) {
+                this.updateCoverPreview(cover)
+                this.#lastCoverFile = cover
+            } else {
+                this.#articleCover.innerHTML = 'Your article\'s cover image'
+            }
+            let title = sessionStorage.getItem('title')
+            if (title) {
+                this.#title.value = title
+                this.#articleTitle.innerHTML = title
+            } else {
+                this.#articleTitle.innerHTML = 'Your article\'s title'
+            }
+            let markdown = sessionStorage.getItem('markdown')
+            if (markdown) {
+                this.#markdown.innerHTML = markdown
+            } else {
+                this.#articleContent.innerHTML = 'Your article\'s content'
+            }
+            this.#title.addEventListener('input', () => this.updateTitle())
+            this.#markdown.addEventListener('input', () => this.updateContent())
+            this.#tags.forEach(element => {
+                let tagId = element.querySelector('input').getAttribute('id')
+                let tag = document.getElementById(tagId)
+                let labelClone = element.querySelector('label').cloneNode(true)
+                if (sessionStorage.getItem(tagId)) {
+                    this.#articleTags.appendChild(labelClone)
+                    tag.checked = true
+                }
+                tag.addEventListener('change', () => {
+                    this.updateTags(tagId, tag, labelClone)
+                })
+            })
         }
-        let title = sessionStorage.getItem('title')
-        if (title) {
-            this.#title.value = title
-            this.#articleTitle.innerHTML = title
-        } else {
-            this.#articleTitle.innerHTML = 'Your article\'s title'
-        }
-        let markdown = sessionStorage.getItem('markdown')
-        if (markdown) {
-            this.#markdown.innerHTML = markdown
-        } else {
-            this.#articleContent.innerHTML = 'Your article\'s content'
-        }
-        this.#title.addEventListener('input', () => this.updateTitle())
-        this.#markdown.addEventListener('input', () => this.updateContent())
     }
 
     updateTitle = () => {
-        let title = this.#title.value.trim()
+        let title = this.#title.value
         sessionStorage.setItem('title', title)
         if (title) {
             this.#title.value = title
@@ -237,12 +258,34 @@ export default class Articles {
     }
 
     updateContent = () => {
-        let markdown = this.#markdown.value.trim()
+        let markdown = this.#markdown.value
         sessionStorage.setItem('markdown', markdown)
         if (markdown) {
             this.#markdown.innerHTML = markdown
         } else {
             this.#articleContent.innerHTML = 'Your article\'s content'
+        }
+    }
+
+    updateTags = (tagId, tag, label) => {
+        if (tag.checked) {
+            sessionStorage.setItem(tagId, 'checked')
+            this.#articleTags.appendChild(label)
+        } else {
+            sessionStorage.removeItem(tagId)
+            this.#articleTags.querySelector(`label[for=${tagId}]`).remove()
+        }
+    }
+
+    handleSubmit = () => {
+        if (this.#reviewButton) {
+            this.#reviewButton.addEventListener('click', () => {
+                document.getElementById('Article').submit()
+            })
+            this.#draftButton.addEventListener('click', () => {
+                document.getElementById('js-status').value = 'draft'
+                document.getElementById('Article').submit()
+            })
         }
     }
 }

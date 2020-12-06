@@ -14,7 +14,27 @@ class ArticlesRepo extends AbstractRepository
      */
     protected function validations(): void
     {
-        // TODO: Implement validations() method.
+        $this->validator
+            ->add('status', [
+                'checkStatus' => [
+                    'method' => 'checkStatus',
+                    'message' => 'What are you trying to do? 🤨'
+                ],
+            ]);
+    }
+
+    /**
+     * @param mixed $input
+     * @param string $field
+     * @param string $rule
+     * @param string $message
+     * @return void
+     */
+    public function checkStatus(mixed $input, string $field, string $rule, string $message): void
+    {
+        if ($input !== 'draft' || $input !== 'review') {
+            $this->validator->setErrors($field, $rule, $message);
+        }
     }
 
     /**
@@ -44,7 +64,6 @@ class ArticlesRepo extends AbstractRepository
                 'a.cover',
                 'a.slug',
                 'a.created_at',
-                'a.description',
                 'count(DISTINCT l.liked_by)' => 'likes',
                 'count(DISTINCT b.bookmarked_by)' => 'bookmarks',
                 $this->likedByLoggedUserSubQuery => 'liked_by_logged_user',

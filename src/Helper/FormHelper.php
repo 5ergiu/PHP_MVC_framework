@@ -14,6 +14,7 @@ class FormHelper
 {
     private const INPUT = 'input';
     private const TEXTAREA = 'textarea';
+    private const CHECKBOX = 'checkbox';
 
     private ?Entity $entity = null;
 
@@ -76,6 +77,17 @@ class FormHelper
     public function textarea(string $fieldName, array $options = []): string
     {
         return $this->__buildInput(self::TEXTAREA, $fieldName, $options);
+    }
+
+    /**
+     * Creates checkboxes.
+     * @param string|null $fieldName The textarea 'name' attribute.
+     * @param array $options         The textarea attributes.
+     * @return string
+     */
+    public function checkbox(?string $fieldName, array $options = []): string
+    {
+        return $this->__buildInput(self::CHECKBOX, $fieldName, $options);
     }
 
     /**
@@ -177,14 +189,14 @@ class FormHelper
     /**
      * Builds the start of inputs(inputs/textareas).
      * @param string $classification It can be either input/textarea.
-     * @param string $fieldName
+     * @param string|null $fieldName
      * @param array $options
      * @return string
      */
     private function __buildInput(
-        #[ExpectedValues([self::INPUT, self::TEXTAREA])]
+        #[ExpectedValues([self::INPUT, self::TEXTAREA, self::CHECKBOX])]
         string $classification,
-        string $fieldName,
+        ?string $fieldName,
         array $options
     ): string
     {
@@ -192,7 +204,7 @@ class FormHelper
         $id = null;
         $errors = null;
         $value = null;
-        if (!empty($this->entity) && $this->entity instanceof Entity) {
+        if (!empty($this->entity) && $this->entity instanceof Entity && $fieldName !== null) {
             $errors = $this->__getEntityErrors($fieldName);
             if (empty($errors)) {
                 $value = $this->__getEntityValue($fieldName);
@@ -208,6 +220,10 @@ class FormHelper
             if (!empty($options['id'])) {
                 $id = $options['id'];
                 unset($options['id']);
+            }
+            if (!empty($options['name'])) {
+                $fieldName = $options['name'];
+                unset($options['name']);
             }
         }
         if (!empty($options['class'])) {
@@ -248,7 +264,7 @@ class FormHelper
                 $input .= $this->__setAttributes($options);
             }
             $input .= '/>';
-        } else {
+        } elseif ($classification === self::TEXTAREA) {
             $input .= "<textarea id='$id' class='$class' ";
             $input .= "name='$fieldName' ";
             if (!empty($options)) {
@@ -259,6 +275,33 @@ class FormHelper
                 $input .= $value;
             }
             $input .= '</textarea>';
+        } elseif ($classification === self::CHECKBOX) {
+            $input .= "<input type='checkbox' class='$class' ";
+            if (!empty($options['value'])) {
+                $id .= $options['value'];
+            }
+            if (!empty($id)) {
+                $input .= "id='$id' ";
+            }
+            $label = sprintf(
+                '<label class="%s" for="%s">%s</label>',
+                $options['label']['class'], $id, $options['label']['text']
+            );
+            unset($options['label']);
+            if (!empty($options['value'])) {
+                $input .= "name='{$fieldName}[{$options['value']}]' ";
+            } else {
+                $input .= "name='$fieldName' ";
+            }
+            if (!empty($options)) {
+                $input .= $this->__setAttributes($options);
+            }
+            if (!empty($options['value'])) {
+                $input .= "value='{$options['value']}' ";
+                unset($options['value']);
+            }
+            $input .= '/>';
+            $input .= $label;
         }
         $input .= $displayErrors ?? null;
         $input .= '</div>';

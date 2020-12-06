@@ -27,9 +27,8 @@ abstract class AbstractRepository
     public function __construct()
     {
         $this->table = $this->getTable();
-        $this->validator = new Validator;
         $this->QueryBuilder = new QueryBuilder($this->getTable());
-        $this->validator = new Validator;
+        $this->validator = new Validator($this);
         $this->validations();
     }
 

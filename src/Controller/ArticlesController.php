@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Core\Exception\MethodNotAllowedException;
+use App\Core\Network\Request;
 use App\Entity\Article;
 use App\Component\UploadComponent;
 use App\Repository\ArticleBookmarksRepo;
@@ -50,15 +51,25 @@ class ArticlesController extends AbstractController
     #[NoReturn]
     public function write(): void
     {
-        $this->loadRepo('articles');
-        $this->loadRepo('tags');
-        $this->loadRepo('articleTags');
-        $Article = new Article;
-        $tags = $this->TagsRepo->findAll();
-        $this->render('articles/write', [
-            'Article' => $Article,
-            'tags' => $tags,
-        ]);
+        if (!empty($this->auth->user)) {
+            $this->loadRepo('articles');
+            $this->loadRepo('tags');
+            $this->loadRepo('articleTags');
+            $Article = new Article($this->auth->user('id'));
+            $tags = $this->TagsRepo->findAll();
+            if ($this->request->is('post')) {
+                // TODO: try to create a 'saveAssociated', we'll add the tags into the article entity or request data
+                // then check for them when we save and use another entity in the saveAssociated method.
+                var_dump($this->ArticlesRepo->save($Article)); die;
+            }
+            $this->render('articles/write', [
+                'Article' => $Article,
+                'tags' => $tags,
+            ]);
+        } else {
+            $this->notifyError('You must be logged in in order to be able to write articles');
+            $this->redirect(['path' => Request::ROOT]);
+        }
     }
 
     /**

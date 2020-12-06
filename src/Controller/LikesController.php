@@ -23,12 +23,10 @@ class LikesController extends AbstractController
         $response = false;
         $errors[] = 'Something went wrong';
         if (!empty($this->auth->user)) {
-            $articleId = (int)$this->request->data['article_id'];
-            $data['data']['ArticleLike']['article_id'] = $articleId;
-            $data['data']['ArticleLike']['liked_by'] = (int)$this->auth->user('id');
+            $articleId = (int)$this->request->data('ArticleLike')['article_id'];
             $this->loadRepo('articleLikes');
             if (!$this->ArticleLikesRepo->exists(['article_id' => $articleId])) {
-                $ArticleLike = new ArticleLike;
+                $ArticleLike = new ArticleLike($this->auth->user('id'));
                 if ($this->ArticleLikesRepo->save($ArticleLike)) {
                     $response = true;
                     $errors = [];
@@ -52,7 +50,7 @@ class LikesController extends AbstractController
         $response = false;
         $errors[] = 'Something went wrong';
         if (!empty($this->auth->user)) {
-            $articleId = (int)$this->request->data['article_id'];
+            $articleId = (int)$this->request->data('ArticleLike')['article_id'];
             $this->loadRepo('articleLikes');
             $articleLikeId = $this->ArticleLikesRepo->exists(['article_id' => $articleId]);
             if ($articleLikeId) {

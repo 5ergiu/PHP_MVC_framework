@@ -8,7 +8,10 @@ namespace App\Entity;
 class ArticleBookmark extends AbstractEntity
 {
     private int $articleId;
-    private int $bookmarkedBy;
+
+    public function __construct(
+        private int $bookmarkedBy
+    ) {}
 
     /**
      * @return int
@@ -32,13 +35,5 @@ class ArticleBookmark extends AbstractEntity
     public function getBookmarkedBy(): int
     {
         return $this->bookmarkedBy;
-    }
-
-    /**
-     * @param int $userId
-     */
-    public function setBookmarkedBy(int $userId): void
-    {
-        $this->bookmarkedBy = $userId;
     }
 }

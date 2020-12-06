@@ -54,7 +54,7 @@ class AuthController extends AbstractController
     public function logout(): void
     {
         $this->methodsAllowed(['post']);
-        if (!empty($this->auth->user())) {
+        if (!empty($this->auth->user)) {
             $this->auth->logout();
             $this->notifySuccess('Successfully logged out');
             $this->redirect(['path' => Request::ROOT]);

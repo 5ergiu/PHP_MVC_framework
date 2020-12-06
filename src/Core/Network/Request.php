@@ -102,4 +102,13 @@ class Request
             }
         }
     }
+
+    /**
+     * @param string|int $key
+     * @return mixed
+     */
+    public function data(string|int $key): mixed
+    {
+        return !empty($this->data['data'][$key]) ? $this->data['data'][$key] : false;
+    }
 }

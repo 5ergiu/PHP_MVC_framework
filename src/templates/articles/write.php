@@ -39,21 +39,19 @@ $this->includeCss(['articles']);
                 'placeholder' => 'New article title here...',
             ]);
         ?>
-        <div class="write__tags">
+        <div class="write__tags" id="js-tags">
             <p>Tag your article:</p>
-            <?php foreach ($tags as $key => $tag) : ?>
-                <div class="write__tags_input">
-                    <input
-                        type="checkbox"
-                        value="<?= $tag['id']; ?>"
-                        name="tags[<?= $key ;?>]"
-                        title="<?= $tag['description']; ?>"
-                    />
-                    <label class="tag <?= "tag--{$tag['name']}"; ?>">
-                        #<?= $tag['name']; ?>
-                    </label>
-                </div>
-            <?php endforeach; ?>
+            <?php foreach ($tags as $key => $tag) {
+                echo $this->form->checkbox(null, [
+                   'value' => $tag['id'],
+                   'name' => 'tags',
+                   'id' => 'tags',
+                   'label' => [
+                       'class' => "tag tag--{$tag['name']}",
+                       'text' => "#{$tag['name']}",
+                   ],
+                ]);
+            } ?>
         </div>
         <?php
             echo $this->form->textarea('content', [
@@ -61,6 +59,11 @@ $this->includeCss(['articles']);
                 'class' => 'write__textarea',
                 'rows' => '10',
                 'placeholder' => 'Write your article here...',
+            ]);
+            echo $this->form->input('status', [
+                'id' => 'js-status',
+                'type' => 'hidden',
+                'value' => 'review',
             ]);
             echo $this->form->end();
         ?>
@@ -76,14 +79,7 @@ $this->includeCss(['articles']);
                 <div class="article__title" id="js-article-title">
                     Your article's title
                 </div>
-                <div class="article__tags">
-<!--                    <a class="tag" href="/tags/needtomodifyandaddtag">-->
-<!--                        <span>#</span>needtomodifyandaddtag-->
-<!--                    </a> -->
-                    <a class="tag" href="#">
-                        <span>#</span>tags
-                    </a>
-                </div>
+                <div class="article__tags" id="js-article-tags"></div>
                 <div class="article__content" id="js-article-content">
                     Your article's content
                 </div>
@@ -91,7 +87,7 @@ $this->includeCss(['articles']);
         </article>
     </div>
     <div class="write__buttons">
-        <button class="button" type="submit">Submit for review</button>
-        <button id="js-button-draft" class="button button--secondary" type="submit">Save draft</button>
+        <button class="button" id="js-button-review" type="submit">Submit for review</button>
+        <button class="button button--secondary" id="js-button-draft" type="submit">Save draft</button>
     </div>
 </section>

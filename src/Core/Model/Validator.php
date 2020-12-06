@@ -2,17 +2,23 @@
 namespace App\Core\Model;
 
 use App\Entity\AbstractEntity as Entity;
+use App\Repository\AbstractRepository as Repo;
 
 /**
  * Builds custom validations based on the rules sent by an entity,
  * checks them and sets the errors on the entity if needed.
  * @property array $rules An array of rules.
  * @property Entity $entity
+ * @property Repo $repo
  */
 class Validator
 {
     private array $rules = [];
     private Entity $entity;
+
+    public function __construct(
+       private Repo $repo
+    ) {}
 
     /**
      * Adds validations to the rules.
@@ -53,7 +59,7 @@ class Validator
                             }
                         } else {
                             if (method_exists($this->entity, $rule)) {
-                                $this->entity->{$rule}($this->entity->{$funcName}(), $field, $rule, $details['message']);
+                                $this->repo->{$rule}($this->entity->{$funcName}(), $field, $rule, $details['message']);
                             }
                         }
                     }

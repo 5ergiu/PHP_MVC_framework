@@ -3,12 +3,15 @@ namespace App\Entity;
 
 /**
  * @property int $articleId
- * @propery int $likedBy
+ * @property int $likedBy
  */
 class ArticleLike extends AbstractEntity
 {
     private int $articleId;
-    private int $likedBy;
+
+    public function __construct(
+        private int $likedBy
+    ) {}
 
     /**
      * @return int
@@ -32,13 +35,5 @@ class ArticleLike extends AbstractEntity
     public function getLikedBy(): int
     {
         return $this->likedBy;
-    }
-
-    /**
-     * @param int $likedBy
-     */
-    public function setLikedBy(int $likedBy): void
-    {
-        $this->likedBy = $likedBy;
     }
 }
