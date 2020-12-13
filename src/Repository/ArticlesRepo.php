@@ -196,4 +196,12 @@ class ArticlesRepo extends AbstractRepository
         }
         return $article;
     }
+
+    /**
+     * @inheritDoc
+     */
+    protected function afterSave(int $lastInsertedId)
+    {
+
+    }
 }

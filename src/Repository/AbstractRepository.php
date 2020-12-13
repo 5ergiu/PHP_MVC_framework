@@ -88,13 +88,15 @@ abstract class AbstractRepository
     public function patchEntity(Entity $entity): void
     {
         $entityName = $entity->getEntityName();
-        $entityData = $this->context['data'][$entityName];
-        foreach ($entityData as $field => $input) {
-            $field = str_replace('_', '', lcfirst(ucwords($field, '_')));
-            if (property_exists($entity, $field)) {
-                $funcName = 'set' . ucwords($field);
-                if (method_exists($entity, $funcName)) {
-                    $entity->{$funcName}($input);
+        $entityData = $this->context['data'][$entityName] ?? null;
+        if ($entityData !== null) {
+            foreach ($entityData as $field => $input) {
+                $field = str_replace('_', '', lcfirst(ucwords($field, '_')));
+                if (property_exists($entity, $field)) {
+                    $funcName = 'set' . ucwords($field);
+                    if (method_exists($entity, $funcName)) {
+                        $entity->{$funcName}($input);
+                    }
                 }
             }
         }
@@ -111,11 +113,19 @@ abstract class AbstractRepository
         $this->patchEntity($entity);
         $this->validator->validate($entity);
         if (empty($entity->errors)) {
-            return $this->QueryBuilder->getLastInsertedId($entity);
+            $lastInsertedId = $this->QueryBuilder->getLastInsertedId($entity);
+            $this->afterSave($lastInsertedId);
+            return $lastInsertedId;
         } else {
             return false;
         }
     }
+
+    /**
+     * Method called after save.
+     * @param int $lastInsertedId
+     */
+    protected function afterSave(int $lastInsertedId) {}
 
     /**
      * Deletes a record from the database.
@@ -189,5 +199,30 @@ abstract class AbstractRepository
             ->getQuery()
             ->getResults()
         ;
+    }
+
+    /**
+     * Get a specific result from a row.
+     * @param string $column
+     * @param int $id
+     * @return mixed
+     * @throws Exception
+     */
+    public function get(string $column, int $id): mixed
+    {
+        $result = $this->findById($id);
+        if (!empty($result)) {
+            return $result[$column] ?? false;
+        }
+        return false;
+    }
+
+    /**
+     * Updates a record in the database.
+     * @return mixed
+     */
+    public function update(): mixed
+    {
+
     }
 }

@@ -5,9 +5,11 @@ use App\Core\Exception\MethodNotAllowedException;
 use App\Core\Network\Request;
 use App\Entity\Article;
 use App\Component\UploadComponent;
+use App\Entity\ArticleTag;
 use App\Repository\ArticleBookmarksRepo;
 use App\Repository\ArticleLikesRepo;
 use App\Repository\ArticlesRepo;
+use App\Repository\ArticleTagsRepo;
 use App\Repository\TagsRepo;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
@@ -16,6 +18,7 @@ use JetBrains\PhpStorm\NoReturn;
  * @property ArticlesRepo $ArticlesRepo
  * @property ArticleLikesRepo $ArticleLikesRepo
  * @property ArticleBookmarksRepo $ArticleBookmarksRepo
+ * @property ArticleTagsRepo $ArticleTagsRepo
  * @property TagsRepo $TagsRepo
  */
 class ArticlesController extends AbstractController
@@ -58,9 +61,32 @@ class ArticlesController extends AbstractController
             $Article = new Article($this->auth->user('id'));
             $tags = $this->TagsRepo->findAll();
             if ($this->request->is('post')) {
-                // TODO: try to create a 'saveAssociated', we'll add the tags into the article entity or request data
-                // then check for them when we save and use another entity in the saveAssociated method.
-                var_dump($this->ArticlesRepo->save($Article)); die;
+                $articleId = $this->ArticlesRepo->save($Article);
+                $articleTags = $this->request->data['tags'];
+                if ($articleId) {
+                    $articleCover = $this->ArticlesRepo->get('cover', $articleId);
+                    var_dump($articleCover);
+                    $this->__deleteAllTempFiles();
+                    $articleTagsErrors = true;
+                    if (!empty($tags)) {
+                        foreach ($articleTags as $articleTagId) {
+                            $ArticleTag = new ArticleTag($articleId, $articleTagId);
+                            if ($this->ArticleTagsRepo->save($ArticleTag)) {
+                                $articleTagsErrors = false;
+                            } else {
+                                $articleTagsErrors = true;
+                            }
+                        }
+                        if ($articleTagsErrors) {
+                            $this->ArticlesRepo->delete($articleId);
+                            $this->notifyError('Article tags have\'nt been saved, please try again.');
+                        } else {
+                            $this->notifySuccess('Article successfully saved and submitted to review.');
+                        }
+                    }
+                } else {
+                    $this->notifyError('Article hasn\'nt been saved, please try again.');
+                }
             }
             $this->render('articles/write', [
                 'Article' => $Article,
@@ -127,5 +153,15 @@ class ArticlesController extends AbstractController
             $errors['message'] = "$file cannot be deleted due to an error";
         }
         $this->newJsonResponse($response, $errors);
+    }
+
+    /**
+     * Deletes all temp files stored.
+     * @return void
+     */
+    private function __deleteAllTempFiles(): void
+    {
+        $filesToDelete = scandir(UPLOADS);
+        var_dump($filesToDelete); die;
     }
 }
