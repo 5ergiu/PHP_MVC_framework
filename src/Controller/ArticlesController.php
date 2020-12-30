@@ -64,11 +64,8 @@ class ArticlesController extends AbstractController
                 $articleId = $this->ArticlesRepo->save($Article);
                 $articleTags = $this->request->data['tags'];
                 if ($articleId) {
-                    $articleCover = $this->ArticlesRepo->get('cover', $articleId);
-                    var_dump($articleCover);
-                    $this->__deleteAllTempFiles();
                     $articleTagsErrors = true;
-                    if (!empty($tags)) {
+                    if (!empty($articleTags)) {
                         foreach ($articleTags as $articleTagId) {
                             $ArticleTag = new ArticleTag($articleId, $articleTagId);
                             if ($this->ArticleTagsRepo->save($ArticleTag)) {
