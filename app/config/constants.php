@@ -1,7 +1,7 @@
 <?php
 
 // The server/domain name
-define('HOST', 'http://blog-project.local');
+define('HOST', 'http://blog.local');
 // Assets paths used in frontend
 define('ASSETS_CSS', HOST . '/css/');
 define('ASSETS_JS', HOST . '/js/');

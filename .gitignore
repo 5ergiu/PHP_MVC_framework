@@ -1,12 +1,12 @@
 # framework
-/vendor/
+app/vendor/
 
 # phpstorm
-/.idea
+.idea/
 
 # JS
-/node_modules/
+app/node_modules/
 
 # ENV
-/.env
+.env
 
