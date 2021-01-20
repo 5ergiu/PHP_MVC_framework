@@ -1,60 +1,19 @@
-version: "3.7"
+version: "3.9"
 services:
-  blog_app:
+  blog-app:
     build:
-      args:
-        user: sammy
-        uid: 1000
       context: ./
       dockerfile: Dockerfile
-    image: blog_app
-    container_name: blog_app
-    restart: unless-stopped
-    working_dir: /var/www/blog
-    volumes:
-      - ./app:/var/www/blog
-    depends_on:
-      - blog_db  
-    networks:
-      - blog_network
-
-  blog_db:
-    image: mysql:8
-    container_name: blog_db
-    restart: unless-stopped
-    env_file:
-      - ./app/.env
-    environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_ROOT_PASSWORD: ${DB_PASS}
-      MYSQL_PASSWORD: ${DB_PASS}
-      MYSQL_USER: ${DB_USER}
-      SERVICE_TAGS: dev
-      SERVICE_NAME: blog_db
-    volumes:
-      - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
-      - mysqldata:/var/lib/mysql
-    networks:
-      - blog_network
-
-  blog_nginx:
-    image: nginx:1.19
-    container_name: blog_nginx
+    image: blog
+    container_name: blog-app
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
-      - ./app:/var/www/blog
-      - ./.docker/nginx:/etc/nginx/conf.d:ro
-    depends_on: 
-      - blog_app
+      - ./:/var/www/blog
     networks:
-      - blog_network
+      - dev-network  
 
 networks:
-  blog_network:
+  dev-network:
     driver: bridge
-
-# Volumes
-volumes:
-  mysqldata:    
