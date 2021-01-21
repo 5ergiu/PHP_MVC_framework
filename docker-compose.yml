@@ -8,11 +8,11 @@ services:
     container_name: blog-app
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "8082:80"
     volumes:
       - ./:/var/www/blog
     networks:
-      - dev-network  
+      - dev-network
 
 networks:
   dev-network:
