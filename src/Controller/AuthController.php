@@ -26,13 +26,13 @@ class AuthController extends AbstractController
         $errors = [];
         if (empty($this->auth->user)) {
             $this->loadRepo('users');
-            $user = $this->UsersRepo->findBy(['username' => $this->request->data['username']]);
+            $user = $this->UsersRepo->findBy(['username' => $this->request->query->get('username')]);
             if (!empty($user)) {
-                $authenticatedUser = $this->auth->login($user, $this->request->data['password']);
+                $authenticatedUser = $this->auth->login($user, $this->request->query->get('password'));
                 if ($authenticatedUser) {
                     $user = $authenticatedUser;
                     $this->notifySuccess('Successfully logged in');
-                    $user['redirect'] = $this->referer !== 'auth/register' ? $this->referer : Request::ROOT;
+                    $user['redirect'] = $this->referer() !== 'auth/register' ? $this->referer() : '/';
                 } else {
                     $user = null;
                     $errors['credentials'] = 'Wrong credentials';
@@ -58,10 +58,10 @@ class AuthController extends AbstractController
         if (!empty($this->auth->user)) {
             $this->auth->logout();
             $this->notifySuccess('Successfully logged out');
-            $this->redirect(['path' => Request::ROOT]);
+            $this->redirect('/');
         } else {
             $this->notifyError('You\'re not logged in');
-            $this->redirect(['path' => Request::ROOT]);
+            $this->redirect('/');
         }
     }
 
@@ -86,7 +86,7 @@ class AuthController extends AbstractController
     {
         if (!empty($this->auth->user)) {
             $this->notifyError('You\'re already logged in');
-            $this->redirect($this->referer);
+            $this->redirect($this->referer());
         }
         $User = new User;
         if ($this->request->is('post')) {
@@ -96,7 +96,7 @@ class AuthController extends AbstractController
                 $user = $this->UsersRepo->findById($userId);
                 if ($user) {
                     $this->auth->login($user, skipVerification: true);
-                    $this->redirect(['path' => Request::ROOT]);
+                    $this->redirect('/');
                 }
             }
             $this->notifyError('Something went wrong, please try again');

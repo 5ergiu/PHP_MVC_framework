@@ -8,6 +8,7 @@ use App\Repository\ArticleTagsRepo;
 use App\Repository\UsersRepo;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @property ArticlesRepo $ArticlesRepo
@@ -19,11 +20,10 @@ class HomeController extends AbstractController
 {
     /**
      * Index method.
-     * @return void
+     * @return Response
      * @throws Exception
      */
-    #[NoReturn]
-    public function index(): void
+    public function index(): Response
     {
         $this->loadRepo('articles');
         $this->loadRepo('articleLikes');
@@ -31,7 +31,7 @@ class HomeController extends AbstractController
         $this->ArticlesRepo->setSubQuery('likedByLoggedUserSubQuery', $this->ArticleLikesRepo->getLikedByLoggedUserSubQuery());
         $this->ArticlesRepo->setSubQuery('bookmarkedByLoggedUserSubQuery', $this->ArticleBookmarksRepo->getBookmarkedByLoggedUserSubQuery());
         $articles = $this->ArticlesRepo->getApprovedArticlesByUser();
-        $this->render('home/index', [
+        return $this->render('home/index', [
             'articles' => $articles,
         ]);
     }

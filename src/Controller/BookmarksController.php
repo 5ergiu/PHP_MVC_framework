@@ -23,7 +23,7 @@ class BookmarksController extends AbstractController
         $response = false;
         $errors[] = 'Something went wrong';
         if (!empty($this->auth->user)) {
-            $articleId = (int)$this->request->data('ArticleBookmark')['article_id'];
+            $articleId = (int)$this->request->query->get('ArticleBookmark')['article_id'];
             $this->loadRepo('articleBookmarks');
             if (!$this->ArticleBookmarksRepo->exists(['article_id' => $articleId])) {
                 $ArticleBookmark = new ArticleBookmark($this->auth->user('id'));
@@ -50,7 +50,7 @@ class BookmarksController extends AbstractController
         $response = false;
         $errors[] = 'Something went wrong';
         if (!empty($this->auth->user)) {
-            $articleId = (int)$this->request->data('ArticleBookmark')['article_id'];
+            $articleId = (int)$this->request->query->get('ArticleBookmark')['article_id'];
             $this->loadRepo('articleBookmarks');
             $articleBookmarkId = $this->ArticleBookmarksRepo->exists(['article_id' => $articleId]);
             if ($articleBookmarkId) {

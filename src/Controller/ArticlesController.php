@@ -2,7 +2,6 @@
 namespace App\Controller;
 
 use App\Core\Exception\MethodNotAllowedException;
-use App\Core\Network\Request;
 use App\Entity\Article;
 use App\Component\UploadComponent;
 use App\Entity\ArticleTag;
@@ -13,6 +12,7 @@ use App\Repository\ArticleTagsRepo;
 use App\Repository\TagsRepo;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @property ArticlesRepo $ArticlesRepo
@@ -26,11 +26,11 @@ class ArticlesController extends AbstractController
     /**
      * Read a specific article
      * @param string $slug The article's slug.
-     * @return void
+     * @return Response
      * @throws Exception
      */
     #[NoReturn]
-    public function read(string $slug): void
+    public function read(string $slug): Response
     {
         $this->loadRepo('articles');
         $this->loadRepo('articleLikes');
@@ -41,18 +41,18 @@ class ArticlesController extends AbstractController
         $suggestions = $this->ArticlesRepo->getRandomArticlesByAuthor($article['author_id'], $slug);
         $article['suggestions'] = $suggestions;
         $article['content'] = $this->markdown->parse($article['content']);
-        $this->render('articles/read', [
+        return $this->render('articles/read', [
             'article' => $article,
         ]);
     }
 
     /**
      * Saves a new article.
-     * @return void
+     * @return Response
      * @throws Exception
      */
     #[NoReturn]
-    public function write(): void
+    public function write(): Response
     {
         if (!empty($this->auth->user)) {
             $this->loadRepo('articles');
@@ -62,7 +62,7 @@ class ArticlesController extends AbstractController
             $tags = $this->TagsRepo->findAll();
             if ($this->request->is('post')) {
                 $articleId = $this->ArticlesRepo->save($Article);
-                $articleTags = $this->request->data['tags'];
+                $articleTags = $this->request->query->get('tags');
                 if ($articleId) {
                     $articleTagsErrors = true;
                     if (!empty($articleTags)) {
@@ -85,13 +85,13 @@ class ArticlesController extends AbstractController
                     $this->notifyError('Article hasn\'nt been saved, please try again.');
                 }
             }
-            $this->render('articles/write', [
+            return $this->render('articles/write', [
                 'Article' => $Article,
                 'tags' => $tags,
             ]);
         } else {
             $this->notifyError('You must be logged in in order to be able to write articles');
-            $this->redirect(['path' => Request::ROOT]);
+            $this->redirect('/');
         }
     }
 
@@ -105,7 +105,7 @@ class ArticlesController extends AbstractController
     public function preview(): void
     {
         $this->methodsAllowed(['post']);
-        $this->newJsonResponse($this->markdown->parse($this->request->data['content']));
+        $this->newJsonResponse($this->markdown->parse($this->request->query->get('content')));
 
     }
 
@@ -143,8 +143,8 @@ class ArticlesController extends AbstractController
         $this->methodsAllowed(['post']);
         $response = false;
         $errors = [];
-        $file = $this->request->data['cover'];
-        if (unlink(UPLOADS . $this->request->data['cover'])) {
+        $file = $this->request->query->get('cover');
+        if (unlink(UPLOADS . $this->request->query->get('cover'))) {
             $response = true;
         } else {
             $errors['message'] = "$file cannot be deleted due to an error";

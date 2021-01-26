@@ -18,6 +18,11 @@
         "ext-pdo": "*",
         "ext-json": "*",
         "vlucas/phpdotenv": "^5.2",
-        "cebe/markdown": "~1.2.0"
+        "cebe/markdown": "~1.2.0",
+        "symfony/routing": "^5.2",
+        "symfony/yaml": "^5.2",
+        "symfony/config": "^5.2",
+        "symfony/http-foundation": "^5.2",
+        "doctrine/orm": "^2.8"
     }
 }

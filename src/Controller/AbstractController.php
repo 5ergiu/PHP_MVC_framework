@@ -4,29 +4,30 @@ namespace App\Controller;
 use App\Component\Auth;
 use App\Component\Session;
 use App\Core\Exception\MethodNotAllowedException;
-use App\Core\Network\Router;
 use App\Core\View;
 use App\Component\Log;
-use App\Core\Network\Request;
-use App\Core\Network\Response;
 use App\Component\MarkdownComponent;
 use JetBrains\PhpStorm\NoReturn;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
+ * @property array $data Request data.
  * @property Session $session
  * @property Request $request
- * @property array $referer
- * @property Response $response
  * @property Auth $auth
  * @property MarkdownComponent $markdown
  * @property Log $log
+ * @property string $referer
  * The framework's main controller which will be extended by all the app's controllers.
  */
 abstract class AbstractController
 {
+
     public Request $request;
+    public array $data;
     protected Session $session;
-    protected array $referer;
     protected Auth $auth;
     protected MarkdownComponent $markdown;
     protected Log $log;
@@ -37,8 +38,6 @@ abstract class AbstractController
         $this->auth = new Auth($this->session);
         $this->markdown = new MarkdownComponent;
         $this->log = new Log;
-        $this->referer = $this->__buildReferer();
-        $this->response = new Response;
     }
 
     /**
@@ -46,40 +45,29 @@ abstract class AbstractController
      * @param string $viewPath    The path of the view.
      * @param array $variables    The variables that will be used in the view.
      * @param string|null $layout The name of the layout.
-     * @return void
+     * @return Response
      */
     #[NoReturn]
-    protected function render(string $viewPath, array $variables = [], ?string $layout = null): void
+    protected function render(string $viewPath, array $variables = [], ?string $layout = null): Response
     {
         $View = new View(
-            $this->request->data,
+            $this->request->query->all(),
             $this->auth->user(),
             $this->__getNotification(),
             $viewPath,
             $variables,
             $layout
         );
-        $this->response->body($View->getView());
-        $this->response->send();
+        return new Response($View->getView());
     }
 
     /**
-     * Echo a json response.
-     * @param mixed $response The controller's response.
-     * @param array $errors
-     * @return void
+     * Returns the referer or null.
+     * @return string|null
      */
-    #[NoReturn]
-    protected function newJsonResponse(mixed $response, array $errors = []): void
+    protected function referer(): ?string
     {
-        $result['response'] = $response;
-        if (!empty($errors)) {
-            $result['errors'] = $errors;
-        }
-        $result = json_encode($result, JSON_PRETTY_PRINT);
-        $this->response->contentType('json');
-        $this->response->body($result);
-        $this->response->send();
+        return $this->request->headers->get('referer') ?? '/';
     }
 
     /**
@@ -93,7 +81,7 @@ abstract class AbstractController
         foreach ($methods as $key => $value) {
             $methods[$key] = strtoupper($value);
         }
-        if (!in_array($this->request->method, $methods)) {
+        if (!in_array($this->request->getMethod(), $methods)) {
             throw new MethodNotAllowedException;
         } else {
             return true;
@@ -102,14 +90,13 @@ abstract class AbstractController
 
     /**
      * Redirect to a location.
-     * @param array $url Url options.
-     * @return void
+     * @param string $url
+     * @return Response
      */
     #[NoReturn]
-    protected function redirect(array $url): void
+    protected function redirect(string $url): Response
     {
-        $this->response->location(Router::url($url, true));
-        $this->response->send();
+        return new RedirectResponse($url);
     }
 
     /**
@@ -122,7 +109,7 @@ abstract class AbstractController
         $repo = ucwords($repo) . 'Repo';
         $repoClass = 'App\Repository\\' . $repo;
         $this->{$repo} = new $repoClass;
-        $this->{$repo}->context = $this->request->data;
+        $this->{$repo}->context = $this->request->query->all();
         $this->{$repo}->userId = $this->auth->user('id');
     }
 
@@ -136,37 +123,6 @@ abstract class AbstractController
         $component = ucwords($component);
         $componentClass = 'App\Component\\' . $component;
         $this->{$component} = new $componentClass;
-    }
-
-    /**
-     * TODO: add more security to this
-     * TODO: ERROR - when on register, if you log in, the referer isn't properly built, resulting in: 'auth/auth/register'
-     * Builds the referer.
-     * @return array
-     */
-    private function __buildReferer(): array
-    {
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            $path = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_PATH);
-            if ($path !== Request::ROOT) {
-                $path = ltrim($path, '/');
-                $path = explode('/', $path);
-                $url['path'] = "$path[0]/$path[1]";
-                unset($path[0], $path[1]);
-                if (!empty($path)) {
-                    $url['params'] = array_values($path);
-                }
-            } else {
-                $url['path'] = Request::ROOT;
-            }
-            $queryParams = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY);
-            if (!empty($queryParams)) {
-                $url['?'] = $queryParams;
-            }
-        } else {
-            $url['path'] = Request::ROOT;
-        }
-        return $url;
     }
 
     /**

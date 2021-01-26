@@ -26,7 +26,6 @@ use PDOStatement;
  */
 class QueryBuilder extends Query
 {
-    private string $table;
     private PDO $pdo;
     private array $attributes;
     private string $alias;
@@ -45,9 +44,9 @@ class QueryBuilder extends Query
      * @param string $table
      * @throws Exception
      */
-    public function __construct(string $table)
-    {
-        $this->table = $table;
+    public function __construct(
+        private string $table
+    ) {
         $this->pdo = $this->__connect();
         $this->__setAttributesFromDatabaseSchema();
     }

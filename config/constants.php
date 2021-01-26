@@ -2,6 +2,8 @@
 
 // The server/domain name
 define('HOST', 'http://blog.local:8082');
+// App directory path
+define('APP_ROOT', dirname(__DIR__));
 // Assets paths used in frontend
 define('ASSETS_CSS', HOST . '/css/');
 define('ASSETS_JS', HOST . '/js/');
@@ -26,7 +28,3 @@ define('DEFAULT_LAYOUT', 'base.php');
 define('LOGS', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/var/logs/'));
 // Config directory path
 define('CONFIG', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/config/'));
-// Default controller
-define('DEFAULT_CONTROLLER', '\App\Controller\HomeController');
-// Default method
-define('DEFAULT_ACTION', 'index');
