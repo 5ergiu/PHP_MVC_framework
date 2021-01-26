@@ -4,6 +4,7 @@ namespace App;
 
 use App\Core\Model\DoctrineEntityManager;
 use App\Core\Routing\Router;
+use Doctrine\DBAL\Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -47,6 +48,7 @@ class Kernel
      * Handles a Request to convert it to a Response.
      * @param Request $request The Request instance.
      * @return Response A Response instance.
+     * @throws Exception
      */
     public function handle(Request $request): Response
     {
