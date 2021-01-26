@@ -5,16 +5,19 @@ use App\Repository\ArticleBookmarksRepo;
 use App\Repository\ArticleLikesRepo;
 use App\Repository\ArticlesRepo;
 use App\Repository\ArticleTagsRepo;
+use App\Repository\UserRepository;
 use App\Repository\UsersRepo;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @property ArticlesRepo $ArticlesRepo
- * @property ArticleLikesRepo $ArticleLikesRepo
- * @property ArticleBookmarksRepo $ArticleBookmarksRepo
- * @property ArticleTagsRepo $ArticleTagsRepo
+// * @property ArticlesRepo $ArticlesRepo
+// * @property ArticleLikesRepo $ArticleLikesRepo
+// * @property ArticleBookmarksRepo $ArticleBookmarksRepo
+// * @property ArticleTagsRepo $ArticleTagsRepo
+ * @property UserRepository $UserRepo
  */
 class HomeController extends AbstractController
 {
@@ -23,16 +26,19 @@ class HomeController extends AbstractController
      * @return Response
      * @throws Exception
      */
+    #[Route('/', name: 'home')]
     public function index(): Response
     {
-        $this->loadRepo('articles');
-        $this->loadRepo('articleLikes');
-        $this->loadRepo('articleBookmarks');
-        $this->ArticlesRepo->setSubQuery('likedByLoggedUserSubQuery', $this->ArticleLikesRepo->getLikedByLoggedUserSubQuery());
-        $this->ArticlesRepo->setSubQuery('bookmarkedByLoggedUserSubQuery', $this->ArticleBookmarksRepo->getBookmarkedByLoggedUserSubQuery());
-        $articles = $this->ArticlesRepo->getApprovedArticlesByUser();
-        return $this->render('home/index', [
-            'articles' => $articles,
-        ]);
+        $this->loadRepo('user');
+        var_dump($this->UserRepo->find(1)); die;
+//        $this->loadRepo('articles');
+//        $this->loadRepo('articleLikes');
+//        $this->loadRepo('articleBookmarks');
+//        $this->ArticlesRepo->setSubQuery('likedByLoggedUserSubQuery', $this->ArticleLikesRepo->getLikedByLoggedUserSubQuery());
+//        $this->ArticlesRepo->setSubQuery('bookmarkedByLoggedUserSubQuery', $this->ArticleBookmarksRepo->getBookmarkedByLoggedUserSubQuery());
+//        $articles = $this->ArticlesRepo->getApprovedArticlesByUser();
+//        return $this->render('home/index', [
+//            'articles' => $articles,
+//        ]);
     }
 }

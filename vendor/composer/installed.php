@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '405b69cb89a8b5aabd4de28c1cbc6872c69aaa55',
+    'reference' => 'aacb0298ce2f2a8f766f4a162a2c963a3585e887',
     'name' => 'bucegos/php_mvc_framework',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '405b69cb89a8b5aabd4de28c1cbc6872c69aaa55',
+      'reference' => 'aacb0298ce2f2a8f766f4a162a2c963a3585e887',
     ),
     'cebe/markdown' => 
     array (

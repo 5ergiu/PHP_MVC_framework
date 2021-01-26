@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App\Component\Log;
-use App\Core\Router;
+use App\Core\Model\DoctrineEntityManager;
+use App\Core\Routing\Router;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -28,7 +28,7 @@ class Kernel
         private bool $debug,
     ) {
         $this->__init();
-        Log::httpRequests();
+//        Log::httpRequests();
     }
 
     /**
@@ -50,7 +50,8 @@ class Kernel
      */
     public function handle(Request $request): Response
     {
-        $router = new Router($request);
+        $em = (new DoctrineEntityManager)->getEntityManager();
+        $router = new Router($request, $em);
         return $router->resolve();
     }
 

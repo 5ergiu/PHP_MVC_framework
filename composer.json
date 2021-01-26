@@ -23,6 +23,7 @@
         "symfony/yaml": "^5.2",
         "symfony/config": "^5.2",
         "symfony/http-foundation": "^5.2",
-        "doctrine/orm": "^2.8"
+        "doctrine/orm": "^2.8",
+        "doctrine/annotations": "^1.11"
     }
 }

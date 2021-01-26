@@ -7,6 +7,7 @@ use App\Core\Exception\MethodNotAllowedException;
 use App\Core\View;
 use App\Component\Log;
 use App\Component\MarkdownComponent;
+use Doctrine\ORM\EntityManager;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @property MarkdownComponent $markdown
  * @property Log $log
  * @property string $referer
+ * @property EntityManager $em The Entity Manager instance.
  * The framework's main controller which will be extended by all the app's controllers.
  */
 abstract class AbstractController
@@ -31,6 +33,7 @@ abstract class AbstractController
     protected Auth $auth;
     protected MarkdownComponent $markdown;
     protected Log $log;
+    public EntityManager $em;
 
     public function __construct()
     {
@@ -101,16 +104,20 @@ abstract class AbstractController
 
     /**
      * Creates a new property of a repository instance on the current controller instance.
-     * @param string $repo
+     * @param string entity
      * @return void
      */
-    protected function loadRepo(string $repo): void
+    protected function loadRepo(string $entity): void
     {
-        $repo = ucwords($repo) . 'Repo';
-        $repoClass = 'App\Repository\\' . $repo;
-        $this->{$repo} = new $repoClass;
-        $this->{$repo}->context = $this->request->query->all();
-        $this->{$repo}->userId = $this->auth->user('id');
+        $entity = ucwords($entity);
+        $entityClass = "App\Entity\\$entity";
+        $repo = $entity . 'Repo';
+        $this->{$repo} = $this->em->getRepository($entityClass);
+//        $repo = ucwords($repo) . 'Repo';
+//        $repoClass = 'App\Repository\\' . $repo;
+//        $this->{$repo} = new $repoClass;
+//        $this->{$repo}->context = $this->request->query->all();
+//        $this->{$repo}->userId = $this->auth->user('id');
     }
 
     /**

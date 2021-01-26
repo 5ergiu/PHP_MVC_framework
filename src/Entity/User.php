@@ -1,26 +1,77 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
+ * @property int $id
  * @property string $username
  * @property string $email
- * @property string $role    User's role('user' by default).
+ * @property string $role    User's role('User' by default).
  * @property string $password
  * @property string $image   User's profile picture.
  * @property string $summary User's profile small description.
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table(name="user")
  */
 class User extends AbstractEntity
 {
-    private string $username;
-    private string $email;
-    private string $role = self::ROLE_USER;
-    private string $password;
-    private string $image = 'guest.svg';
-    private string $summary;
-
     public const ROLE_ADMIN = 'Admin';
     public const ROLE_USER = 'User';
     public const ROLE_AUTHOR = 'Author';
+
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private int $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $username;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $email;
+
+    /**
+     * @ORM\Column(type="enumroletype")
+     */
+    private string $role = self::ROLE_USER;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $password;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $image = 'guest.svg';
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private string $summary;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return string

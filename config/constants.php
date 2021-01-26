@@ -17,7 +17,11 @@ define('VENDOR', HOST . '/vendor/');
 // Vendor directory path
 define('VENDOR_ROOT', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, '/vendor/'));
 // Templates directory path
-define('TEMPLATES', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'/src/templates/'));
+define('SRC', APP_ROOT . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'/src/'));
+// Entities directory path
+define('ENTITIES', SRC . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'Entity/'));
+// Templates directory path
+define('TEMPLATES', SRC . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'templates/'));
 // Layouts directory path
 define('LAYOUTS', TEMPLATES . str_replace(['/', '\\'], DIRECTORY_SEPARATOR,'layouts/'));
 // Elements directory path

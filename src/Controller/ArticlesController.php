@@ -13,6 +13,7 @@ use App\Repository\TagsRepo;
 use Exception;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @property ArticlesRepo $ArticlesRepo
@@ -23,6 +24,19 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ArticlesController extends AbstractController
 {
+
+    #[Route(
+        '/articles/test/{id}',
+        name: 'test',
+        requirements: [
+            'id' => '[0-9]+',
+        ],
+    )]
+    public function test(int $id)
+    {
+        echo 'ceva'; die;
+    }
+
     /**
      * Read a specific article
      * @param string $slug The article's slug.
