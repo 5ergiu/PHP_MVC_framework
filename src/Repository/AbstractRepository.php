@@ -29,7 +29,7 @@ abstract class AbstractRepository
         $this->table = $this->getTable();
         $this->QueryBuilder = new QueryBuilder($this->getTable());
         $this->validator = new Validator($this);
-        $this->validations();
+//        $this->validations();
     }
 
     /**
@@ -50,11 +50,11 @@ abstract class AbstractRepository
         );
     }
 
-    /**
-     * Adds validations in the Validator object.
-     * @return void;
-     */
-    abstract protected function validations(): void;
+//    /**
+//     * Adds validations in the Validator object.
+//     * @return void;
+//     */
+//    abstract protected function validations(): void;
 
     /**
      * Checks if a record exists in the database based on the provided conditions.

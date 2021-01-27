@@ -48,12 +48,10 @@ class Kernel
      * Handles a Request to convert it to a Response.
      * @param Request $request The Request instance.
      * @return Response A Response instance.
-     * @throws Exception
      */
     public function handle(Request $request): Response
     {
-        $em = (new DoctrineEntityManager)->getEntityManager();
-        $router = new Router($request, $em);
+        $router = new Router($request);
         return $router->resolve();
     }
 

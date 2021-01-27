@@ -4,9 +4,11 @@ namespace App\Controller;
 use App\Component\Auth;
 use App\Component\Session;
 use App\Core\Exception\MethodNotAllowedException;
+use App\Core\Model\DoctrineEntityManager;
 use App\Core\View;
 use App\Component\Log;
 use App\Component\MarkdownComponent;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManager;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -33,12 +35,13 @@ abstract class AbstractController
     protected Auth $auth;
     protected MarkdownComponent $markdown;
     protected Log $log;
-    public EntityManager $em;
+    protected EntityManager $em;
 
     public function __construct()
     {
         $this->session = new Session;
         $this->auth = new Auth($this->session);
+        $this->em = $this->__getEm();
         $this->markdown = new MarkdownComponent;
         $this->log = new Log;
     }
@@ -113,11 +116,6 @@ abstract class AbstractController
         $entityClass = "App\Entity\\$entity";
         $repo = $entity . 'Repo';
         $this->{$repo} = $this->em->getRepository($entityClass);
-//        $repo = ucwords($repo) . 'Repo';
-//        $repoClass = 'App\Repository\\' . $repo;
-//        $this->{$repo} = new $repoClass;
-//        $this->{$repo}->context = $this->request->query->all();
-//        $this->{$repo}->userId = $this->auth->user('id');
     }
 
     /**
@@ -170,5 +168,18 @@ abstract class AbstractController
             $this->session->delete('message');
         }
         return $notification;
+    }
+
+    /**
+     * Returns an instance of the EntityManager.
+     * @return EntityManager
+     */
+    private function __getEm(): EntityManager
+    {
+        try {
+            return (new DoctrineEntityManager)->getEntityManager();
+        } catch (Exception $e) {
+            echo $e->getMessage(); die;
+        }
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Core\Model\DBAL;
 
-class EnumRoleType extends EnumType
+class EnumUserRoleType extends EnumType
 {
-    protected string $name = 'enumroletype';
+    protected string $name = 'enumUserRoleType';
     protected array $values = ['User', 'Admin', 'Author'];
 }

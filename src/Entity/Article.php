@@ -1,8 +1,14 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToOne;
+
 /**
- * @property int $authorId       The id of the user that created the article.
+ * @property int $id
+ * @property User $author        The user that created the article.
  * @property string $title       The article's title.
  * @property $slug               The article's slug.
  * @property string $cover       The article's cover image.
@@ -13,25 +19,66 @@ namespace App\Entity;
  * - draft: Article that hasn't been submitted for review yet.
  * - approved: Article that has been submitted for review and approved.
  * - rejected: Article that has been submitted for review and was rejected.
+ * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
+ * @ORM\Table(name="articles")
  */
 class Article extends AbstractEntity
 {
-    private string $title;
-    private string $slug;
-    private string $cover;
-    private string $content;
-    private string $status = 'review';
-
-    public function __construct(
-       private int $authorId
-    ) {}
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private int $id;
 
     /**
-     * @return int
+     * @ManyToOne(targetEntity="App\Entity\User", inversedBy="articles")
+     * @JoinColumn(nullable=false)
      */
-    public function getAuthorId(): int
+    private User $author;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=false)
+     */
+    private string $title;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=false)
+     */
+    private string $slug;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private string $cover;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private string $content;
+
+    /**
+     * @ORM\Column(type="string", length=255, options={"default": "review"})
+     */
+    private string $status;
+
+    /**
+     * @return User
+     */
+    public function getAuthor(): User
     {
-        return $this->authorId;
+        return $this->author;
+    }
+
+    /**
+     * @param User $author
+     * @return $this
+     */
+    public function setAuthor(User $author): self
+    {
+        $this->author = $author;
+
+        return $this;
     }
 
     /**

@@ -1,18 +1,22 @@
 <?php
 namespace App\Entity;
 
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @property int $id
  * @property string $username
  * @property string $email
- * @property string $role    User's role('User' by default).
+ * @property string $role              User's role('User' by default).
  * @property string $password
- * @property string $image   User's profile picture.
- * @property string $summary User's profile small description.
+ * @property string $image             User's profile picture.
+ * @property string $summary           User's profile small description.
+ * @property ArrayCollection $articles The articles created by a user.
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ORM\Table(name="user")
+ * @ORM\Table(name="users")
  */
 class User extends AbstractEntity
 {
@@ -28,34 +32,49 @@ class User extends AbstractEntity
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true, nullable=false)
      */
     private string $username;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true, nullable=false)
      */
     private string $email;
 
     /**
-     * @ORM\Column(type="enumroletype")
+     * @ORM\Column(type="enumUserRoleType", options={"default": "User"})
      */
     private string $role = self::ROLE_USER;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private string $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(name="created_at", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private string $image = 'guest.svg';
+    private DateTime $joined;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, options={"default": "guest.svg"})
+     */
+    private string $image;
+
+    /**
+     * @ORM\Column(type="string", length=255, options={"default": "I prefer to stay misterious."})
      */
     private string $summary;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="author")
+     */
+    private ArrayCollection $articles;
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -167,5 +186,44 @@ class User extends AbstractEntity
     public function setSummary(string $summary): void
     {
         $this->summary = $summary;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    /**
+     * @param Article $article
+     * @return $this
+     */
+    public function addArticle(Article $article): self
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles[] = $article;
+            $article->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Article $article
+     * @return $this
+     */
+    public function removeArticle(Article $article): self
+    {
+        if ($this->articles->contains($article)) {
+            $this->articles->removeElement($article);
+            // set the owning side to null (unless already changed)
+            if ($article->getAuthor() === $this) {
+                $article->setAuthor(null);
+            }
+        }
+
+        return $this;
     }
 }
