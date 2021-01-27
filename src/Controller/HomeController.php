@@ -30,7 +30,7 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         $this->loadRepo('user');
-        var_dump($this->UserRepo->find(1)); die;
+        var_dump($this->UserRepo); die;
 //        $this->loadRepo('articles');
 //        $this->loadRepo('articleLikes');
 //        $this->loadRepo('articleBookmarks');

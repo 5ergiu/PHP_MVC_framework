@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'aacb0298ce2f2a8f766f4a162a2c963a3585e887',
+    'reference' => 'b7f6fab4159f13ed4d1b0c1fee2f7c866cb40b42',
     'name' => 'bucegos/php_mvc_framework',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'aacb0298ce2f2a8f766f4a162a2c963a3585e887',
+      'reference' => 'b7f6fab4159f13ed4d1b0c1fee2f7c866cb40b42',
     ),
     'cebe/markdown' => 
     array (
@@ -145,6 +145,15 @@
       array (
       ),
       'reference' => '7e279d2cd5d7fbb156ce46daada972355cea27bb',
+    ),
+    'kint-php/kint' => 
+    array (
+      'pretty_version' => '3.3',
+      'version' => '3.3.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '335ac1bcaf04d87df70d8aa51e8887ba2c6d203b',
     ),
     'ocramius/package-versions' => 
     array (

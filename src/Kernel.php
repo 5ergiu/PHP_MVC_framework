@@ -81,6 +81,7 @@ class Kernel
         ini_set('log_errors', 1);
         ini_set('error_log', LOGS . 'errors.log');
         if ($this->env === self::DEV_ENV) {
+            require_once APP_ROOT . '/dev/debugger.php';
             ini_set('display_errors', 1);
         } else {
             ini_set('display_errors', 0);

@@ -24,9 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ArticlesController extends AbstractController
 {
-
-    #[Route(
-        '/articles/test/{id}',
+    #[Route('/articles/test/{id}',
         name: 'test',
         requirements: [
             'id' => '[0-9]+',
@@ -34,6 +32,7 @@ class ArticlesController extends AbstractController
     )]
     public function test(int $id)
     {
+        dd($id, 'ceva' === false);
         echo 'ceva'; die;
     }
 

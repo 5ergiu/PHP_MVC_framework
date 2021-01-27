@@ -49,9 +49,9 @@ class Router extends SymfonyRouter {
     {
         try {
             $parameters = $this->matchRequest($this->request);
-            $controller = strtok($parameters['_controller'], '::');
-            $action = substr(strstr($parameters['_controller'], '::'), 2);
-            unset($parameters['_route'], $parameters['_controller']);
+            $controller = $parameters['controller'];
+            $action = $parameters['action'];
+            unset($parameters['_route'], $parameters['controller'], $parameters['action']);
             /** @var Controller $controller */
             $controller = new $controller;
             $controller->request = $this->request;

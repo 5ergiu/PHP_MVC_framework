@@ -25,5 +25,8 @@
         "symfony/http-foundation": "^5.2",
         "doctrine/orm": "^2.8",
         "doctrine/annotations": "^1.11"
+    },
+    "require-dev": {
+        "kint-php/kint": "^3.3"
     }
 }
