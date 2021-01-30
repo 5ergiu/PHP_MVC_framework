@@ -19,6 +19,7 @@ class DoctrineEntityManager
     public function getEntityManager(): EntityManager
     {
         Type::addType('enumUserRoleType', 'App\\Core\\Model\\DBAL\\EnumUserRoleType');
+        Type::addType('enumArticleStatusType', 'App\\Core\\Model\\DBAL\\EnumArticleStatusType');
         $db = [
             'driver' => $_ENV['DB_TYPE'],
             'host' => $_ENV['DB_HOST'],
@@ -31,6 +32,7 @@ class DoctrineEntityManager
         try {
             $em = EntityManager::create($db, $config);
             $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('db_enumUserRoleType', 'enumUserRoleType');
+            $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('db_enumArticleStatusType', 'enumArticleStatusType');
             return $em;
         } catch (ORMException $e) {
             var_dump($e->getMessage()); die;

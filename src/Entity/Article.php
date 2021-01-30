@@ -1,10 +1,13 @@
 <?php
 namespace App\Entity;
 
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToOne;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * @property int $id
@@ -15,15 +18,25 @@ use Doctrine\ORM\Mapping\OneToOne;
  * @property string $description The article's description(small text).
  * @property string $content     The article's content.
  * @property string $status      The article's status.
+ * @property Collection $bookmarkedBy Users that bookmarked the article.
+ * @property Collection $likedBy      Users that liked the article.
+ * @property Collection $tags         The tags for the article.
  * - review(default): Article that hasn't been reviewed yet.
  * - draft: Article that hasn't been submitted for review yet.
  * - approved: Article that has been submitted for review and approved.
  * - rejected: Article that has been submitted for review and was rejected.
- * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\ArticlesRepository")
  * @ORM\Table(name="articles")
  */
 class Article extends AbstractEntity
 {
+    public const STATUSES = [
+      'review' => 'REVIEW',
+      'draft' => 'DRAFT',
+      'approved' => 'APPROVED',
+      'rejected' => 'REJECTED',
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -33,7 +46,7 @@ class Article extends AbstractEntity
 
     /**
      * @ManyToOne(targetEntity="App\Entity\User", inversedBy="articles")
-     * @JoinColumn(nullable=false)
+     * @JoinColumn(name="author_id", referencedColumnName="id", nullable=false)
      */
     private User $author;
 
@@ -58,9 +71,54 @@ class Article extends AbstractEntity
     private string $content;
 
     /**
-     * @ORM\Column(type="string", length=255, options={"default": "review"})
+     * @ORM\Column(type="enumArticleStatusType", options={"default": "review"})
      */
-    private string $status;
+    private string $status = self::STATUSES['review'];
+
+    /**
+     * @ORM\Column(name="created_at", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     */
+    private DateTime $createdAt;
+
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="bookmarks")
+     * @ORM\JoinTable(name="article_bookmark",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="bookmarked_by", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private Collection $bookmarkedBy;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="likes")
+     * @ORM\JoinTable(name="article_like",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="liked_by", referencedColumnName="id")
+     *   }
+     * )
+     */
+    private Collection $likedBy;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="articles")
+     */
+    private Collection $tags;
+
+    #[Pure]
+    public function __construct()
+    {
+        $this->bookmarkedBy = new ArrayCollection;
+        $this->likedBy = new ArrayCollection;
+        $this->tags = new ArrayCollection;
+    }
 
     /**
      * @return int
@@ -111,12 +169,23 @@ class Article extends AbstractEntity
     public function setTitle(string $title): void
     {
         $this->title = $title;
-        $this->slug = $this->slugify($this->getTitle());
+        $this->setSlug($title);
     }
 
+    /**
+     * @return string
+     */
     public function getSlug(): string
     {
         return $this->slug;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setSlug(string $title): void
+    {
+        $this->slug = $this->slugify($title);
     }
 
     /**
@@ -181,5 +250,109 @@ class Article extends AbstractEntity
     public function setStatus(string $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt(): DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getBookmarks(): Collection
+    {
+        return $this->bookmarkedBy;
+    }
+
+    /**
+     * @param User $user
+     * @return self
+     */
+    public function addBookmark(User $user): self
+    {
+        if (!$this->bookmarkedBy->contains($user)) {
+            $this->bookmarkedBy[] = $user;
+        }
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return self
+     */
+    public function removeBookmark(User $user): self
+    {
+        if ($this->bookmarkedBy->contains($user)) {
+            $this->bookmarkedBy->remove($user);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likedBy;
+    }
+
+    /**
+     * @param User $user
+     * @return self
+     */
+    public function addLike(User $user): self
+    {
+        if (!$this->likedBy->contains($user)) {
+            $this->likedBy[] = $user;
+        }
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return self
+     */
+    public function removeLike(User $user): self
+    {
+        if ($this->likedBy->contains($user)) {
+            $this->likedBy->remove($user);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param Tag $tag
+     * @return self
+     */
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags[] = $tag;
+        }
+        return $this;
+    }
+
+    /**
+     * @param Tag $tag
+     * @return self
+     */
+    public function removeTag(Tag $tag): self
+    {
+        if ($this->tags->contains($tag)) {
+            $this->tags->remove($tag);
+        }
+        return $this;
     }
 }

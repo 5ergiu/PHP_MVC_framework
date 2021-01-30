@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,7 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @property string $name
  * @property string $description
  * @property string $image
- * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
+ * @property Collection $articles The articles associated to the tag.
+ * @ORM\Entity(repositoryClass="App\Repository\TagsRepository")
  * @ORM\Table(name="tags")
  */
 class Tag extends AbstractEntity
@@ -35,6 +38,16 @@ class Tag extends AbstractEntity
      * @ORM\Column(type="string", nullable=false)
      */
     private string $image;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Article", mappedBy="tags")
+     */
+    private Collection $articles;
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection;
+    }
 
     /**
      * @return int
@@ -98,5 +111,39 @@ class Tag extends AbstractEntity
     public function setImage(string $image): void
     {
         $this->image = $image;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    /**
+     * @param Article $article
+     * @return $this
+     */
+    public function addArticle(Article $article): self
+    {
+        if (!$this->articles->contains($article)) {
+            $this->articles[] = $article;
+            $article->addTag($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Article $article
+     * @return $this
+     */
+    public function removeLike(Article $article): self
+    {
+        if ($this->articles->contains($article)) {
+            $this->articles->removeElement($article);
+            $article->removeTag($this);
+        }
+        return $this;
     }
 }

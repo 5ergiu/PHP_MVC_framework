@@ -10,12 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
  * @property int $id
  * @property string $username
  * @property string $email
- * @property string $role              User's role('User' by default).
+ * @property string $role               User's role('User' by default).
  * @property string $password
- * @property string $image             User's profile picture.
- * @property string $summary           User's profile small description.
- * @property ArrayCollection $articles The articles created by a user.
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @property string $image              User's profile picture.
+ * @property string $summary            User's profile small description.
+ * @property Collection $articles  The articles created by the user.
+ * @property Collection $bookmarks The articles bookmarked by the user.
+ * @property Collection $likes     The articles liked by the user.
+ * @ORM\Entity(repositoryClass="App\Repository\UsersRepository")
  * @ORM\Table(name="users")
  */
 class User extends AbstractEntity
@@ -52,7 +54,7 @@ class User extends AbstractEntity
     private string $password;
 
     /**
-     * @ORM\Column(name="created_at", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="joined", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     private DateTime $joined;
 
@@ -69,11 +71,23 @@ class User extends AbstractEntity
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="author")
      */
-    private ArrayCollection $articles;
+    private Collection $articles;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Article", mappedBy="bookmarkedBy")
+     */
+    private Collection $bookmarks;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Article", mappedBy="likedBy")
+     */
+    private Collection $likes;
 
     public function __construct()
     {
         $this->articles = new ArrayCollection;
+        $this->bookmarks = new ArrayCollection;
+        $this->likes = new ArrayCollection;
     }
 
     /**
@@ -157,6 +171,14 @@ class User extends AbstractEntity
     }
 
     /**
+     * @return DateTime
+     */
+    public function getJoined(): DateTime
+    {
+        return $this->joined;
+    }
+
+    /**
      * @return string
      */
     public function getImage(): string
@@ -224,6 +246,74 @@ class User extends AbstractEntity
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getBookmarks(): Collection
+    {
+        return $this->bookmarks;
+    }
+
+    /**
+     * @param Article $article
+     * @return $this
+     */
+    public function addBookmark(Article $article): self
+    {
+        if (!$this->bookmarks->contains($article)) {
+            $this->bookmarks[] = $article;
+            $article->addBookmark($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Article $article
+     * @return $this
+     */
+    public function removeBookmark(Article $article): self
+    {
+        if ($this->bookmarks->contains($article)) {
+            $this->bookmarks->removeElement($article);
+            $article->removeBookmark($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    /**
+     * @param Article $article
+     * @return $this
+     */
+    public function addLike(Article $article): self
+    {
+        if (!$this->likes->contains($article)) {
+            $this->likes[] = $article;
+            $article->addLike($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Article $article
+     * @return $this
+     */
+    public function removeLike(Article $article): self
+    {
+        if ($this->likes->contains($article)) {
+            $this->likes->removeElement($article);
+            $article->removeLike($this);
+        }
         return $this;
     }
 }
