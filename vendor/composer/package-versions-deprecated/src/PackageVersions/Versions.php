@@ -66,7 +66,7 @@ final class Versions
   'symfony/yaml' => 'v5.2.1@290ea5e03b8cf9b42c783163123f54441fb06939',
   'vlucas/phpdotenv' => 'v5.2.0@fba64139db67123c7a57072e5f8d3db10d160b66',
   'kint-php/kint' => '3.3@335ac1bcaf04d87df70d8aa51e8887ba2c6d203b',
-  'bucegos/php_mvc_framework' => 'dev-master@b7f6fab4159f13ed4d1b0c1fee2f7c866cb40b42',
+  'bucegos/php_mvc_framework' => 'dev-master@169e4594fc2620c62a5a66ac78d00d36c8dd8189',
 );
 
     private function __construct()

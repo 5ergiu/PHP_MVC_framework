@@ -29,7 +29,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'b7f6fab4159f13ed4d1b0c1fee2f7c866cb40b42',
+    'reference' => '169e4594fc2620c62a5a66ac78d00d36c8dd8189',
     'name' => 'bucegos/php_mvc_framework',
   ),
   'versions' => 
@@ -41,7 +41,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'b7f6fab4159f13ed4d1b0c1fee2f7c866cb40b42',
+      'reference' => '169e4594fc2620c62a5a66ac78d00d36c8dd8189',
     ),
     'cebe/markdown' => 
     array (

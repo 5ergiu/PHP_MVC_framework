@@ -73,7 +73,7 @@ class User extends AbstractEntity
 
     public function __construct()
     {
-        $this->articles = new ArrayCollection();
+        $this->articles = new ArrayCollection;
     }
 
     /**

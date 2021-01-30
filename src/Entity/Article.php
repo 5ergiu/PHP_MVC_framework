@@ -63,6 +63,22 @@ class Article extends AbstractEntity
     private string $status;
 
     /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
      * @return User
      */
     public function getAuthor(): User
